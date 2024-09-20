@@ -1,7 +1,12 @@
+from constants import *
+from circleshape import CircleShape
+import pygame
+
 class Player(CircleShape):
-    def__init__(self, x, y)
-    super().__init__(PLAYER_RADIUS)
-    
+    def __init__(self, x, y):
+        super().__init__(x, y, PLAYER_RADIUS)
+        self.rotation = 0 #initialize rotation attribute
+        
 #defining the triangle shape that rotates    
     def triangle(self):
         forward = pygame.Vector2(0, 1).rotate(self.rotation)
@@ -16,5 +21,7 @@ class Player(CircleShape):
 # - "white": The color of the triangle's outline
 # - self.triangle(): A list of points representing the vertices of the triangle
 # - 2: The width of the triangle's outline (if 0, it would fill the shape)
-def draw(self, screen):
-    self.pygame.draw.polygon(screen, "white", self.triangle(), 2)
+    def draw(self, screen):
+        points = self.triangle()
+        pygame.draw.polygon(screen, (255, 255, 255), points, 2)
+        print(f"drawing white triangle with points: {points}")

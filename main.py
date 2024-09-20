@@ -22,10 +22,9 @@ def main():
                 return
 
         screen.fill((0, 0, 0))
-        pygame.display.flip()
         dt = clock.tick(60) / 1000
         player.draw(screen)
-        
+        pygame.display.flip()
 
 
 if __name__ == "__main__":
