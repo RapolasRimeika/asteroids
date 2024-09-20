@@ -11,9 +11,6 @@ def main():
     
     clock = pygame.time.Clock()
     dt = 0
-
-
-
     running = True
     while running:
         for event in pygame.event.get():
