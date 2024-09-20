@@ -16,12 +16,18 @@ class Player(CircleShape):
         c = self.position - forward * self.radius + right
         return [a, b, c]
 
-# Draws a triangle shape on the screen using pygame's draw.polygon method
-# - screen: The surface to draw the triangle on (passed in as an argument)
-# - "white": The color of the triangle's outline
-# - self.triangle(): A list of points representing the vertices of the triangle
-# - 2: The width of the triangle's outline (if 0, it would fill the shape)
     def draw(self, screen):
         points = self.triangle()
         pygame.draw.polygon(screen, (255, 255, 255), points, 2)
         print(f"drawing white triangle with points: {points}")
+
+    def rotate(self, dt):
+        self.rotation += PLAYER_TURN_SPEED * dt
+    
+    def update(self, dt):
+        keys = pygame.key.get_pressed()
+
+        if keys[pygame.K_a]:
+            self.rotate(dt)
+        if keys[pygame.K_d]:
+            self.rotate((dt * -1))
