@@ -4,6 +4,7 @@ from circleshape import CircleShape
 from shot import Shot
 from floating_text import FloatingText
 
+
 class Player(CircleShape):
     def __init__(self, x, y):
         # Initialize the player with position and radius
@@ -39,9 +40,10 @@ class Player(CircleShape):
             self.move(dt)
         if keys[pygame.K_SPACE] and self.timer <= 0:
             self.shoot()
-        
-        # Decrease the shooting timer
+
+        # Decrease the shooting timer   
         self.timer -= dt
+
 
     def rotate(self, dt):
         # Rotate the player by adjusting the rotation angle

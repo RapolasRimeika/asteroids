@@ -34,8 +34,8 @@ def main():
     drawable.add(state.player)
     asteroid_field = AsteroidField()
 
-    running = True    
-    while running:
+    state.running = True    
+    while state.running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return

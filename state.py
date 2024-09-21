@@ -6,6 +6,7 @@ class State():
     def __init__(self, player_dead):
         self.player_dead = player_dead
         self.player = None
+        self.running = True
 
     def update(self, dt, updatable, drawable):
         # Check for player respawn
@@ -17,3 +18,6 @@ class State():
             updatable.add(self.player)
             drawable.add(self.player)
             self.player_dead = False
+        
+        if keys[pygame.K_ESCAPE]:
+            self.running = False
