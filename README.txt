@@ -35,3 +35,5 @@ This project is a learning exercise focused on building basic game mechanics, pr
 - The player's ship is represented by a rotating triangle.
 - The ship's rotation and movement are controlled using the keyboard.
 - The base shape of the player (a circle) is used for collision detection but is visually represented as a triangle.
+
+added rotation with arrowkeys
