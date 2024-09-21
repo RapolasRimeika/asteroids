@@ -45,7 +45,12 @@ class Player(CircleShape):
     def move(self, dt):
         forward = pygame.Vector2(0, 1).rotate(self.rotation)
         self.position += forward * PLAYER_SPEED * dt
-        new_message = FloatingText(self.position[0], self.position[1], 1,"*")
+        RGB = (255, 0, 0)
+        right = right = pygame.Vector2(0, 1).rotate(self.rotation + 90) * self.radius / 1.5
+        b = self.position - forward * self.radius - right
+        c = self.position - forward * self.radius + right
+        new_message = FloatingText(b[0], b[1], 1,"*", RGB, 50)
+        new_message = FloatingText(c[0], c[1], 1,"*", RGB, 50)
 
     def shoot(self):
         forward = pygame.Vector2(0, 1).rotate(self.rotation)
@@ -53,5 +58,6 @@ class Player(CircleShape):
         radius = SHOT_RADIUS
         new_shot = Shot(a[0], a[1], radius)
         new_shot.velocity = PLAYER_SHOT_SPEED * pygame.Vector2(0, 1).rotate(self.rotation)
-        new_message = FloatingText(self.position[0], self.position[1], 1,"Shot fired!")
+        RGB = (255, 0, 0)
+        new_message = FloatingText(a[0], a[1], 1,"@", RGB, 50)
         self.timer = PLAYER_SHOOT_COOLDOWN

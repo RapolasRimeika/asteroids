@@ -2,13 +2,14 @@ import pygame
 from circleshape import CircleShape
 
 class FloatingText(CircleShape):
-    def __init__(self, x, y, radius, message):
+    def __init__(self, x, y, radius, message, RGB, duration):
         super().__init__(x, y, radius)
         self.message = message
-        self.duration = duration = 1000
+        self.duration = duration
+        self.RGB = RGB
         self.start_time = pygame.time.get_ticks()
         self.font = font = pygame.font.Font(None, 24)
-        self.text_surface = self.font.render(self.message, True, (255, 0, 0))
+        self.text_surface = self.font.render(self.message, True, RGB)
 
     def update(self, dt):
         current_time = pygame.time.get_ticks()

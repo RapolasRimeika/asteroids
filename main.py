@@ -16,12 +16,13 @@ def main():
     drawable = pygame.sprite.Group()
     asteroid_group = pygame.sprite.Group()
     shots = pygame.sprite.Group()
-    
+    all_text = pygame.sprite.Group()
+
     Asteroid.containers = (asteroid_group, updatable, drawable)
     AsteroidField.containers = updatable
     Player.containers = (updatable, drawable)
     Shot.containers = (shots, updatable, drawable)
-    FloatingText.containers = (updatable, drawable)
+    FloatingText.containers = (all_text, updatable, drawable)
 
 # creating instances
     player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
@@ -44,7 +45,12 @@ def main():
             if i.collision(player):
                 print("Game Over!")
                 return 
-            
+            for shot in shots:
+                if shot.collision(i):
+                    i.split()
+                    RGB = (255, 0, 150)
+                    new_message = FloatingText(i.position[0], i.position[1], 1,"POW!", RGB, 500)
+
         for i in drawable:
             i.draw(screen)
 
