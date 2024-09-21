@@ -1,9 +1,9 @@
 import pygame
 
-# Base class for game objects
+# Base class for circular game objects
 class CircleShape(pygame.sprite.Sprite):
     def __init__(self, x, y, radius):
-        # we will be using this later
+        # Initialize sprite and add to groups if containers are set
         if hasattr(self, "containers"):
             super().__init__(self.containers)
         else:
@@ -14,15 +14,14 @@ class CircleShape(pygame.sprite.Sprite):
         self.radius = radius
 
     def draw(self, screen):
-        # sub-classes must override
+        # Subclasses should override this method to draw themselves
         pass
 
     def update(self, dt):
-        # sub-classes must override
+        # Subclasses should override this method to update themselves
         pass
 
     def collision(self, other):
+        # Check for collision with another CircleShape
         distance = self.position.distance_to(other.position)
-        if self.radius + other.radius > distance:
-            return True
-        return False
+        return self.radius + other.radius > distance
