@@ -14,7 +14,20 @@ def main():
     dt = 0
     running = True
 
+    
+
+    #creating a new empty group
+    # my_group = pygame.sprite.Group()
+    # adding all instances of Player class to two groups by adding a static field property to the class
+    updatable = pygame.sprite.Group() 
+    drawable = pygame.sprite.Group()
+    Player.containers = (updatable, drawable)
+
     player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
+
+# iterating over objects in a group
+# for thing in group:
+    # do stuff with thing
 
     while running:
         for event in pygame.event.get():
@@ -23,8 +36,10 @@ def main():
 
         screen.fill((0, 0, 0))
         dt = clock.tick(60) / 1000
-        player.update(dt)
-        player.draw(screen)
+        for object in updatable:
+            object.update(dt)
+        for object in drawable:
+            object.draw(screen)
         pygame.display.flip()
 
 

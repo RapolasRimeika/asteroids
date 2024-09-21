@@ -37,3 +37,9 @@ This project is a learning exercise focused on building basic game mechanics, pr
 - The base shape of the player (a circle) is used for collision detection but is visually represented as a triangle.
 
 added rotation with arrowkeys
+added forward movement "W" and "arrow_up"
+
+
+changed main logic to update and draw groups instead of the player
+added a drawable object group
+added an updatable object group
