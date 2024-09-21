@@ -20,16 +20,5 @@ class Shot(CircleShape):
         current_time = pygame.time.get_ticks()
         if current_time - self.spawn_time > self.lifetime:
             self.kill()
-        # Wrap around screen edges
-        self.wrap_around_screen()
 
-    def wrap_around_screen(self):
-        # Wrap the shot to the opposite side if it moves off-screen
-        if self.position.x < -self.radius:
-            self.position.x = SCREEN_WIDTH + self.radius
-        elif self.position.x > SCREEN_WIDTH + self.radius:
-            self.position.x = -self.radius
-        if self.position.y < -self.radius:
-            self.position.y = SCREEN_HEIGHT + self.radius
-        elif self.position.y > SCREEN_HEIGHT + self.radius:
-            self.position.y = -self.radius
+
