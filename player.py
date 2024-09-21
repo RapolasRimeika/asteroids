@@ -1,6 +1,7 @@
 from constants import *
 from circleshape import CircleShape
 from shot import Shot
+from floating_text import FloatingText
 import pygame
 
 class Player(CircleShape):
@@ -47,3 +48,4 @@ class Player(CircleShape):
         radius = SHOT_RADIUS
         new_shot = Shot(a[0], a[1], radius)
         new_shot.velocity = PLAYER_SHOT_SPEED * pygame.Vector2(0, 1).rotate(self.rotation)
+        new_message = FloatingText(self.position[0], self.position[1], 1,"Shot fired!")
