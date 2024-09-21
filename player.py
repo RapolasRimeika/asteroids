@@ -4,6 +4,7 @@ from shot import Shot
 from floating_text import FloatingText
 import pygame
 
+
 class Player(CircleShape):
     def __init__(self, x, y):
         super().__init__(x, y, PLAYER_RADIUS)
@@ -49,8 +50,8 @@ class Player(CircleShape):
         right = right = pygame.Vector2(0, 1).rotate(self.rotation + 90) * self.radius / 1.5
         b = self.position - forward * self.radius - right
         c = self.position - forward * self.radius + right
-        new_message = FloatingText(b[0], b[1], 1,"*", RGB, 50)
-        new_message = FloatingText(c[0], c[1], 1,"*", RGB, 50)
+        new_message = FloatingText(b[0], b[1], 1,"^", RGB, 50)
+        new_message = FloatingText(c[0], c[1], 1, "^", RGB, 50)
 
     def shoot(self):
         forward = pygame.Vector2(0, 1).rotate(self.rotation)
@@ -59,5 +60,5 @@ class Player(CircleShape):
         new_shot = Shot(a[0], a[1], radius)
         new_shot.velocity = PLAYER_SHOT_SPEED * pygame.Vector2(0, 1).rotate(self.rotation)
         RGB = (255, 0, 0)
-        new_message = FloatingText(a[0], a[1], 1,"@", RGB, 50)
+        new_message = FloatingText(a[0], a[1], 1, "ø", RGB, 40)
         self.timer = PLAYER_SHOOT_COOLDOWN
