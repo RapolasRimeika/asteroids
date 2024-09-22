@@ -10,7 +10,7 @@ class FloatingText(CircleShape):
         self.RGB = RGB
         self.start_time = pygame.time.get_ticks()
         # Create a font and render the text surface
-        self.font = pygame.font.Font(None, 24)
+        self.font = pygame.font.Font(None, 34)
         self.text_surface = self.font.render(self.message, True, RGB)
 
     def update(self, dt):

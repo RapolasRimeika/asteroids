@@ -16,7 +16,7 @@ class Player(CircleShape):
         self.score = 0 # Score value initialize
         self.time = 0
         self.asteroids_destroyed = 0
-        self.health = 5
+        self.health = 100
     
     def triangle(self):
         # Calculate the points of the triangle representing the player
@@ -117,7 +117,7 @@ class Player(CircleShape):
         # Check for collision with another CircleShape
         distance = self.position.distance_to(other.position)
         if self.radius + other.radius > distance:
-            self.health -= 1
+            self.health -= 20
             self.bounce(other)
 
     def player_death(self):

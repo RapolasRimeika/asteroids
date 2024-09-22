@@ -100,6 +100,13 @@ def main():
                     shot.kill()
                     break  # Move to the next shot
 
+        
+        def draw_health_bar(screen, x, y, current_health, max_health, bar_width=100, bar_height=10):
+                health_percentage = current_health / max_health # Calculate health percentage
+                health_width = bar_width * health_percentage
+                pygame.draw.rect(screen, (200, 100, 100), (x, y, bar_width, bar_height))  # Red background
+                pygame.draw.rect(screen, (100, 200, 100), (x, y, health_width, bar_height))  # Green health bar  
+        draw_health_bar(screen, 500, 20, state.player.health, 100,)
 
         # Draw all drawable sprites
         for sprite in drawable:

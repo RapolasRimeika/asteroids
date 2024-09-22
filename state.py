@@ -21,7 +21,7 @@ class State():
         RGB = (200, 200, 200)
         FloatingText(60, 20, 1, (f"Score is {self.score}"), RGB, 60)
         FloatingText(300, 20, 1, (f"Time played {self.play_time} s"), RGB, 60)
-
+        
         # Check for player respawn
         keys = pygame.key.get_pressed()
         if self.player_dead and keys[pygame.K_RETURN]:
@@ -51,3 +51,5 @@ class State():
             start_message = random.choice(start_messages)
             RGB = (250, 200, 100)
             FloatingText(SCREEN_WIDTH / 2, (SCREEN_HEIGHT / 2) - 100, 1, (f"{start_message}"), RGB, 4000)
+
+          
