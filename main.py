@@ -53,7 +53,9 @@ def main():
 
         if play_time >= 0 and play_time <= 0.1:
             for text in all_text:
-                text.kill()     
+                text.kill()
+            for i in asteroid_group:
+                i.kill()     
 
         # Update all updatable sprites
         for sprite in updatable:
