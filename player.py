@@ -110,6 +110,10 @@ class Player(CircleShape):
         self.kill()
 
     def destroy_asteroid(self, value):
-        RGB = (255, 0, 150)
-        FloatingText(90, 40, 1, (f"Asteroid shot down!"), RGB, 500)
         self.asteroids_destroyed += value
+
+        RGB = (255, 0, 150)
+        asteroid_down_messages = ["Asteroid shot down!", "Target destroyed!", "Direct hit!", "Asteroid obliterated!", "Hit confirmed!", "Asteroid vaporized!", "Threat eliminated!", "Asteroid shattered!", "Bullseye!", "Rock smashed!", "Target disintegrated!", "Asteroid annihilated!", "Strike successful!"]
+        asteroid_down_message = random.choice(asteroid_down_messages)
+        FloatingText(90, 40, 1, (f"{asteroid_down_message}"), RGB, 500)
+        
