@@ -19,7 +19,7 @@ class Asteroid(CircleShape):
     def split(self):
         # Remove the current asteroid
         self.kill()
-        # Stop splitting if the asteroid is at minimum size
+         # Stop splitting if the asteroid is at minimum size
         if self.radius <= ASTEROID_MIN_RADIUS:
             return
         # Create two smaller asteroids with new velocities

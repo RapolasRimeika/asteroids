@@ -11,6 +11,7 @@ class Player(CircleShape):
         super().__init__(x, y, PLAYER_RADIUS)
         self.rotation = 0  # Initialize rotation angle
         self.timer = 0  # Timer for shooting cooldown
+        self.score = 0 # Score value initialize
 
     def triangle(self):
         # Calculate the points of the triangle representing the player
@@ -85,3 +86,11 @@ class Player(CircleShape):
         FloatingText(shot_position.x, shot_position.y, 1, "ø", RGB, 40)
         # Reset the shooting timer
         self.timer = PLAYER_SHOOT_COOLDOWN
+
+    def score_points(self, points): 
+        # Points update function 
+        self.score += points
+
+    def get_score(self):
+        # Point getter function
+        return self.score
