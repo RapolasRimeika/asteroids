@@ -34,7 +34,6 @@ class State():
         if keys[pygame.K_ESCAPE]:
             self.running = False
 
-
     def player_collision(self):
         # Draw death summary
         RGB = (250, 200, 100)
@@ -46,7 +45,7 @@ class State():
 
     def new_game(self):
         # New game message
-        start_messages = ["Ready to rock... literally!", "Let's smash some space rocks!", "Asteroids beware, here we come!", "Get your space boots on, it's go time!", "Time to turn asteroids into dust!", "Prepare for asteroid annihilation!", "Space rocks don't stand a chance!", "Strap in, it's gonna be a bumpy ride!", "Let’s break some cosmic stuff!", "Warning: Asteroids about to get wrecked!", "Engage asteroid-smashing mode!", "Ready, aim, asteroid!", "Asteroids... meet your doom!", "Suit up, space warrior!", "Send those asteroids packing!"]
-        start_message = random.choice(start_messages)
-        RGB = (250, 200, 100)
-        FloatingText(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 1, (f"{start_message}"), RGB, 4000)
+            start_messages = ["Ready to rock... literally!", "Let's smash some rocks!", "Asteroids beware, here we come!", "Get your space boots on, it's go time!", "Time to turn asteroids into dust!", "Prepare for asteroid annihilation!", "Space rocks don't stand a chance!", "Strap in, it's gonna be a rocky ride!", "Break some cosmic stuff!", "Warning: Asteroids about to get wrecked!", "Engage asteroid-smashing mode!", "Ready, aim, asteroid!", "Asteroids... meet your doom!", "Suit up, space warrior!", "Send those asteroids packing!"]
+            start_message = random.choice(start_messages)
+            RGB = (250, 200, 100)
+            FloatingText(SCREEN_WIDTH / 2, (SCREEN_HEIGHT / 2) - 100, 1, (f"{start_message}"), RGB, 4000)

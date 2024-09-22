@@ -6,6 +6,7 @@ from asteroidfield import AsteroidField
 from shot import Shot
 from floating_text import FloatingText
 from state import State
+from shrapnel import Shrapnel
 
 def main():
     pygame.init()
@@ -18,6 +19,7 @@ def main():
     asteroid_group = pygame.sprite.Group()
     shots = pygame.sprite.Group()
     all_text = pygame.sprite.Group()
+    shrapnel_group = pygame.sprite.Group() 
 
     # Assign containers to classes for automatic group addition
     Asteroid.containers = (asteroid_group, updatable, drawable)
@@ -26,6 +28,7 @@ def main():
     Shot.containers = (shots, updatable, drawable)
     FloatingText.containers = (all_text, updatable, drawable)
     State.containers = (updatable, drawable)
+    Shrapnel.containers = (updatable, drawable)
 
     # Initialize game state and player
     state = State(False)
@@ -48,7 +51,7 @@ def main():
         # Update the game state
         state.update(dt, updatable, drawable)
         # Clearing objects at respawning
-        if state.player.time >= 0 and state.player.time <= 0.1:
+        if state.player.time >= 0 and state.player.time <= 0.005:
             for text in all_text:
                 text.kill()
             for i in asteroid_group:

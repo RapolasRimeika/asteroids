@@ -1,27 +1,26 @@
 import pygame
+import random
 from circleshape import CircleShape
-from constants import *
 from floating_text import FloatingText
 
-class Shot(CircleShape):
+class Shrapnel(CircleShape):
     def __init__(self, x, y, radius):
-        # Initialize the shot with position and radius
         super().__init__(x, y, radius)
         self.lifetime = 2000  # Lifetime in milliseconds
         self.spawn_time = pygame.time.get_ticks()
 
     def draw(self, screen):
-        # Draw the shot as a small circle
+        # Draw the asteroid as a white circle
         pygame.draw.circle(screen, (255, 255, 255), self.position, self.radius, 2)
         RGB = (255, 0, 0)
-        FloatingText(self.position.x, self.position.y, 1, ".", RGB, 40)
+        flames = ["§", "¶", "∞", "∑", "≈", "Ω", "µ", "∆", "∫", "≈", "¬", "π", "≠", "√", "≤"]
+        flame = random.choice(flames)
+        FloatingText(self.position.x, self.position.y, 1, (f"{flame}"), RGB, 40)
 
     def update(self, dt):
         # Update position based on velocity and time delta
         self.position += self.velocity * dt
-        # Remove the shot if its lifetime has expired
+         # Remove the shrapnel if its lifetime has expired
         current_time = pygame.time.get_ticks()
         if current_time - self.spawn_time > self.lifetime:
             self.kill()
-
-
