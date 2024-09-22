@@ -13,6 +13,8 @@ class State():
         self.play_time = 0
 
     def update(self, dt, updatable, drawable):
+        
+        
         # update time spent and score at the top of the screen
         self.score = self.player.get_score()
         self.play_time = self.player.get_time()

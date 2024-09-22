@@ -3,6 +3,7 @@ import random
 from constants import *
 from circleshape import CircleShape
 from floating_text import FloatingText
+from shrapnel import Shrapnel
 
 class Asteroid(CircleShape):
     def __init__(self, x, y, radius):
@@ -20,6 +21,7 @@ class Asteroid(CircleShape):
     def split(self):
         # Remove the current asteroid
         self.kill()
+        self.shrapnel_asteroid(20)
         RGB = (255, 0, 150)
         explosion_list = ["CRASH!", "BLAM!", "BANG!", "BOOMSHAK!", "THWACK!", "SMASH!", "THOOM!", "ZAP!", "BLAST!", "KA-BLAST!", "KABLAM!", "WHOOSH!", "CRACK!", "THUD!", "WHAM!"]
         explosion =random.choice(explosion_list)
@@ -27,6 +29,7 @@ class Asteroid(CircleShape):
         
          # Stop splitting if the asteroid is at minimum size
         if self.radius <= ASTEROID_MIN_RADIUS:
+            self.shrapnel_asteroid((self.radius))
             return
         # Create two smaller asteroids with new velocities
         random_angle = random.uniform(20, 50)
@@ -36,3 +39,13 @@ class Asteroid(CircleShape):
         # Spawn the new asteroids
         Asteroid(self.position.x, self.position.y, new_radius).velocity = velocity_a
         Asteroid(self.position.x, self.position.y, new_radius).velocity = velocity_b
+
+    def shrapnel_asteroid(self, mass, RGB=(150, 150, 150)):
+        while mass > 1:
+            random_angle = random.uniform(0, 360)
+            velocity_a = self.velocity.rotate(random_angle) * random.uniform(0.5, 2.5)
+            new_radius = random.uniform(2, 5)
+            # Spawn shrapnel
+            shrapnel_piece = Shrapnel(self.position.x, self.position.y, new_radius, RGB)
+            shrapnel_piece.velocity = velocity_a
+            mass -= new_radius

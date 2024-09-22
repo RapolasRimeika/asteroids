@@ -19,16 +19,18 @@ def main():
     asteroid_group = pygame.sprite.Group()
     shots = pygame.sprite.Group()
     all_text = pygame.sprite.Group()
-    shrapnel_group = pygame.sprite.Group() 
+    shrapnel_group = pygame.sprite.Group()
+    collidable_group = pygame.sprite.Group() 
 
     # Assign containers to classes for automatic group addition
-    Asteroid.containers = (asteroid_group, updatable, drawable)
+    Asteroid.containers = (asteroid_group, updatable, drawable, collidable_group)
     AsteroidField.containers = updatable
-    Player.containers = (updatable, drawable)
-    Shot.containers = (shots, updatable, drawable)
+    Player.containers = (updatable, drawable, collidable_group)
+    Shot.containers = (shots, updatable, drawable, collidable_group)
+    Shrapnel.containers = (updatable, drawable, collidable_group)
     FloatingText.containers = (all_text, updatable, drawable)
     State.containers = (updatable, drawable)
-    Shrapnel.containers = (updatable, drawable)
+    
 
     # Initialize game state and player
     state = State(False)
@@ -62,25 +64,31 @@ def main():
         for sprite in updatable:
             sprite.update(dt)
         
-        # Check for collisions if the player is alive
-        if not state.player_dead:
-            # Check for collisions between asteroids and the player
-            for asteroid in asteroid_group:
-                if asteroid.collision(state.player):
-                    # Remove the player and set game state
-                    state.player.collide()
-                    state.player_collision()
-                    state.player_dead = True
+       
+        # Check for collisions between objects
+        collidable_list = list(collidable_group)
+        for i in range(len(collidable_list)):
+            obj1 = collidable_list[i]
+            for j in range(i + 1, len(collidable_list)):
+                obj2 = collidable_list[j]
+                obj1.collision(obj2)
+                
+       # if asteroid.collision(state.player, bounce=False):
+            # Remove the player and set game state
+        #        state.player.collide()
+         #       state.player_collision()
+          #      state.player_dead = True
 
         # Check for collisions between shots and asteroids
         for shot in shots:
             for asteroid in asteroid_group:
-                if shot.collision(asteroid):
+                if shot.collision(asteroid, bounce=False):
                     asteroid.split()
                     state.player.score_points(1)
                     state.player.destroy_asteroid(1)
                     shot.kill()
                     break  # Move to the next shot
+
 
         # Draw all drawable sprites
         for sprite in drawable:
