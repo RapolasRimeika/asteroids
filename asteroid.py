@@ -2,6 +2,7 @@ import pygame
 import random
 from constants import *
 from circleshape import CircleShape
+from floating_text import FloatingText
 
 class Asteroid(CircleShape):
     def __init__(self, x, y, radius):
@@ -19,6 +20,11 @@ class Asteroid(CircleShape):
     def split(self):
         # Remove the current asteroid
         self.kill()
+        RGB = (255, 0, 150)
+        explosion_list = ["CRASH!", "BLAM!", "BANG!", "BOOMSHAK!", "THWACK!", "SMASH!", "THOOM!", "ZAP!", "BLAST!", "KA-BLAST!", "KABLAM!", "WHOOSH!", "CRACK!", "THUD!", "WHAM!"]
+        explosion =random.choice(explosion_list)
+        FloatingText(self.position.x, self.position.y, 1, (f"{explosion}"), RGB, 500)
+        
          # Stop splitting if the asteroid is at minimum size
         if self.radius <= ASTEROID_MIN_RADIUS:
             return

@@ -70,9 +70,10 @@ def main():
                     # Display collision messages
                     RGB = (250, 200, 100)
                     FloatingText(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 1, (f"Game Over!"), RGB, 4000)
-                    FloatingText(SCREEN_WIDTH / 2, ((SCREEN_HEIGHT / 2)+ 30), 1, (f"Yuor Score is {score}"), RGB, 4000)
+                    FloatingText(SCREEN_WIDTH / 2, ((SCREEN_HEIGHT / 2)+ 30), 1, (f"Your Score is {score}"), RGB, 4000)
                     FloatingText(SCREEN_WIDTH / 2, ((SCREEN_HEIGHT / 2)+ 60), 1, (f"Yuo lasted {play_time} seconds"), RGB, 4000) 
-                    FloatingText(SCREEN_WIDTH / 2, ((SCREEN_HEIGHT / 2)+ 90), 1, (f"Press Return to play again"), RGB, 10000)              
+                    FloatingText(SCREEN_WIDTH / 2, ((SCREEN_HEIGHT / 2)+ 90), 1, (f"Press Return to play again"), RGB, 10000)
+                    FloatingText(SCREEN_WIDTH / 2, ((SCREEN_HEIGHT / 2)+ 120), 1, (f"Press ESC to quit"), RGB, 10000)                
                     # Remove the player and set game state
                     state.player.collide()
                     state.player_dead = True
@@ -83,10 +84,8 @@ def main():
                 if shot.collision(asteroid):
                     asteroid.split()
                     state.player.score_points(1)
+                    state.player.destroy_asteroid(1)
                     shot.kill()
-                    RGB = (255, 0, 150)
-                    FloatingText(asteroid.position.x, asteroid.position.y, 1, "POW!", RGB, 500)
-                    FloatingText(90, 40, 1, (f"Asteroid shot down!"), RGB, 500)
                     break  # Move to the next shot
 
         # Draw all drawable sprites

@@ -13,6 +13,7 @@ class Player(CircleShape):
         self.timer = 0  # Timer for shooting cooldown
         self.score = 0 # Score value initialize
         self.time = 0
+        self.asteroids_destroyed = 0
 
     def triangle(self):
         # Calculate the points of the triangle representing the player
@@ -107,3 +108,8 @@ class Player(CircleShape):
         scream = random.choice(collision_screams)
         FloatingText(self.position.x, self.position.y, 1, scream, RGB, 1000)
         self.kill()
+
+    def destroy_asteroid(self, value):
+        RGB = (255, 0, 150)
+        FloatingText(90, 40, 1, (f"Asteroid shot down!"), RGB, 500)
+        self.asteroids_destroyed += value
