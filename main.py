@@ -41,12 +41,19 @@ def main():
                 return
 
         # Clear the screen
-        screen.fill((5, 8, 7))
+        screen.fill((15, 15, 0))
         # Cap the frame rate at 60 FPS and calculate delta time
         dt = clock.tick(60) / 1000
 
         # Update the game state
         state.update(dt, updatable, drawable)
+
+        score = state.player.get_score()
+        play_time = state.player.get_time()
+
+        if play_time >= 0 and play_time <= 0.1:
+            for text in all_text:
+                text.kill()     
 
         # Update all updatable sprites
         for sprite in updatable:
@@ -60,7 +67,10 @@ def main():
                     # Display collision messages
                     RGB = (250, 200, 100)
                     FloatingText(state.player.position.x, state.player.position.y, 1, "ARGHHH!", RGB, 1000)
-                    FloatingText(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 1, (f"Game Over!  Yuor Score is {score} Press Return to start again"), RGB, 3000) 
+                    FloatingText(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 1, (f"Game Over!"), RGB, 4000)
+                    FloatingText(SCREEN_WIDTH / 2, ((SCREEN_HEIGHT / 2)+ 30), 1, (f"Yuor Score is {score}"), RGB, 4000)
+                    FloatingText(SCREEN_WIDTH / 2, ((SCREEN_HEIGHT / 2)+ 60), 1, (f"Yuo lasted {play_time} seconds"), RGB, 4000) 
+                    FloatingText(SCREEN_WIDTH / 2, ((SCREEN_HEIGHT / 2)+ 90), 1, (f"Press Return to play again"), RGB, 10000)              
                     # Remove the player and set game state
                     state.player.kill()
                     state.player_dead = True
@@ -74,9 +84,7 @@ def main():
                     shot.kill()
                     RGB = (255, 0, 150)
                     FloatingText(asteroid.position.x, asteroid.position.y, 1, "POW!", RGB, 500)
-                    score = state.player.get_score()
-                    FloatingText(50, 10, 1, (f"Asteroid shot down!"), RGB, 500)
-                    FloatingText(50, 30, 1, (f"Score is {score}"), RGB, 500)
+                    FloatingText(90, 40, 1, (f"Asteroid shot down!"), RGB, 500)
                     break  # Move to the next shot
 
         # Draw all drawable sprites

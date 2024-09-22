@@ -12,6 +12,7 @@ class Player(CircleShape):
         self.rotation = 0  # Initialize rotation angle
         self.timer = 0  # Timer for shooting cooldown
         self.score = 0 # Score value initialize
+        self.time = 0
 
     def triangle(self):
         # Calculate the points of the triangle representing the player
@@ -45,6 +46,7 @@ class Player(CircleShape):
         # Decrease the shooting timer   
         self.timer -= dt
 
+        self.time += dt
 
     def rotate(self, dt):
         # Rotate the player by adjusting the rotation angle
@@ -94,3 +96,7 @@ class Player(CircleShape):
     def get_score(self):
         # Point getter function
         return self.score
+    
+    def get_time(self):
+        # Get time player playing
+        return round((self.time), 1)
