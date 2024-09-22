@@ -59,6 +59,13 @@ def main():
             for i in asteroid_group:
                 i.kill()   
             state.new_game()  
+        # Optimise the game by killing items that go off screen
+        screen_rect = pygame.Rect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)
+        inflated_rect = screen_rect.inflate(60, 60)
+        for item in collidable_group:
+            if not inflated_rect.collidepoint(item.position):
+                item.kill
+
 
         # Update all updatable sprites
         for sprite in updatable:
