@@ -13,6 +13,16 @@ class CircleShape(pygame.sprite.Sprite):
         self.position = pygame.Vector2(x, y)
         self.velocity = pygame.Vector2(0, 0)
         self.radius = radius
+        self.angular_velocity = 0  # Angular velocity (rotational inertia)
+        self.rotation = 0  # Current rotation angle
+
+    def apply_force(self, force):
+        # Apply force to the velocity (acceleration = force / mass)
+        self.velocity += force
+    
+    def apply_torque(self, torque):
+        # Apply torque to angular velocity (affects rotation)
+        self.angular_velocity += torque
 
     def draw(self, screen):
         # Subclasses should override this method to draw themselves
@@ -21,6 +31,7 @@ class CircleShape(pygame.sprite.Sprite):
     def update(self, dt):
         # Subclasses should override this method to update themselves
         pass
+
 
     def collision(self, other, bounce=True):
         # Check for collision with another CircleShape

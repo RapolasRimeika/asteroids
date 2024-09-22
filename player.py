@@ -62,8 +62,7 @@ class Player(CircleShape):
         forward = pygame.Vector2(0, 1).rotate(self.rotation)
         movement = forward * PLAYER_SPEED * dt
         self.position += movement
-        self.velocity = movement / dt  # Update the player's velocity
-        
+        self.velocity = movement / dt  # Update the player's velocity      
         
         # Create visual effect when moving
         RGB = (255, 0, 0)
