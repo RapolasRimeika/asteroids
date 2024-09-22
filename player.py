@@ -1,9 +1,9 @@
 import pygame
+import random
 from constants import *
 from circleshape import CircleShape
 from shot import Shot
 from floating_text import FloatingText
-
 
 class Player(CircleShape):
     def __init__(self, x, y):
@@ -100,3 +100,10 @@ class Player(CircleShape):
     def get_time(self):
         # Get time player playing
         return round((self.time), 1)
+    
+    def collide(self):
+        RGB = (250, 200, 100)
+        collision_screams = ["ARGHHH!", "No! No! No!  NOOOOOOOOO!!!", "NO!", "We're crashing!", "Eject!", "Tell her I love her!", "Beam me out of here!"]
+        scream = random.choice(collision_screams)
+        FloatingText(self.position.x, self.position.y, 1, scream, RGB, 1000)
+        self.kill()
