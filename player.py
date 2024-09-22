@@ -16,6 +16,7 @@ class Player(CircleShape):
         self.score = 0 # Score value initialize
         self.time = 0
         self.asteroids_destroyed = 0
+        self.health = 5
     
     def triangle(self):
         # Calculate the points of the triangle representing the player
@@ -49,6 +50,8 @@ class Player(CircleShape):
         # Decrease the shooting timer   
         self.timer -= dt
         self.time += dt
+        if self.health <=0:
+            self.player_death()
 
     def rotate(self, dt):
         # Rotate the player by adjusting the rotation angle
@@ -110,13 +113,14 @@ class Player(CircleShape):
     
     
     def collision(self, other, bounce=True):
-        bounce = False
+        bounce = True
         # Check for collision with another CircleShape
         distance = self.position.distance_to(other.position)
         if self.radius + other.radius > distance:
-            self.player_collision()
-    
-    def player_collision(self):
+            self.health -= 1
+            self.bounce(other)
+
+    def player_death(self):
         RGB = (250, 200, 100)
         collision_screams = ["ARGHHH!", "No! No! No!  NOOOOOOOOO!!!", "NO!", "We're crashing!", "Eject!", "Tell her I love her!", "Beam me out of here!"]
         scream = random.choice(collision_screams)
@@ -125,7 +129,7 @@ class Player(CircleShape):
         self.kill()
 
     def bounce(self, other):
-        pass
+        super().bounce(other)
 
     def shrapnel(self):
         RGB = (255, 0, 0)
