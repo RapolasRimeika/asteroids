@@ -13,8 +13,7 @@ class State():
         self.play_time = 0
 
     def update(self, dt, updatable, drawable):
-        
-        
+                
         # update time spent and score at the top of the screen
         self.score = self.player.get_score()
         self.play_time = self.player.get_time()
@@ -29,14 +28,15 @@ class State():
             # Player is dead and Enter key is pressed
             # Create a new player instance
             self.player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
-            updatable.add(self.player)
-            drawable.add(self.player)
             self.player_dead = False
-        
+
+        if self.player_dead:
+            self.player_death()
+
         if keys[pygame.K_ESCAPE]:
             self.running = False
 
-    def player_collision(self):
+    def player_death(self):
         # Draw death summary
         RGB = (250, 200, 100)
         FloatingText(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 1, (f"Game Over!"), RGB, 4000)

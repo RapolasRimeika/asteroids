@@ -7,7 +7,7 @@ from floating_text import FloatingText
 from shrapnel import Shrapnel
 
 class Player(CircleShape):
-    def __init__(self, x, y):
+    def __init__(self, x, y,):
         # Initialize the player with position and radius
         super().__init__(x, y, PLAYER_RADIUS)
         self.velocity = pygame.Vector2(0, 0)
@@ -16,7 +16,7 @@ class Player(CircleShape):
         self.score = 0 # Score value initialize
         self.time = 0
         self.asteroids_destroyed = 0
-
+    
     def triangle(self):
         # Calculate the points of the triangle representing the player
         forward = pygame.Vector2(0, 1).rotate(self.rotation)
@@ -86,7 +86,8 @@ class Player(CircleShape):
     def shoot(self):
         # Create a new shot in the direction the player is facing
         forward = pygame.Vector2(0, 1).rotate(self.rotation)
-        shot_position = self.position + forward * self.radius
+        shot_position = self.position + forward * (self.radius + 10)
+        
         new_shot = Shot(shot_position.x, shot_position.y, SHOT_RADIUS)
         new_shot.velocity = PLAYER_SHOT_SPEED * forward
         # Create visual effect when shooting
@@ -107,13 +108,24 @@ class Player(CircleShape):
         # Get time player playing
         return round((self.time), 1)
     
-    def collide(self):
+    
+    def collision(self, other, bounce=True):
+        bounce = False
+        # Check for collision with another CircleShape
+        distance = self.position.distance_to(other.position)
+        if self.radius + other.radius > distance:
+            self.player_collision()
+    
+    def player_collision(self):
         RGB = (250, 200, 100)
         collision_screams = ["ARGHHH!", "No! No! No!  NOOOOOOOOO!!!", "NO!", "We're crashing!", "Eject!", "Tell her I love her!", "Beam me out of here!"]
         scream = random.choice(collision_screams)
         FloatingText(self.position.x, self.position.y, 1, scream, RGB, 1000)
         self.shrapnel()
         self.kill()
+
+    def bounce(self, other):
+        pass
 
     def shrapnel(self):
         RGB = (255, 0, 0)
