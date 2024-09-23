@@ -5,7 +5,7 @@ from constants import *
 from circleshape import CircleShape
 from shot import Shot
 from floating_text import FloatingText
-from shrapnel import Shrapnel
+from circleshape import Shrapnel
 
 class AlienShip(CircleShape):
     def __init__(self, x, y, ALIEN_RADIUS, player, asteroids):
@@ -154,13 +154,13 @@ class AlienShip(CircleShape):
             "F*** me sideways with a plasma cannon! It’s all over!"
         ]
         scream = random.choice(collision_screams)
-        FloatingText(self.position.x, self.position.y, 1, scream, RGB, 2000)
+        FloatingText(self.position.x, self.position.y, scream, RGB, 2000)
         self.shrapnel()
         self.kill()
 
     def shrapnel(self):
         RGB = (255, 0, 0)
-        FloatingText(self.position.x, self.position.y, 1, "O", RGB, 40)
+        FloatingText(self.position.x, self.position.y, "O", RGB, 40)
         mass = PLAYER_RADIUS
         while mass > 1:
             random_angle = random.uniform(90, 270)

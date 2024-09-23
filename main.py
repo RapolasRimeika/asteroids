@@ -6,7 +6,7 @@ from asteroidfield import AsteroidField
 from shot import Shot
 from floating_text import FloatingText
 from state import State
-from shrapnel import Shrapnel
+from circleshape import Shrapnel
 from aliens import AlienShip
 def main():
     pygame.init()
@@ -21,18 +21,17 @@ def main():
     all_text = pygame.sprite.Group()
     shrapnel_group = pygame.sprite.Group()
     collidable_group = pygame.sprite.Group()
-    deadly_collidable_group = pygame.sprite.Group() 
     alien_ships = pygame.sprite.Group()
 
     # Assign containers to classes for automatic group addition
-    Asteroid.containers = (asteroid_group, updatable, drawable, collidable_group, deadly_collidable_group)
-    Player.containers = (updatable, drawable, collidable_group, deadly_collidable_group)
-    Shot.containers = (shots, updatable, drawable, collidable_group, deadly_collidable_group)
+    Asteroid.containers = (asteroid_group, updatable, drawable, collidable_group)
+    Player.containers = (updatable, drawable, collidable_group)
+    Shot.containers = (shots, updatable, drawable, collidable_group)
     Shrapnel.containers = (updatable, drawable, collidable_group)
     AsteroidField.containers = updatable
     FloatingText.containers = (all_text, updatable, drawable)
     State.containers = (updatable, drawable)
-    AlienShip.containers =(updatable, drawable, collidable_group, alien_ships, deadly_collidable_group) 
+    AlienShip.containers =(updatable, drawable, collidable_group, alien_ships) 
 
     # Initialize game state and player
     state = State(False)
@@ -66,7 +65,7 @@ def main():
 
         # Optimise the game by killing items that go off screen
         screen_rect = pygame.Rect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)
-        inflated_rect = screen_rect.inflate(60, 60)
+        inflated_rect = screen_rect.inflate(50, 50)
         for item in collidable_group:
             if not inflated_rect.collidepoint(item.position):
                 item.kill
@@ -85,13 +84,7 @@ def main():
             for j in range(i + 1, len(collidable_list)):
                 obj2 = collidable_list[j]
                 obj1.collision(obj2)
-
-        deadly_collidable_list = list(deadly_collidable_group)
-        for i in range(len(deadly_collidable_list)):
-            obj1 = deadly_collidable_list[i]
-            for j in range(i + 1, len(deadly_collidable_list)):
-                obj2 = deadly_collidable_list[j]
-                obj1.collision(obj2)
+                obj2.collision(obj1)
 
         # Check for collisions between shots and asteroids
         for shot in shots:

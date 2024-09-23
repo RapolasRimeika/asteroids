@@ -1,5 +1,6 @@
 import pygame
 import random
+from floating_text import FloatingText
 
 # Base class for circular game objects with full inertia and friction
 class CircleShape(pygame.sprite.Sprite):
@@ -17,6 +18,9 @@ class CircleShape(pygame.sprite.Sprite):
         self.rotation = 0  # Current rotation angle
         self.friction = friction  # Linear friction factor
         self.angular_friction = angular_friction  # Rotational friction factor
+        self.speed = self.velocity.length() # Speed is the lenght of the vector "velocity"
+        self.health = self.radius * 2
+        self.max_health = self.health
 
     def apply_force(self, force):
         # Apply force to the velocity (affects linear movement)
@@ -42,10 +46,14 @@ class CircleShape(pygame.sprite.Sprite):
         # Optional: Keep rotation within 0-360 degrees
         self.rotation %= 360
 
+        if self.health <= 0:
+            self.shrapnel_obj(self.radius)
+
     def collision(self, other, bounce=True):
         # Check for collision with another CircleShape
         distance = self.position.distance_to(other.position)
         if self.radius + other.radius > distance:
+            self.health -= other.radius * other.speed
             if bounce:
                 self.bounce(other)
             return True
@@ -100,3 +108,35 @@ class CircleShape(pygame.sprite.Sprite):
     def draw(self, screen):
         # Subclasses should override this method to draw themselves
         pass
+
+    def shrapnel_obj(self, mass, RGB=(150, 150, 150)):
+        while mass > 1:
+            random_angle = random.uniform(0, 360)
+            velocity_a = self.velocity.rotate(random_angle) * random.uniform(0.5, 2.5)
+            new_radius = random.uniform(2, 5)
+            # Spawn shrapnel
+            shrapnel_piece = Shrapnel(self.position.x, self.position.y, new_radius, RGB)
+            shrapnel_piece.velocity = velocity_a
+            mass -= new_radius
+
+class Shrapnel(CircleShape):
+    def __init__(self, x, y, radius, RGB=(235, 5, 2)):
+        super().__init__(x, y, radius)
+        self.lifetime = 700  # Lifetime in milliseconds
+        self.spawn_time = pygame.time.get_ticks()
+        self.rgb = RGB
+
+    def draw(self, screen):
+        # Draw the asteroid as a white circle
+        pygame.draw.circle(screen, (255, 255, 255), self.position, self.radius, 2)
+        flames = ["§", "¶", "∞", "∑", "≈", "Ω", "µ", "∆", "∫", "≈", "¬", "π", "≠", "√", "≤"]
+        flame = random.choice(flames)
+        FloatingText(self.position.x, self.position.y, (f"{flame}"), self.rgb, 40)
+
+    def update(self, dt):
+        # Update position based on velocity and time delta
+        self.position += self.velocity * dt
+         # Remove the shrapnel if its lifetime has expired
+        current_time = pygame.time.get_ticks()
+        if current_time - self.spawn_time > self.lifetime:
+            self.kill()

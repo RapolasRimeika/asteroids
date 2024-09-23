@@ -4,7 +4,7 @@ from constants import *
 from circleshape import CircleShape
 from shot import Shot
 from floating_text import FloatingText
-from shrapnel import Shrapnel
+from circleshape import Shrapnel
 
 class Player(CircleShape):
     def __init__(self, x, y):
@@ -20,7 +20,8 @@ class Player(CircleShape):
         self.health = self.radius * 2
         self.friction = 0.99  # Linear friction factor (tweak as needed)
         self.angular_friction = 0.99  # Rotational friction factor (tweak as needed)
-    
+        self.speed = self.velocity.length()
+
     def triangle(self):
         # Calculate the points of the triangle representing the player
         forward = pygame.Vector2(0, 1).rotate(self.rotation)
@@ -78,8 +79,8 @@ class Player(CircleShape):
         right = pygame.Vector2(0, 1).rotate(self.rotation + 90) * self.radius / 1.5
         b = self.position - forward * self.radius - right
         c = self.position - forward * self.radius + right
-        FloatingText(b.x, b.y, 1, "^", RGB, 50)
-        FloatingText(c.x, c.y, 1, "^", RGB, 50)
+        FloatingText(b.x, b.y, "^", RGB, 50)
+        FloatingText(c.x, c.y, "^", RGB, 50)
 
     def apply_torque(self, torque):
         # Change the angular velocity by applying a torque (for rotation)
@@ -106,7 +107,7 @@ class Player(CircleShape):
         
         # Create visual effect when shooting
         RGB = (255, 0, 0)
-        FloatingText(shot_position.x, shot_position.y, 1, "ø", RGB, 40)
+        FloatingText(shot_position.x, shot_position.y, "ø", RGB, 40)
 
         # Reset the shooting timer
         self.timer = PLAYER_SHOOT_COOLDOWN
@@ -127,7 +128,8 @@ class Player(CircleShape):
         # Check for collision with another CircleShape
         distance = self.position.distance_to(other.position)
         if self.radius + other.radius > distance:
-            self.health -= other.radius / 2
+            self.health -= (other.radius * other.speed)
+            print(f"health{self.health} {(other.radius * other.speed)}")
             if bounce:
                 self.bounce(other)
 
@@ -139,7 +141,7 @@ class Player(CircleShape):
             "Beam me out of here!"
         ]
         scream = random.choice(collision_screams)
-        FloatingText(self.position.x, self.position.y, 1, scream, RGB, 1000)
+        FloatingText(self.position.x, self.position.y, scream, RGB, 2000)
         self.shrapnel()
         self.kill()
 
@@ -148,7 +150,7 @@ class Player(CircleShape):
 
     def shrapnel(self):
         RGB = (255, 0, 0)
-        FloatingText(self.position.x, self.position.y, 1, "O", RGB, 40)
+        FloatingText(self.position.x, self.position.y, "O", RGB, 40)
         mass = PLAYER_RADIUS
         while mass > 1:
             random_angle = random.uniform(90, 270)
@@ -171,4 +173,4 @@ class Player(CircleShape):
             "Strike successful!"
         ]
         asteroid_down_message = random.choice(asteroid_down_messages)
-        FloatingText(90, 40, 1, (f"{asteroid_down_message}"), RGB, 500)
+        FloatingText(120, 40, (f"{asteroid_down_message}"), RGB, 500)
