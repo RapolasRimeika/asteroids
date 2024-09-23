@@ -3,7 +3,7 @@ import random
 from circleshape import CircleShape
 from floating_text import FloatingText
 from constants import *
-
+from text_lists import explosion_list
 class Asteroid(CircleShape):
     def __init__(self, x, y, radius, RGB=(150, 150, 150)):
         # Initialize the asteroid with position, radius, and color
@@ -21,9 +21,9 @@ class Asteroid(CircleShape):
         self.velocity *= self.friction
 
         # When the asteroid's health drops below half, check for split
-        if self.health < self.max_health / 2 and self.radius > 10:
+        if self.health <= (self.max_health / 2) and self.radius > ASTEROID_MIN_RADIUS:
             self.split()
-        elif self.health <= 0 and self.radius <= 10:
+        elif self.health <= 0:
             # If the asteroid is at its smallest size and health is depleted, produce shrapnel
             self.shrapnel_obj(self.radius)
             self.kill()
@@ -40,8 +40,7 @@ class Asteroid(CircleShape):
                 smaller_asteroid.velocity = split_velocity
 
             # Floating text effect for asteroid splitting
-            RGB = (255, 0, 150)
-            explosion_list = ["CRASH!", "BLAM!", "BANG!", "BOOMSHAK!", "THWACK!", "SMASH!", "THOOM!", "ZAP!", "BLAST!", "KA-BLAST!", "KABLAM!", "WHOOSH!", "CRACK!", "THUD!", "WHAM!"]
+            RGB = (255, 50, 150)
             explosion = random.choice(explosion_list)
             FloatingText(self.position.x, self.position.y, (f"{explosion}"), RGB, 500)
 

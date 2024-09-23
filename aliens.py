@@ -6,6 +6,7 @@ from circleshape import CircleShape
 from shot import Shot
 from floating_text import FloatingText
 from circleshape import Shrapnel
+from text_lists import alien_screams
 
 class AlienShip(CircleShape):
     def __init__(self, x, y, ALIEN_RADIUS, player, asteroids):
@@ -97,7 +98,7 @@ class AlienShip(CircleShape):
         if abs(angle_diff) < 30:  # Check if the target is within the 30-degree arc in front
             shot_position = self.position + forward * (self.radius + 10)
             # Create and fire a shot
-            new_shot = Shot(shot_position.x, shot_position.y, SHOT_RADIUS)
+            new_shot = Shot(shot_position.x, shot_position.y, SHOT_RADIUS, self)
             new_shot.velocity = ALIEN_SHOT_SPEED * forward
             # Reset the shooting timer (alien can't shoot too frequently)
             self.timer = ALIEN_SHOOT_COOLDOWN
@@ -122,38 +123,7 @@ class AlienShip(CircleShape):
 
     def death(self):
         RGB = (250, 200, 100)
-        collision_screams = [
-            "Well, this is going to hurt like a black hole!", 
-            "Fantastic! Another f***ing asteroid!", 
-            "Oh great, the hull's doing that explodey thing again!", 
-            "Just what I needed... a giant space rock up my a**!",
-            "We're screwed! But hey, at least it’s quick!", 
-            "Eject? Eject where?! Into more f***ing rocks?!",
-            "Tell my ex I still hate her!", 
-            "This is why I quit my last job...", 
-            "F***ing typical! Can’t catch a break in this galaxy!",
-            "Yeah, let’s fly into the asteroid field, they said. Brilliant idea!",
-            "Oh sure, NOW the shields fail!", 
-            "This is why I don’t do space travel sober!", 
-            "Well, I'm out of here... oh wait, no, I’m not!",
-            "I'd flip the bird to these asteroids if my hands weren’t shaking!",
-            "We're crashing? No sh**, Sherlock!", 
-            "Well, this is going to look GREAT on my résumé!",
-            "If I survive this, I'm gonna kill the navigator!", 
-            "Why do I feel like I’ve done this before… oh right, last time I died!",
-            "F*** it, let’s just hit the big one!", 
-            "Tell the fleet... actually, nevermind. F*** the fleet!",
-            "Oh look! More f***ing asteroids! That’s just f***ing lovely!",
-            "Great, a beautiful end to a sh***y day!", 
-            "I bet the ship explodes before I can finish this sente—",
-            "Perfect! My last thought is going to be how much this f***ing sucks!",
-            "Collision imminent? No sh**!",
-            "Tell the stars they can shove it!",
-            "Well, this is what I get for skipping flight school!", 
-            "Well, at least I won’t have to pay my bar tab!",
-            "F*** me sideways with a plasma cannon! It’s all over!"
-        ]
-        scream = random.choice(collision_screams)
+        scream = random.choice(alien_screams)
         FloatingText(self.position.x, self.position.y, scream, RGB, 2000)
         self.shrapnel()
         self.kill()

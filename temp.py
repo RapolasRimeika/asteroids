@@ -4,9 +4,7 @@
 
 
         # Check for collisions between shots and asteroids
-        for shot in shots:
-            for asteroid in asteroid_group:
-                if shot.collision(asteroid, bounce=False):
+shot.collision(asteroid, bounce=False):
                     asteroid.split()
                     state.player.score_points(1)
                     state.player.destroy_asteroid(1)

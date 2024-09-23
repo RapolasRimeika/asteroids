@@ -4,11 +4,12 @@ from constants import *
 from floating_text import FloatingText
 
 class Shot(CircleShape):
-    def __init__(self, x, y, radius):
+    def __init__(self, x, y, radius, owner):
         # Initialize the shot with position and radius
         super().__init__(x, y, radius)
         self.lifetime = 2000  # Lifetime in milliseconds
         self.spawn_time = pygame.time.get_ticks()
+        self.owner = owner
 
         # Disable angular velocity
         self.angular_velocity = 0
@@ -35,18 +36,19 @@ class Shot(CircleShape):
         RGB = (255, 0, 0)
         FloatingText(self.position.x, self.position.y, ".", RGB, 40)
 
-    def collision(self, other, bounce=False):
+    def collision(self, other, bounce=True):
+        # Check for collision with another CircleShape
+        bounce = False
         distance = self.position.distance_to(other.position)
         if self.radius + other.radius > distance:
-            other.health -= self.radius * self.speed
-            # Call the explosion method
             self.shot_explode(other)
-            # Kill the shot after the explosion
-            self.kill()
-            return True
-        return False
+            self.kill()  # Remove the shot after explosion
 
     def shot_explode(self, other):
         """ Method to handle the explosion of the shot, creating shrapnel """
         self.shrapnel_obj(self.radius)  # Create shrapnel pieces when the shot explodes
         other.health -= PLAYER_SHOT_DMG
+        print(f"shot exploded on {other} with damage {PLAYER_SHOT_DMG}")
+        if other.health <= 0:
+            print(f"Other health now {round(other.health)}")
+            return True

@@ -60,14 +60,13 @@ class CircleShape(pygame.sprite.Sprite):
             other.health -= impact_force
             
             # Log health and damage taken for debugging purposes
-            print(f"Self health: {self.health}, Damage taken: {impact_force}")
-            print(f"Other health: {other.health}, Damage taken: {impact_force}")
+            print(f"Self health: {round(self.health)}, Damage taken: {round(impact_force)}")
+            print(f"Other health: {round(other.health)}, Damage taken: {round(impact_force)}")
 
             # Bounce if enabled
             if bounce:
                 self.bounce(other)
-            return True
-        return False
+
 
     def bounce(self, other):       
         # Calculate the normal vector (line of impact)

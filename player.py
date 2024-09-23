@@ -102,7 +102,7 @@ class Player(CircleShape):
         forward = pygame.Vector2(0, 1).rotate(self.rotation)
         shot_position = self.position + forward * (self.radius + 10)
         
-        new_shot = Shot(shot_position.x, shot_position.y, SHOT_RADIUS)
+        new_shot = Shot(shot_position.x, shot_position.y, SHOT_RADIUS, self)
         new_shot.velocity = PLAYER_SHOT_SPEED * forward
         
         # Create visual effect when shooting
