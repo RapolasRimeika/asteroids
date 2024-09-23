@@ -1,6 +1,7 @@
 import pygame
 import random
 from floating_text import FloatingText
+from constants import GLOBAL_COLLISION_MODIFIER
 
 # Base class for circular game objects with full inertia and friction
 class CircleShape(pygame.sprite.Sprite):
@@ -55,9 +56,9 @@ class CircleShape(pygame.sprite.Sprite):
         distance = self.position.distance_to(other.position)
         if self.radius + other.radius > distance:
             # Calculate damage based combined object radius and speed
-            impact_force = (other.radius * other.velocity.length() + self.radius * self.velocity.length()) / 100
-            self.health -= impact_force
-            other.health -= impact_force
+            impact_force = (other.radius * other.velocity.length() + self.radius * self.velocity.length()) 
+            self.health -= impact_force * GLOBAL_COLLISION_MODIFIER
+            other.health -= impact_force * GLOBAL_COLLISION_MODIFIER
             
             # Log health and damage taken for debugging purposes
             print(f"Self health: {round(self.health)}, Damage taken: {round(impact_force)}")
@@ -118,17 +119,16 @@ class CircleShape(pygame.sprite.Sprite):
         # Subclasses should override this method to draw themselves
         pass
 
-    def shrapnel_obj(self, mass, RGB=(150, 150, 150)):
+    def shrapnel_obj(self, mass, RGB=(150, 150, 150),):
         while mass > 1:
             random_angle = random.uniform(0, 360)
-            velocity_a = self.velocity.rotate(random_angle) * random.uniform(0.5, 2.5)
-            new_radius = random.uniform(2, 5)
+            velocity_a = self.velocity.rotate(random_angle) * random.uniform(0.1, 2.5)
+            new_radius = random.uniform(1, 3)
             # Spawn shrapnel
             shrapnel_piece = Shrapnel(self.position.x, self.position.y, new_radius, RGB)
             shrapnel_piece.velocity = velocity_a
             mass -= new_radius
             self.kill()
-
 
 
 class Shrapnel(CircleShape):

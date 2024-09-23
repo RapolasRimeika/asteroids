@@ -20,3 +20,5 @@ ALIEN_AVOID_FORCE = 200  # Force to move away from asteroids
 ALIEN_SHOT_SPEED = 300  # Speed of alien shots
 ALIEN_SHOOT_COOLDOWN = 1.5  # Cooldown time between shots (in seconds)
 ALIEN_RADIUS = 25  # Alien ship's radius
+
+GLOBAL_COLLISION_MODIFIER = 0.002
