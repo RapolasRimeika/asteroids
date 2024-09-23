@@ -11,6 +11,7 @@ class State():
         self.running = True
         self.score = 0
         self.play_time = 0
+        self.high_score = 0  # Initialize high score
 
     def update(self, dt, updatable, drawable):
                 
@@ -36,14 +37,20 @@ class State():
         if keys[pygame.K_ESCAPE]:
             self.running = False
 
+        if self.score > self.high_score:
+            self.high_score = self.score
+
     def player_death(self):
         # Draw death summary
         RGB = (250, 200, 100)
         FloatingText(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, (f"Game Over!"), RGB, 4)
-        FloatingText(SCREEN_WIDTH / 2, ((SCREEN_HEIGHT / 2)+ 30), (f"Your Score is {self.score}"), RGB, 4)
-        FloatingText(SCREEN_WIDTH / 2, ((SCREEN_HEIGHT / 2)+ 60), (f"Yuo lasted {self.play_time} seconds"), RGB, 4) 
-        FloatingText(SCREEN_WIDTH / 2, ((SCREEN_HEIGHT / 2)+ 90), (f"Press Return to play again"), RGB, 4)
-        FloatingText(SCREEN_WIDTH / 2, ((SCREEN_HEIGHT / 2)+ 120), (f"Press ESC to quit"), RGB, 4)
+        FloatingText(SCREEN_WIDTH / 2, ((SCREEN_HEIGHT / 2)+ 40), (f"Your Score is {self.score}"), RGB, 4)
+        FloatingText(SCREEN_WIDTH / 2, ((SCREEN_HEIGHT / 2)+ 80), (f"Yuo lasted {self.play_time} seconds"), RGB, 4) 
+        FloatingText(SCREEN_WIDTH / 2, ((SCREEN_HEIGHT / 2)+ 120), (f"High Score: {self.high_score}"), RGB, 4)
+        FloatingText(SCREEN_WIDTH / 2, ((SCREEN_HEIGHT / 2)+ 160), (f"Press Return to play again"), RGB, 4)
+        FloatingText(SCREEN_WIDTH / 2, ((SCREEN_HEIGHT / 2)+ 200), (f"Press ESC to quit"), RGB, 4)
+        
+
 
     def new_game(self):
         # New game message
