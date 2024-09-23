@@ -4,7 +4,7 @@ from floating_text import FloatingText
 
 # Base class for circular game objects with full inertia and friction
 class CircleShape(pygame.sprite.Sprite):
-    def __init__(self, x, y, radius, friction=0.98, angular_friction=0.95):
+    def __init__(self, x, y, radius, friction=0.995, angular_friction=0.95):
         # Initialize sprite and add to groups if containers are set
         if hasattr(self, "containers"):
             super().__init__(self.containers)
@@ -21,6 +21,7 @@ class CircleShape(pygame.sprite.Sprite):
         self.speed = self.velocity.length() # Speed is the lenght of the vector "velocity"
         self.health = self.radius * 2
         self.max_health = self.health
+        self.color = (255, 255, 255)
 
     def apply_force(self, force):
         # Apply force to the velocity (affects linear movement)

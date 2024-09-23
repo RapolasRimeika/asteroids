@@ -77,6 +77,11 @@ def main():
         if state.player not in updatable:
             state.player_dead = True
 
+        fps = round(clock.get_fps(), 2)
+        print(f"FPS: {fps}") 
+        FloatingText(900, 20, (f"FPS: {fps}"), (255, 255, 255), 60)
+
+
         # Check for collisions between objects
         collidable_list = list(collidable_group)
         for i in range(len(collidable_list)):
