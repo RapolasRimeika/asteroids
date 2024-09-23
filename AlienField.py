@@ -1,0 +1,33 @@
+import pygame
+import random
+from aliens import AlienShip
+from constants import *
+
+class AlienField(pygame.sprite.Sprite):
+    def __init__(self, player, asteroids):
+        pygame.sprite.Sprite.__init__(self)
+        self.player = player  # Reference to the player object
+        self.asteroids = asteroids  # Reference to the asteroid list
+        self.spawn_timer = 0.0  # Timer to control spawn intervals
+
+    def spawn(self):
+        # Choose a random spawn position along the screen edges
+        edges = [
+            pygame.Vector2(0, random.uniform(0, SCREEN_HEIGHT)),  # Left
+            pygame.Vector2(SCREEN_WIDTH, random.uniform(0, SCREEN_HEIGHT)),  # Right
+            pygame.Vector2(random.uniform(0, SCREEN_WIDTH), 0),  # Top
+            pygame.Vector2(random.uniform(0, SCREEN_WIDTH), SCREEN_HEIGHT)  # Bottom
+        ]
+        position = random.choice(edges)
+
+        # Create an alien ship and add it to the alien group
+        alien_ship = AlienShip(position.x, position.y, ALIEN_RADIUS, self.player, self.asteroids)
+        return alien_ship
+
+    def update(self, dt, alien_ships_group):
+        # Update the spawn timer
+        self.spawn_timer += dt
+        if self.spawn_timer > ALIEN_SPAWN_RATE:  # Check if it's time to spawn a new alien
+            self.spawn_timer = 0
+            alien = self.spawn()
+            alien_ships_group.add(alien)

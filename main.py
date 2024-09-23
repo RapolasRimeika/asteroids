@@ -8,6 +8,7 @@ from floating_text import FloatingText
 from state import State
 from circleshape import Shrapnel
 from aliens import AlienShip
+from AlienField import AlienField
 def main():
     pygame.init()
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -39,6 +40,7 @@ def main():
     updatable.add(state.player)
     drawable.add(state.player)
     asteroid_field = AsteroidField()
+    alien_field = AlienField(state.player, asteroid_group)
 
     state.running = True    
     while state.running:
@@ -58,10 +60,10 @@ def main():
             for text in all_text:
                 text.kill()
             for i in asteroid_group:
-                i.kill()   
+                i.kill()
+            for i in alien_ships:
+                i.kill()       
             state.new_game()
-        if state.player.score == 1 and len(alien_ships) == 0:
-            alien_ship = AlienShip(100, 100, ALIEN_RADIUS, state.player, asteroid_group)
 
         # Optimise the game by killing items that go off screen
         screen_rect = pygame.Rect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)
@@ -75,16 +77,15 @@ def main():
         for sprite in updatable: 
             sprite.update(dt)        
         
+        alien_field.update(dt, alien_ships)
+
         if state.player not in updatable:
             state.player_dead = True
 
         fps = round(clock.get_fps(), 2)
         all_objects = len(updatable)
-
         print(f"FPS: {fps}") 
         FloatingText(900, 20, (f"FPS: {fps} number of objects updatable: {all_objects} number of asteroids: {len(asteroid_group)}"), (255, 255, 255), 60)
-
-
 
         # Check for collisions between objects
         collidable_list = list(collidable_group)

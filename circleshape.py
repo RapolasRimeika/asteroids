@@ -125,7 +125,7 @@ class CircleShape(pygame.sprite.Sprite):
     def shrapnel_obj(self, mass, RGB=(150, 150, 150),):
         while mass > 1:
             random_angle = random.uniform(0, 360)
-            velocity_a = self.velocity.rotate(random_angle) * random.uniform(0.1, 2.5)
+            velocity_a = self.velocity.rotate(random_angle) * random.uniform(0.1, 2)
             new_radius = random.uniform(1, 3)
             # Spawn shrapnel
             shrapnel_piece = Shrapnel(self.position.x, self.position.y, new_radius, RGB)

@@ -105,13 +105,6 @@ class AlienShip(CircleShape):
             # Reset the shooting timer (alien can't shoot too frequently)
             self.timer = ALIEN_SHOOT_COOLDOWN
 
-    def collision(self, other):
-        # Alien ship takes damage when colliding with another object
-        distance = self.position.distance_to(other.position)
-        if self.radius + other.radius > distance:
-            self.health -= other.radius / 2
-            self.bounce(other)
-
     def wrap_around_screen(self):
         # Wrap the alien to the opposite side if it moves off-screen
         if self.position.x < -self.radius:
@@ -126,19 +119,6 @@ class AlienShip(CircleShape):
     def death(self):
         RGB = (250, 200, 100)
         scream = random.choice(alien_screams)
-        FloatingText(self.position.x, self.position.y, scream, RGB, 2000)
-        self.shrapnel()
+        FloatingText(self.position.x, self.position.y, scream, RGB, 3000)
+        self.shrapnel_obj(self.radius)
         self.kill()
-
-    def shrapnel(self):
-        RGB = (255, 0, 0)
-        FloatingText(self.position.x, self.position.y, "O", RGB, 40)
-        mass = PLAYER_RADIUS
-        while mass > 1:
-            random_angle = random.uniform(90, 270)
-            velocity_a = self.velocity.rotate(random_angle) * random.uniform(0.5, 1.5)
-            new_radius = random.uniform(1, 5)
-            # Spawn shrapnel
-            shrapnel_piece = Shrapnel(self.position.x, self.position.y, new_radius)
-            shrapnel_piece.velocity = velocity_a
-            mass -= new_radius
