@@ -1,6 +1,5 @@
 import pygame
 from circleshape import CircleShape
-from circleshape import Shrapnel
 from constants import *
 from floating_text import FloatingText
 
@@ -25,12 +24,18 @@ class Shot(CircleShape):
         if current_time - self.spawn_time > self.lifetime:
             self.kill()
 
-    def collision(self, other, bounce=True):
+    def collision(self, other, bounce=False):
         distance = self.position.distance_to(other.position)
         if self.radius + other.radius > distance:
-            self.health -= other.radius * other.speed
+            other.health -= self.radius * self.speed
+             # Call the explosion method
             self.shot_explode(other)
-                    
+            # Kill the shot after the explosion
+            self.kill()
+            return True
+        return False
+
     def shot_explode(self, other):
-         other.health - PLAYER_SHOT_DMG
-         self.shrapnel_obj(self.radius)
+        """ Method to handle the explosion of the shot, creating shrapnel """
+        self.shrapnel_obj(self.radius)  # Create shrapnel pieces when the shot explodes
+        other.health - PLAYER_SHOT_DMG          

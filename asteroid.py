@@ -17,7 +17,7 @@ class Asteroid(CircleShape):
     def update(self, dt):
         # Update position based on velocity and time delta
         self.position += self.velocity * dt
-        if self.health == (self.max_health / 2):
+        if self.health <= (self.max_health / 2):
             self.split
 
     def split(self):

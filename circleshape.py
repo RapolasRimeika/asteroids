@@ -118,6 +118,7 @@ class CircleShape(pygame.sprite.Sprite):
             shrapnel_piece = Shrapnel(self.position.x, self.position.y, new_radius, RGB)
             shrapnel_piece.velocity = velocity_a
             mass -= new_radius
+            self.kill()
 
 class Shrapnel(CircleShape):
     def __init__(self, x, y, radius, RGB=(235, 5, 2)):

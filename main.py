@@ -85,24 +85,13 @@ def main():
                 obj2 = collidable_list[j]
                 obj1.collision(obj2)
                 obj2.collision(obj1)
-
-        # Check for collisions between shots and asteroids
-        for shot in shots:
-            for asteroid in asteroid_group:
-                if shot.collision(asteroid, bounce=False):
-                    asteroid.split()
-                    state.player.score_points(1)
-                    state.player.destroy_asteroid(1)
-                    shot.kill()
-                    break  # Move to the next shot
-
         
-        def draw_health_bar(screen, x, y, current_health, max_health, bar_width=100, bar_height=10):
+        def draw_health_bar(screen, x, y, current_health, max_health, bar_width=150, bar_height=10):
                 health_percentage = current_health / max_health # Calculate health percentage
                 health_width = bar_width * health_percentage
                 pygame.draw.rect(screen, (200, 100, 100), (x, y, bar_width, bar_height))  # Red background
                 pygame.draw.rect(screen, (100, 200, 100), (x, y, health_width, bar_height))  # Green health bar  
-        draw_health_bar(screen, 500, 20, state.player.health, 100,)
+        draw_health_bar(screen, 500, 20, state.player.health, state.player.max_health)
 
         # Draw all drawable sprites
         for sprite in drawable:
