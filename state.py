@@ -39,11 +39,11 @@ class State():
     def player_death(self):
         # Draw death summary
         RGB = (250, 200, 100)
-        FloatingText(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, (f"Game Over!"), RGB, 4000)
-        FloatingText(SCREEN_WIDTH / 2, ((SCREEN_HEIGHT / 2)+ 30), (f"Your Score is {self.score}"), RGB, 4000)
-        FloatingText(SCREEN_WIDTH / 2, ((SCREEN_HEIGHT / 2)+ 60), (f"Yuo lasted {self.play_time} seconds"), RGB, 4000) 
-        FloatingText(SCREEN_WIDTH / 2, ((SCREEN_HEIGHT / 2)+ 90), (f"Press Return to play again"), RGB, 10000)
-        FloatingText(SCREEN_WIDTH / 2, ((SCREEN_HEIGHT / 2)+ 120), (f"Press ESC to quit"), RGB, 10000)
+        FloatingText(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, (f"Game Over!"), RGB, 4)
+        FloatingText(SCREEN_WIDTH / 2, ((SCREEN_HEIGHT / 2)+ 30), (f"Your Score is {self.score}"), RGB, 4)
+        FloatingText(SCREEN_WIDTH / 2, ((SCREEN_HEIGHT / 2)+ 60), (f"Yuo lasted {self.play_time} seconds"), RGB, 4) 
+        FloatingText(SCREEN_WIDTH / 2, ((SCREEN_HEIGHT / 2)+ 90), (f"Press Return to play again"), RGB, 4)
+        FloatingText(SCREEN_WIDTH / 2, ((SCREEN_HEIGHT / 2)+ 120), (f"Press ESC to quit"), RGB, 4)
 
     def new_game(self):
         # New game message

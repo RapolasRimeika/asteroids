@@ -103,7 +103,9 @@ class Player(CircleShape):
         shot_position = self.position + forward * (self.radius + 10)
         
         new_shot = Shot(shot_position.x, shot_position.y, SHOT_RADIUS, self)
-        new_shot.velocity = PLAYER_SHOT_SPEED * forward
+        
+        # Incorporate the player's velocity into the shot's velocity
+        new_shot.velocity = PLAYER_SHOT_SPEED * forward + self.velocity
         
         # Create visual effect when shooting
         RGB = (255, 0, 0)

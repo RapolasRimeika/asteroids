@@ -101,7 +101,7 @@ class AlienShip(CircleShape):
             shot_position = self.position + forward * (self.radius + 10)
             # Create and fire a shot
             new_shot = Shot(shot_position.x, shot_position.y, SHOT_RADIUS, self)
-            new_shot.velocity = ALIEN_SHOT_SPEED * forward
+            new_shot.velocity = ALIEN_SHOT_SPEED * forward + self.velocity
             # Reset the shooting timer (alien can't shoot too frequently)
             self.timer = ALIEN_SHOOT_COOLDOWN
 
