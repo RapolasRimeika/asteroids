@@ -55,6 +55,9 @@ class CircleShape(pygame.sprite.Sprite):
         # Check for collision with another CircleShape
         distance = self.position.distance_to(other.position)
         if self.radius + other.radius > distance:
+            if hasattr(other, "is_shot") and other.is_shot == True:
+                other.shot_explode(self, other.owner)
+                other.kill()  # Remove the shot after explosion    
             # Calculate damage based combined object radius and speed
             impact_force = (other.radius * other.velocity.length() + self.radius * self.velocity.length()) 
             self.health -= impact_force * GLOBAL_COLLISION_MODIFIER

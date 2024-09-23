@@ -11,6 +11,7 @@ class Shot(CircleShape):
         self.spawn_time = pygame.time.get_ticks()
         self.owner = owner
         owner = self.owner
+        self.is_shot = True
 
         # Disable angular velocity
         self.angular_velocity = 0
