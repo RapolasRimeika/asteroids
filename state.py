@@ -3,6 +3,7 @@ import random
 from constants import *
 from player import Player
 from floating_text import FloatingText
+from text_lists import start_messages
 
 class State():
     def __init__(self, player_dead):
@@ -50,11 +51,7 @@ class State():
         FloatingText(SCREEN_WIDTH / 2, ((SCREEN_HEIGHT / 2)+ 160), (f"Press Return to play again"), RGB, 4)
         FloatingText(SCREEN_WIDTH / 2, ((SCREEN_HEIGHT / 2)+ 200), (f"Press ESC to quit"), RGB, 4)
         
-
-
     def new_game(self):
-        # New game message
-            start_messages = ["Ready to rock... literally!", "Let's smash some rocks!", "Asteroids beware, here we come!", "Get your space boots on, it's go time!", "Time to turn asteroids into dust!", "Prepare for asteroid annihilation!", "Space rocks don't stand a chance!", "Strap in, it's gonna be a rocky ride!", "Break some cosmic stuff!", "Warning: Asteroids about to get wrecked!", "Engage asteroid-smashing mode!", "Ready, aim, asteroid!", "Asteroids... meet your doom!", "Suit up, space warrior!", "Send those asteroids packing!"]
             start_message = random.choice(start_messages)
             RGB = (250, 200, 100)
             FloatingText(SCREEN_WIDTH / 2, (SCREEN_HEIGHT / 2) - 100, (f"{start_message}"), RGB, 4000)
