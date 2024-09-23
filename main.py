@@ -65,10 +65,11 @@ def main():
 
         # Optimise the game by killing items that go off screen
         screen_rect = pygame.Rect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)
-        inflated_rect = screen_rect.inflate(50, 50)
+        inflated_rect = screen_rect.inflate(10, 10)
         for item in collidable_group:
             if not inflated_rect.collidepoint(item.position):
                 item.kill
+                print(f"killing {item}")
 
         # Update all updatable sprites
         for sprite in updatable: 
@@ -78,8 +79,11 @@ def main():
             state.player_dead = True
 
         fps = round(clock.get_fps(), 2)
+        all_objects = len(updatable)
+
         print(f"FPS: {fps}") 
-        FloatingText(900, 20, (f"FPS: {fps}"), (255, 255, 255), 60)
+        FloatingText(900, 20, (f"FPS: {fps} number of objects updatable: {all_objects} number of asteroids: {len(asteroid_group)}"), (255, 255, 255), 60)
+
 
 
         # Check for collisions between objects

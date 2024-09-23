@@ -19,8 +19,8 @@ class State():
         self.play_time = self.player.get_time()
         #draw
         RGB = (200, 200, 200)
-        FloatingText(60, 20, (f"Score is {self.score}"), RGB, 60)
-        FloatingText(300, 20, (f"Time played {self.play_time} s"), RGB, 60)
+        FloatingText(70, 20, (f"Score is {self.score}"), RGB, 3)
+        FloatingText(300, 20, (f"Time played {self.play_time} s"), RGB, 3)
         
         # Check for player respawn
         keys = pygame.key.get_pressed()
@@ -39,7 +39,7 @@ class State():
     def player_death(self):
         # Draw death summary
         RGB = (250, 200, 100)
-        FloatingText(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 1, (f"Game Over!"), RGB, 4000)
+        FloatingText(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, (f"Game Over!"), RGB, 4000)
         FloatingText(SCREEN_WIDTH / 2, ((SCREEN_HEIGHT / 2)+ 30), (f"Your Score is {self.score}"), RGB, 4000)
         FloatingText(SCREEN_WIDTH / 2, ((SCREEN_HEIGHT / 2)+ 60), (f"Yuo lasted {self.play_time} seconds"), RGB, 4000) 
         FloatingText(SCREEN_WIDTH / 2, ((SCREEN_HEIGHT / 2)+ 90), (f"Press Return to play again"), RGB, 10000)

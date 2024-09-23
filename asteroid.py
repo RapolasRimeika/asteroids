@@ -9,10 +9,16 @@ class Asteroid(CircleShape):
         # Initialize the asteroid with position, radius, and color
         super().__init__(x, y, radius)
         self.color = RGB
+        
+        # Disable angular velocity
+        self.angular_velocity = 0
 
     def update(self, dt):
-        # Call the parent class's update method to handle movement and inertia
-        super().update(dt)
+        # Update position based on velocity and time delta
+        self.position += self.velocity * dt
+
+        # Apply linear friction to slow down movement over time
+        self.velocity *= self.friction
 
         # When the asteroid's health drops below half, check for split
         if self.health < self.max_health / 2 and self.radius > 10:
@@ -36,18 +42,14 @@ class Asteroid(CircleShape):
             # Floating text effect for asteroid splitting
             RGB = (255, 0, 150)
             explosion_list = ["CRASH!", "BLAM!", "BANG!", "BOOMSHAK!", "THWACK!", "SMASH!", "THOOM!", "ZAP!", "BLAST!", "KA-BLAST!", "KABLAM!", "WHOOSH!", "CRACK!", "THUD!", "WHAM!"]
-            explosion =random.choice(explosion_list)
+            explosion = random.choice(explosion_list)
             FloatingText(self.position.x, self.position.y, (f"{explosion}"), RGB, 500)
 
             # Remove the original asteroid after splitting
             self.kill()
             self.shrapnel_obj(self.radius, self.color)
 
-
     def draw(self, screen):
         # Draw the asteroid as a circle outline (not filled)
-        pygame.draw.circle(screen, (self.color), (int(self.position.x), int(self.position.y)), self.radius, 2)
-
-        # Floating text effect at the asteroid's position (optional)
-        FloatingText(self.position.x, self.position.y, "Asteroid", (255, 255, 255), 1)
+        pygame.draw.circle(screen, self.color, (int(self.position.x), int(self.position.y)), self.radius, 2)
 
