@@ -54,7 +54,16 @@ class CircleShape(pygame.sprite.Sprite):
         # Check for collision with another CircleShape
         distance = self.position.distance_to(other.position)
         if self.radius + other.radius > distance:
-            self.health -= other.radius * other.speed
+            # Calculate damage based combined object radius and speed
+            impact_force = (other.radius * other.velocity.length() + self.radius * self.velocity.length()) / 100
+            self.health -= impact_force
+            other.health -= impact_force
+            
+            # Log health and damage taken for debugging purposes
+            print(f"Self health: {self.health}, Damage taken: {impact_force}")
+            print(f"Other health: {other.health}, Damage taken: {impact_force}")
+
+            # Bounce if enabled
             if bounce:
                 self.bounce(other)
             return True
@@ -157,3 +166,4 @@ class Shrapnel(CircleShape):
         flames = ["§", "¶", "∞", "∑", "≈", "Ω", "µ", "∆", "∫", "≈", "¬", "π", "≠", "√", "≤"]
         flame = random.choice(flames)
         FloatingText(self.position.x, self.position.y, (f"{flame}"), self.rgb, 40)
+

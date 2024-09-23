@@ -124,28 +124,6 @@ class Player(CircleShape):
         # Get time player has been playing
         return round((self.time), 1)
 
-def collision(self, other, bounce=True):
-    # Check for collision with another CircleShape
-    distance = self.position.distance_to(other.position)
-    if self.radius + other.radius > distance:
-        # Calculate damage based on the other object's radius and speed
-        impact_force = other.radius * other.velocity.length()
-        self.health -= impact_force
-        
-        # Log health and damage taken for debugging purposes
-        print(f"Player health: {self.health}, Damage taken: {impact_force}")
-
-        # Bounce if enabled
-        if bounce:
-            self.bounce(other)
-        
-        # Check if player is dead
-        if self.health <= 0:
-            self.player_death()
-
-        return True
-    return False
-
     def player_death(self):
         RGB = (250, 200, 100)
         collision_screams = [
