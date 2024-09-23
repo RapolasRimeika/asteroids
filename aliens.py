@@ -18,6 +18,7 @@ class AlienShip(CircleShape):
         self.color = (0, 255, 0)  # Set the alien ship color to green
         self.health = self.radius * 2
         self.score = 0
+        self.isalien = True
 
     def triangle(self):
         # Calculate the points of the triangle representing the alien ship

@@ -47,12 +47,18 @@ class Shot(CircleShape):
             
     def shot_explode(self, other, owner):
         """ Method to handle the explosion of the shot, creating shrapnel """
-        self.shrapnel_obj(self.radius)  # Create shrapnel pieces when the shot explodes
         other.health -= PLAYER_SHOT_DMG
         print(f"shot exploded on {other} with damage {PLAYER_SHOT_DMG}")
-        if other.health <= 0:
+        if hasattr(other, "isalien") and other.isalien == True and other.health <= 0:
+            print(f"KILL ALIEN CONFIRMED by OWNER{owner} {round(other.health)}")
+            owner.score += 5
+            print(f"Player's new score: {owner.score}")
+            return True
+        elif other.health <= 0:
             print(f"KILL CONFIRMED OWNER{owner} {round(other.health)}")
             owner.score += 1
             print(f"Player's new score: {owner.score}")
             return True
-        return False  # If kill not confirmed, return False
+        
+        print(f"shot not deadly OWNER{owner} {round(other.health)}")
+        self.shrapnel_obj(self.radius)  # Create shrapnel pieces when the shot explodes
