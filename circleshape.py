@@ -61,8 +61,8 @@ class CircleShape(pygame.sprite.Sprite):
             other.health -= impact_force * GLOBAL_COLLISION_MODIFIER
             
             # Log health and damage taken for debugging purposes
-            print(f"Self health: {round(self.health)}, Damage taken: {round(impact_force)}")
-            print(f"Other health: {round(other.health)}, Damage taken: {round(impact_force)}")
+            print(f"Self health: {round(self.health)}, impact Damage taken: {round(impact_force)}")
+            print(f"Other health: {round(other.health)}, impact Damage taken: {round(impact_force)}")
 
             # Bounce if enabled
             if bounce:

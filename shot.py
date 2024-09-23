@@ -10,6 +10,7 @@ class Shot(CircleShape):
         self.lifetime = 2000  # Lifetime in milliseconds
         self.spawn_time = pygame.time.get_ticks()
         self.owner = owner
+        owner = self.owner
 
         # Disable angular velocity
         self.angular_velocity = 0
@@ -41,14 +42,17 @@ class Shot(CircleShape):
         bounce = False
         distance = self.position.distance_to(other.position)
         if self.radius + other.radius > distance:
-            self.shot_explode(other)
+            self.shot_explode(other, self.owner)
             self.kill()  # Remove the shot after explosion
-
-    def shot_explode(self, other):
+            
+    def shot_explode(self, other, owner):
         """ Method to handle the explosion of the shot, creating shrapnel """
         self.shrapnel_obj(self.radius)  # Create shrapnel pieces when the shot explodes
         other.health -= PLAYER_SHOT_DMG
         print(f"shot exploded on {other} with damage {PLAYER_SHOT_DMG}")
         if other.health <= 0:
-            print(f"Other health now {round(other.health)}")
+            print(f"KILL CONFIRMED OWNER{owner} {round(other.health)}")
+            owner.score += 1
+            print(f"Player's new score: {owner.score}")
             return True
+        return False  # If kill not confirmed, return False
