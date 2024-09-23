@@ -7,7 +7,7 @@ from shot import Shot
 from floating_text import FloatingText
 from state import State
 from shrapnel import Shrapnel
-
+from aliens import AlienShip
 def main():
     pygame.init()
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -22,6 +22,7 @@ def main():
     shrapnel_group = pygame.sprite.Group()
     collidable_group = pygame.sprite.Group()
     deadly_collidable_group = pygame.sprite.Group() 
+    alien_ships = pygame.sprite.Group()
 
     # Assign containers to classes for automatic group addition
     Asteroid.containers = (asteroid_group, updatable, drawable, collidable_group, deadly_collidable_group)
@@ -31,7 +32,7 @@ def main():
     AsteroidField.containers = updatable
     FloatingText.containers = (all_text, updatable, drawable)
     State.containers = (updatable, drawable)
-    
+    AlienShip.containers =(updatable, drawable, collidable_group, alien_ships, deadly_collidable_group) 
 
     # Initialize game state and player
     state = State(False)
@@ -60,6 +61,8 @@ def main():
             for i in asteroid_group:
                 i.kill()   
             state.new_game()
+        if state.player.score == 1 and len(alien_ships) == 0:
+            alien_ship = AlienShip(100, 100, ALIEN_RADIUS, state.player, asteroid_group)
 
         # Optimise the game by killing items that go off screen
         screen_rect = pygame.Rect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)
@@ -69,7 +72,7 @@ def main():
                 item.kill
 
         # Update all updatable sprites
-        for sprite in updatable:
+        for sprite in updatable: 
             sprite.update(dt)        
         
         if state.player not in updatable:

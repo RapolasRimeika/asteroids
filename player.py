@@ -17,7 +17,7 @@ class Player(CircleShape):
         self.score = 0  # Initialize score
         self.time = 0
         self.asteroids_destroyed = 0
-        self.health = 100
+        self.health = self.radius * 2
         self.friction = 0.99  # Linear friction factor (tweak as needed)
         self.angular_friction = 0.99  # Rotational friction factor (tweak as needed)
     
@@ -85,8 +85,6 @@ class Player(CircleShape):
         # Change the angular velocity by applying a torque (for rotation)
         self.angular_velocity += torque
 
-        
-
     def wrap_around_screen(self):
         # Wrap the player to the opposite side if they move off-screen
         if self.position.x < -self.radius:
@@ -129,7 +127,7 @@ class Player(CircleShape):
         # Check for collision with another CircleShape
         distance = self.position.distance_to(other.position)
         if self.radius + other.radius > distance:
-            self.health -= 20
+            self.health -= other.radius / 2
             if bounce:
                 self.bounce(other)
 
