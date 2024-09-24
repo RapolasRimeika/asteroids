@@ -80,13 +80,17 @@ class Player(CircleShape):
         # Apply stabilisers for each direction if active
         if self.stabilisers:
             if not (keys[pygame.K_w] or keys[pygame.K_UP]):
-                self.stabilise_forward(dt)
+                if self.forward_velocity > 0:
+                    self.move(-self.move_speed * dt * self.stabiliser_strength) #down
             if not (keys[pygame.K_s] or keys[pygame.K_DOWN]):
-                self.stabilise_backwards(dt)
+                if self.forward_velocity < 0:
+                    self.move(self.move_speed * dt * self.stabiliser_strength) # move up
             if not (keys[pygame.K_a] or keys[pygame.K_LEFT]):
-                self.stabilise_rotation_left(dt)
+                if self.angular_velocity < 0:
+                    self.apply_torque(PLAYER_TURN_SPEED * dt * self.stabiliser_strength) #right
             if not (keys[pygame.K_d] or keys[pygame.K_RIGHT]):
-                self.stabilise_rotation_right(dt)
+                if self.angular_velocity > 0:          
+                    self.apply_torque(-PLAYER_TURN_SPEED * dt * self.stabiliser_strength) #left
 
         if self.health <= 0:
             self.player_death()
@@ -110,27 +114,6 @@ class Player(CircleShape):
     def apply_torque(self, torque):
         # Change the angular velocity by applying a torque (for rotation)
         self.angular_velocity += torque
-
-    def stabilise_forward(self, dt):
-        """Apply force to stop forward velocity."""
-        if self.forward_velocity > 0:
-            self.move(-self.move_speed * dt * self.stabiliser_strength) #down
-    def stabilise_backwards(self, dt):
-        """Apply force to stop backward velocity."""
-        if self.forward_velocity < 0:
-            self.move(self.move_speed * dt * self.stabiliser_strength) # move up
-
-    def stabilise_rotation_left(self, dt):
-        """Apply torque to stop leftward rotation."""
-        # If rotating left (angular velocity < 0), apply torque to stabilize
-        if self.angular_velocity < 0:
-            self.apply_torque(PLAYER_TURN_SPEED * dt * self.stabiliser_strength) #right
-
-    def stabilise_rotation_right(self, dt):
-        """Apply torque to stop rightward rotation."""
-        # If rotating right (angular velocity > 0), apply torque to stabilize
-        if self.angular_velocity > 0:          
-            self.apply_torque(-PLAYER_TURN_SPEED * dt * self.stabiliser_strength) #left
 
     def wrap_around_screen(self):
         # Wrap the player to the opposite side if they move off-screen
