@@ -9,6 +9,8 @@ from state import State
 from circleshape import Shrapnel
 from aliens import AlienShip
 from AlienField import AlienField
+from loot import Loot, LootSpawner
+
 def main():
     pygame.init()
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -23,6 +25,9 @@ def main():
     shrapnel_group = pygame.sprite.Group()
     collidable_group = pygame.sprite.Group()
     alien_ships = pygame.sprite.Group()
+    loot_group = pygame.sprite.Group()
+    loot_spawner_group = pygame.sprite.Group() 
+
 
     # Assign containers to classes for automatic group addition
     Asteroid.containers = (asteroid_group, updatable, drawable, collidable_group)
@@ -33,6 +38,8 @@ def main():
     FloatingText.containers = (all_text, updatable, drawable)
     State.containers = (updatable, drawable)
     AlienShip.containers =(updatable, drawable, collidable_group, alien_ships) 
+    Loot.containers = (loot_group, updatable, drawable, collidable_group)
+    LootSpawner.containers = (updatable, loot_spawner_group)
 
     # Initialize game state and player
     state = State(False)

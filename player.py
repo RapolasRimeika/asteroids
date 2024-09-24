@@ -21,6 +21,9 @@ class Player(CircleShape):
         self.friction = 0.99  # Linear friction factor (tweak as needed)
         self.angular_friction = 0.99  # Rotational friction factor (tweak as needed)
         self.speed = self.velocity.length()
+        self.is_player = True
+        self.shot_cooldown = PLAYER_SHOOT_COOLDOWN
+        self.move_speed = PLAYER_SPEED
 
     def triangle(self):
         # Calculate the points of the triangle representing the player
@@ -45,9 +48,9 @@ class Player(CircleShape):
         if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
             self.apply_torque(PLAYER_TURN_SPEED * dt)
         if keys[pygame.K_s] or keys[pygame.K_DOWN]:
-            self.apply_force(-PLAYER_SPEED * dt)
+            self.apply_force(-self.move_speed * dt)
         if keys[pygame.K_w] or keys[pygame.K_UP]:
-            self.apply_force(PLAYER_SPEED * dt)
+            self.apply_force(self.move_speed * dt)
         if keys[pygame.K_SPACE] and self.timer <= 0:
             self.shoot()
 
@@ -112,7 +115,7 @@ class Player(CircleShape):
         FloatingText(shot_position.x, shot_position.y, "ø", RGB, 40)
 
         # Reset the shooting timer
-        self.timer = PLAYER_SHOOT_COOLDOWN
+        self.timer = self.shot_cooldown
 
     def score_points(self, points):
         # Points update function

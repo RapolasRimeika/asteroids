@@ -42,7 +42,7 @@ class Shot(CircleShape):
         # Check for collision with another CircleShape
         bounce = False
         distance = self.position.distance_to(other.position)
-        if self.radius + other.radius > distance:
+        if (self.radius +2) + other.radius > distance:
             self.shot_explode(other, self.owner)
             self.kill()  # Remove the shot after explosion
             

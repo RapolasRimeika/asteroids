@@ -7,6 +7,7 @@ from shot import Shot
 from floating_text import FloatingText
 from circleshape import Shrapnel
 from text_lists import alien_screams
+from loot import LootSpawner
 
 class AlienShip(CircleShape):
     def __init__(self, x, y, ALIEN_RADIUS, player, asteroids):
@@ -36,7 +37,7 @@ class AlienShip(CircleShape):
 
     def update(self, dt):
         if self.health <= 0:
-            self.death()
+            self.death(dt)
 
         # Move the alien ship based on its AI behavior
         self.avoid_asteroids(dt)
@@ -116,9 +117,12 @@ class AlienShip(CircleShape):
         elif self.position.y > SCREEN_HEIGHT + self.radius:
             self.position.y = -self.radius
 
-    def death(self):
+    def death(self, dt):
         RGB = (250, 200, 100)
         scream = random.choice(alien_screams)
         FloatingText(self.position.x, self.position.y, scream, RGB, 3000)
         self.shrapnel_obj(self.radius)
+        # Spawn loot upon alien death after delay
+        if random.random() < LOOT_DROP_CHANCE:  # Only spawn loot some percentage of the time
+            new_loot = LootSpawner(self, self.position.x, self.position.y, 20, 1)  # Delay of 1s
         self.kill()
