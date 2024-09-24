@@ -128,47 +128,33 @@ class Player(CircleShape):
 
     def shoot(self):
         # Create a new shot in the direction the player is facing
-        shot_position = self.position + self.forward_direction * (self.radius + 10)
-        new_shot = Shot((shot_position.x), (shot_position.y), SHOT_RADIUS, self) # adding a modifyier to y so that the new shot wouldn't collide with the player
-        
+        shot_position = self.position + self.forward_direction * (self.radius + 10) # +10 forward from the ship to avoid collision
+        new_shot = Shot((shot_position.x), (shot_position.y), SHOT_RADIUS, self) 
         # Incorporate the player's velocity into the shot's velocity
         new_shot.velocity = PLAYER_SHOT_SPEED * self.forward_direction + self.velocity
         if new_shot.velocity.length() < PLAYER_SHOT_SPEED:
             new_shot.velocity.scale_to_length(PLAYER_SHOT_SPEED) 
-        # Create visual effect when shooting
-        RGB = (255, 0, 0)
-        FloatingText(shot_position.x, shot_position.y, "ø", RGB, 40)
-
-        # Reset the shooting timer
-        self.timer = self.shot_cooldown
-
-    def score_points(self, points):
-        # Points update function
-        self.score += points
-
-    def get_score(self):
-        # Point getter function
-        return self.score
-
-    def get_time(self):
-        # Get time player has been playing
-        return round((self.time), 1)
+        FloatingText(shot_position.x, shot_position.y, "ø", (255, 0, 0), 40) # Create visual effect when shooting
+        self.timer = self.shot_cooldown # Reset the shooting timer
 
     def player_death(self):
-        """ Method to handle the explosion of the shot """
-        # Create the explosion object
-        print("Creating player explosion 1111")
-        RGB = (250, 200, 100)
         scream = random.choice(player_death_screams)
-        FloatingText(self.position.x, self.position.y, scream, RGB, 2000)
-        # Optionally, create shrapnel or other visual effects
+        FloatingText(self.position.x, self.position.y, scream, (250, 200, 100), 2000)
         player_explosion = Explosion(self.position.x, self.position.y, 400)
         self.shrapnel_obj(self.radius, (255, 10, 15))
-
 
     def bounce(self, other):
         super().bounce(other)
 
     def destroy_asteroid(self, value):
         self.asteroids_destroyed += value
+
+    def score_points(self, points):
+        self.score += points # Points update function
+
+    def get_score(self):
+        return self.score # Point getter function
+
+    def get_time(self): 
+        return round((self.time), 1) # Get time player has been playing
 
