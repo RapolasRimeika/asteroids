@@ -24,16 +24,14 @@ class Player(CircleShape):
         self.angular_friction = 0.99  # Rotational friction factor (tweak as needed)
         self.speed = self.velocity.length()
         self.is_player = True
-        
         self.shot_cooldown = PLAYER_SHOOT_COOLDOWN
         self.move_speed = PLAYER_SPEED
-        
         self.forward_direction = pygame.Vector2(0, 1).rotate(self.rotation)
-        
         # Stabilisers attributes
         self.stabilisers = True  # Set to True to enable stabilisers
         self.stabiliser_strength = 0.7  # Strength of stabilisation (tweak this)
         self.forward_velocity = self.velocity.dot(self.forward_direction)
+        self.shot_damage = PLAYER_SHOT_DMG
         
     def triangle(self):
         # Calculate the points of the triangle representing the player
@@ -50,22 +48,18 @@ class Player(CircleShape):
         pygame.draw.polygon(screen, (255, 255, 255), points, 2)
 
     def update(self, dt):
-    
         self.forward_direction = pygame.Vector2(0, 1).rotate(self.rotation) # setting forward direction 
         self.velocity *= self.friction  # Apply linear friction
         self.angular_velocity *= self.angular_friction  # Apply rotational friction
         self.forward_velocity = self.velocity.dot(self.forward_direction)
         self.position += self.velocity * dt  # Update position based on velocity
         self.rotation += self.angular_velocity * dt  # Update rotation based on angular velocity
-
         self.wrap_around_screen()         # Wrap around screen edge detection
- 
         self.timer -= dt         # Decrease the shooting timer 
         self.time += dt
         
         # Handle player input and update player state
         keys = pygame.key.get_pressed()
-
         if keys[pygame.K_a] or keys[pygame.K_LEFT]:
             self.apply_torque(-PLAYER_TURN_SPEED * dt)
         if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
@@ -77,8 +71,7 @@ class Player(CircleShape):
         if keys[pygame.K_SPACE] and self.timer <= 0:
             self.shoot()
 
-        # Apply stabilisers for each direction if active
-        if self.stabilisers:
+        if self.stabilisers:    # Apply stabilisers for each direction if active
             if not (keys[pygame.K_w] or keys[pygame.K_UP]):
                 if self.forward_velocity > 0:
                     self.move(-self.move_speed * dt * self.stabiliser_strength) #down

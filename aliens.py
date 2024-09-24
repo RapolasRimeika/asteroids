@@ -21,6 +21,7 @@ class AlienShip(CircleShape):
         self.health = self.radius * 2
         self.score = 0
         self.isalien = True
+        self.shot_damage = PLAYER_SHOT_DMG
 
     def triangle(self):
         # Calculate the points of the triangle representing the alien ship
