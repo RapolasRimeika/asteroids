@@ -73,7 +73,7 @@ class Loot(Asteroid):
             FloatingText(player.position.x, player.position.y, self.description, self.loot_color, 1000)
         
         elif self.effect_type == 'fire':
-            player.shot_cooldown = player.shot_cooldown * 0.7
+            player.shot_cooldown *= 0.7
             FloatingText(player.position.x, player.position.y, self.description, self.loot_color, 1000)
 
     def collision(self, other, bounce=True):
@@ -84,3 +84,4 @@ class Loot(Asteroid):
             if hasattr(other, "is_player") and other.is_player == True:
                 self.apply_effect(other)
                 self.kill()  # Remove loot after applying the effect
+            

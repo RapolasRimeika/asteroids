@@ -42,7 +42,7 @@ class Shot(CircleShape):
         # Check for collision with another CircleShape
         bounce = False
         distance = self.position.distance_to(other.position)
-        if (self.radius +2) + other.radius > distance:
+        if (self.radius +3) + other.radius > distance:
             self.shot_explode(other, self.owner)
             self.kill()  # Remove the shot after explosion
             
@@ -50,6 +50,7 @@ class Shot(CircleShape):
         """ Method to handle the explosion of the shot, creating shrapnel """
         other.health -= PLAYER_SHOT_DMG
         print(f"shot exploded on {other} with damage {PLAYER_SHOT_DMG}")
+        self.shrapnel_obj(self.radius, (150, 10, 15))  # Create shrapnel pieces when the shot explodes
         if hasattr(other, "isalien") and other.isalien == True and other.health <= 0:
             print(f"KILL ALIEN CONFIRMED by OWNER{owner} {round(other.health)}")
             owner.score += 5
@@ -60,6 +61,5 @@ class Shot(CircleShape):
             owner.score += 1
             print(f"Player's new score: {owner.score}")
             return True
+
         
-        print(f"shot not deadly OWNER{owner} {round(other.health)}")
-        self.shrapnel_obj(self.radius)  # Create shrapnel pieces when the shot explodes

@@ -131,7 +131,7 @@ class CircleShape(pygame.sprite.Sprite):
 class Shrapnel(CircleShape):
     def __init__(self, x, y, radius, RGB=(235, 5, 2)):
         super().__init__(x, y, radius)
-        self.lifetime = 700  # Lifetime in milliseconds
+        self.lifetime = random.randrange(100, 700, 100)  # Lifetime in milliseconds
         self.spawn_time = pygame.time.get_ticks()
         self.rgb = RGB
 
