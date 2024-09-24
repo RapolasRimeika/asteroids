@@ -1,5 +1,4 @@
 import pygame
-from floating_text import FloatingText
 
 class Explosion(pygame.sprite.Sprite):
     def __init__(self, x, y, far_radius):
@@ -8,14 +7,9 @@ class Explosion(pygame.sprite.Sprite):
         self.is_explosion = True
         # Set position and explosion properties
         self.position = pygame.Vector2(x, y)
-        self.near = far_radius / 4
-        self.mid_radius = far_radius / 2
+        self.near = far_radius / 3
+        self.mid_radius = far_radius / 1.5
         self.far_radius = far_radius
-
-        # Create groups for different ranges
-        self.near_group = pygame.sprite.Group()
-        self.mid_group = pygame.sprite.Group()
-        self.far_group = pygame.sprite.Group()
         self.color = (189, 12, 16)
         self.radius = 1  # Explosion's own radius for collision detection
 
@@ -24,22 +18,22 @@ class Explosion(pygame.sprite.Sprite):
         pass
 
     def collision(self, other, bounce=True):
-        """ Check collision, categorize objects, and apply force """
+        print(f"Explosion colliding with {other}")
         distance = self.position.distance_to(other.position)
 
-        if distance <= self.far_radius + other.radius:
-            if distance <= self.near:
-                self.near_group.add(other)
-                strength = 1.0  # Full force
-            elif distance <= self.mid_radius:
-                self.mid_group.add(other)
-                strength = 0.5  # Medium force
+        if distance <= self.far_radius + other.radius: #whitin range
+            if distance <= self.near: #close range
+                strength = 4
+                self.calculate_force(other, strength)
+            elif distance <= self.mid_radius: #mid range
+                strength = 2
+                self.calculate_force(other, strength) 
             else:
-                self.far_group.add(other)
-                strength = 0.2  # Weak force
-            self.calculate_force(other, strength)
-        self.kill()  # Remove the explosion after applying force
+                strength = 1
+                self.calculate_force(other, strength)
 
+        
+        
     def calculate_force(self, other, strength):
         """ Apply force to the object based on proximity """
         explosion_vector = other.position - self.position
@@ -51,7 +45,8 @@ class Explosion(pygame.sprite.Sprite):
     def draw(self, screen):
         """ Visualize the explosion radius on the screen """
         for radius in [self.near, self.mid_radius, self.far_radius]:
-            pygame.draw.circle(screen, self.color, (int(self.position.x), int(self.position.y)), int(radius), 1)
-
+            pygame.draw.circle(screen, self.color, (int(self.position.x +1 ), int(self.position.y + 1)), int(radius), 2)
+            self.kill()  # Remove the explosion after applying force
+    
     def apply_force(self, other):
         pass

@@ -46,7 +46,6 @@ class Shot(CircleShape):
         if (self.radius + 0.5) + other.radius > distance:
             self.shot_score(other, self.owner)
             self.shot_explode()
-            self.kill()  # Remove the shot after explosion
             
     def shot_score(self, other, owner):
         """ Method to handle the explosion of the shot, creating shrapnel """

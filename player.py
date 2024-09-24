@@ -50,9 +50,7 @@ class Player(CircleShape):
         pygame.draw.polygon(screen, (255, 255, 255), points, 2)
 
     def update(self, dt):
-        if self.health <= 0:
-            self.player_death()
-        
+    
         self.forward_direction = pygame.Vector2(0, 1).rotate(self.rotation) # setting forward direction 
         self.velocity *= self.friction  # Apply linear friction
         self.angular_velocity *= self.angular_friction  # Apply rotational friction
@@ -89,6 +87,9 @@ class Player(CircleShape):
                 self.stabilise_rotation_left(dt)
             if not (keys[pygame.K_d] or keys[pygame.K_RIGHT]):
                 self.stabilise_rotation_right(dt)
+
+        if self.health <= 0:
+            self.player_death()
 
     def move(self, force_magnitude):
         # Move the player in the direction they are facing
@@ -171,12 +172,16 @@ class Player(CircleShape):
         return round((self.time), 1)
 
     def player_death(self):
+        """ Method to handle the explosion of the shot """
+        # Create the explosion object
+        print("Creating player explosion 1111")
         RGB = (250, 200, 100)
         scream = random.choice(player_death_screams)
         FloatingText(self.position.x, self.position.y, scream, RGB, 2000)
-        self.shrapnel_obj(self.radius, (255, 0, 0))
-        explosion = Explosion(self.position.x, self.position.y, 400)
-        self.kill()
+        # Optionally, create shrapnel or other visual effects
+        player_explosion = Explosion(self.position.x, self.position.y, 400)
+        self.shrapnel_obj(self.radius, (255, 10, 15))
+
 
     def bounce(self, other):
         super().bounce(other)
