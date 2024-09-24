@@ -87,7 +87,7 @@ class Loot(Asteroid):
             FloatingText(player.position.x, player.position.y, self.description, self.loot_color, 1000)
 
         elif self.effect_type == 'dmg':
-            player.dmg *= 2 # increased damage
+            player.shot_damage *= 2 # increased damage
             FloatingText(player.position.x, player.position.y, self.description, self.loot_color, 1000)
 
 
