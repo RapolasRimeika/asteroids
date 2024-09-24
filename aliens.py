@@ -123,7 +123,7 @@ class AlienShip(CircleShape):
         scream = random.choice(alien_screams)
         FloatingText(self.position.x, self.position.y, scream, RGB, 3000)
         self.shrapnel_obj(self.radius)
-        explosion = Explosion(self.position.x, self.position.y, (self.radius * 4))
+        explosion = Explosion(self.position.x, self.position.y, (self.radius * 7))
         # Spawn loot upon alien death after delay
         if random.random() < LOOT_DROP_CHANCE:  # Only spawn loot some percentage of the time
             new_loot = LootSpawner(self, self.position.x, self.position.y, 20, 1)  # Delay of 1s

@@ -25,6 +25,12 @@ class Player(CircleShape):
         self.is_player = True
         self.shot_cooldown = PLAYER_SHOOT_COOLDOWN
         self.move_speed = PLAYER_SPEED
+        self.forward_direction = pygame.Vector2(0, 1).rotate(self.rotation)
+        
+        # Stabilisers attributes
+        self.stabilisers = True  # Set to True to enable stabilisers
+        self.stabiliser_strength = 0.7  # Strength of stabilisation (tweak this)
+        self.forward_velocity = self.velocity.dot(self.forward_direction)
         
     def triangle(self):
         # Calculate the points of the triangle representing the player
@@ -41,6 +47,21 @@ class Player(CircleShape):
         pygame.draw.polygon(screen, (255, 255, 255), points, 2)
 
     def update(self, dt):
+        if self.health <= 0:
+            self.player_death()
+        
+        self.forward_direction = pygame.Vector2(0, 1).rotate(self.rotation) # setting forward direction 
+        self.velocity *= self.friction  # Apply linear friction
+        self.angular_velocity *= self.angular_friction  # Apply rotational friction
+        self.forward_velocity = self.velocity.dot(self.forward_direction)
+        self.position += self.velocity * dt  # Update position based on velocity
+        self.rotation += self.angular_velocity * dt  # Update rotation based on angular velocity
+
+        self.wrap_around_screen()         # Wrap around screen edge detection
+ 
+        self.timer -= dt         # Decrease the shooting timer 
+        self.time += dt
+        
         # Handle player input and update player state
         keys = pygame.key.get_pressed()
 
@@ -49,50 +70,63 @@ class Player(CircleShape):
         if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
             self.apply_torque(PLAYER_TURN_SPEED * dt)
         if keys[pygame.K_s] or keys[pygame.K_DOWN]:
-            self.move(-self.move_speed * dt)
+            self.move(-self.move_speed * dt)#down
         if keys[pygame.K_w] or keys[pygame.K_UP]:
-            self.move(self.move_speed * dt)
+            self.move(self.move_speed * dt) # up
         if keys[pygame.K_SPACE] and self.timer <= 0:
             self.shoot()
 
-        # Apply friction to slow down movement and rotation over time
-        self.velocity *= self.friction  # Apply linear friction
-        self.angular_velocity *= self.angular_friction  # Apply rotational friction
-
-        # Update position and rotation based on velocities
-        self.position += self.velocity * dt  # Update position based on velocity
-        self.rotation += self.angular_velocity * dt  # Update rotation based on angular velocity
-
-        # Wrap around screen edges
-        self.wrap_around_screen()
-
-        # Decrease the shooting timer   
-        self.timer -= dt
-        self.time += dt
-
-        if self.health <= 0:
-            self.player_death()
+        # Apply stabilisers for each direction if active
+        if self.stabilisers:
+            if not (keys[pygame.K_w] or keys[pygame.K_UP]):
+                self.stabilise_forward(dt)
+            if not (keys[pygame.K_s] or keys[pygame.K_DOWN]):
+                self.stabilise_backwards(dt)
+            if not (keys[pygame.K_a] or keys[pygame.K_LEFT]):
+                self.stabilise_rotation_left(dt)
+            if not (keys[pygame.K_d] or keys[pygame.K_RIGHT]):
+                self.stabilise_rotation_right(dt)
 
     def move(self, force_magnitude):
         # Move the player in the direction they are facing
-        forward = pygame.Vector2(0, 1).rotate(self.rotation)
-        force = forward * force_magnitude
+        self.forward_direction
+        force = self.forward_direction * force_magnitude
         self.velocity += force  # Apply the force to velocity
         # Create visual effect when moving
         RGB = (255, 0, 0)
         right = pygame.Vector2(0, 1).rotate(self.rotation + 90) * self.radius / 1.5
-        b = self.position - forward * self.radius - right
-        c = self.position - forward * self.radius + right
+        b = self.position - self.forward_direction * self.radius - right
+        c = self.position - self.forward_direction * self.radius + right
         FloatingText(b.x, b.y, "^", RGB, 50)
         FloatingText(c.x, c.y, "^", RGB, 50)
 
     def apply_force(self, force):
         self.velocity += force
 
-
     def apply_torque(self, torque):
         # Change the angular velocity by applying a torque (for rotation)
         self.angular_velocity += torque
+
+    def stabilise_forward(self, dt):
+        """Apply force to stop forward velocity."""
+        if self.forward_velocity > 0:
+            self.move(-self.move_speed * dt * self.stabiliser_strength) #down
+    def stabilise_backwards(self, dt):
+        """Apply force to stop backward velocity."""
+        if self.forward_velocity < 0:
+            self.move(self.move_speed * dt * self.stabiliser_strength) # move up
+
+    def stabilise_rotation_left(self, dt):
+        """Apply torque to stop leftward rotation."""
+        # If rotating left (angular velocity < 0), apply torque to stabilize
+        if self.angular_velocity < 0:
+            self.apply_torque(PLAYER_TURN_SPEED * dt * self.stabiliser_strength) #right
+
+    def stabilise_rotation_right(self, dt):
+        """Apply torque to stop rightward rotation."""
+        # If rotating right (angular velocity > 0), apply torque to stabilize
+        if self.angular_velocity > 0:          
+            self.apply_torque(-PLAYER_TURN_SPEED * dt * self.stabiliser_strength) #left
 
     def wrap_around_screen(self):
         # Wrap the player to the opposite side if they move off-screen
@@ -144,7 +178,7 @@ class Player(CircleShape):
         scream = random.choice(collision_screams)
         FloatingText(self.position.x, self.position.y, scream, RGB, 2000)
         self.shrapnel()
-        explosion = Explosion(self.position.x, self.position.y, 100)
+        explosion = Explosion(self.position.x, self.position.y, 400)
         self.kill()
 
     def bounce(self, other):
