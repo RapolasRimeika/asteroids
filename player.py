@@ -48,9 +48,9 @@ class Player(CircleShape):
         if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
             self.apply_torque(PLAYER_TURN_SPEED * dt)
         if keys[pygame.K_s] or keys[pygame.K_DOWN]:
-            self.apply_force(-self.move_speed * dt)
+            self.move(-self.move_speed * dt)
         if keys[pygame.K_w] or keys[pygame.K_UP]:
-            self.apply_force(self.move_speed * dt)
+            self.move(self.move_speed * dt)
         if keys[pygame.K_SPACE] and self.timer <= 0:
             self.shoot()
 
@@ -72,7 +72,7 @@ class Player(CircleShape):
         if self.health <= 0:
             self.player_death()
 
-    def apply_force(self, force_magnitude):
+    def move(self, force_magnitude):
         # Move the player in the direction they are facing
         forward = pygame.Vector2(0, 1).rotate(self.rotation)
         force = forward * force_magnitude
@@ -84,6 +84,10 @@ class Player(CircleShape):
         c = self.position - forward * self.radius + right
         FloatingText(b.x, b.y, "^", RGB, 50)
         FloatingText(c.x, c.y, "^", RGB, 50)
+
+    def apply_force(self, force):
+        self.velocity += force
+
 
     def apply_torque(self, torque):
         # Change the angular velocity by applying a torque (for rotation)

@@ -10,6 +10,7 @@ from circleshape import Shrapnel
 from aliens import AlienShip
 from AlienField import AlienField
 from loot import Loot, LootSpawner
+from explosion import Explosion
 
 def main():
     pygame.init()
@@ -27,7 +28,7 @@ def main():
     alien_ships = pygame.sprite.Group()
     loot_group = pygame.sprite.Group()
     loot_spawner_group = pygame.sprite.Group() 
-
+    all_explosions = pygame.sprite.Group()  
 
     # Assign containers to classes for automatic group addition
     Asteroid.containers = (asteroid_group, updatable, drawable, collidable_group)
@@ -40,6 +41,7 @@ def main():
     AlienShip.containers =(updatable, drawable, collidable_group, alien_ships) 
     Loot.containers = (loot_group, updatable, drawable, collidable_group)
     LootSpawner.containers = (updatable, loot_spawner_group)
+    Explosion.containers = (updatable, drawable, all_text, collidable_group)
 
     # Initialize game state and player
     state = State(False)
@@ -66,7 +68,7 @@ def main():
         if state.player.time >= 0 and state.player.time <= 0.005:
             for text in all_text:
                 text.kill()
-            for i in asteroid_group:
+            for i in loot_group:
                 i.kill()
             for i in alien_ships:
                 i.kill()       

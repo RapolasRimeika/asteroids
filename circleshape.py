@@ -52,6 +52,8 @@ class CircleShape(pygame.sprite.Sprite):
             self.shrapnel_obj(self.radius)
 
     def collision(self, other, bounce=True):
+        if hasattr(other, "is_explosion") and other.is_explosion == True:
+            return
         # Check for collision with another CircleShape
         distance = self.position.distance_to(other.position)
         if self.radius + other.radius > distance:

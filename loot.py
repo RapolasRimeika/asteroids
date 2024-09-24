@@ -30,8 +30,6 @@ class LootSpawner(pygame.sprite.Sprite):
        # FloatingText(self.position.x, self.position.y, "SPAWNING LOOOT", (255, 255, 255), 500)  # For debugging
         self.loot_spawned = True  # Mark the loot as spawned
 
-
-
 class Loot(Asteroid):
     # Define the types of loot with their effects and colors
     loot_types = {
