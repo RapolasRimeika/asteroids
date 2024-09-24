@@ -5,6 +5,7 @@ from circleshape import CircleShape
 from shot import Shot
 from floating_text import FloatingText
 from circleshape import Shrapnel
+from explosion import Explosion
 
 class Player(CircleShape):
     def __init__(self, x, y):
@@ -24,7 +25,7 @@ class Player(CircleShape):
         self.is_player = True
         self.shot_cooldown = PLAYER_SHOOT_COOLDOWN
         self.move_speed = PLAYER_SPEED
-
+        
     def triangle(self):
         # Calculate the points of the triangle representing the player
         forward = pygame.Vector2(0, 1).rotate(self.rotation)
@@ -108,12 +109,12 @@ class Player(CircleShape):
         # Create a new shot in the direction the player is facing
         forward = pygame.Vector2(0, 1).rotate(self.rotation)
         shot_position = self.position + forward * (self.radius + 10)
-        
-        new_shot = Shot(shot_position.x, shot_position.y, SHOT_RADIUS, self)
+        new_shot = Shot((shot_position.x), (shot_position.y), SHOT_RADIUS, self) # adding a modifyier to y so that the new shot wouldn't collide with the player
         
         # Incorporate the player's velocity into the shot's velocity
         new_shot.velocity = PLAYER_SHOT_SPEED * forward + self.velocity
-        
+        if new_shot.velocity.length() < PLAYER_SHOT_SPEED:
+            new_shot.velocity.scale_to_length(PLAYER_SHOT_SPEED) 
         # Create visual effect when shooting
         RGB = (255, 0, 0)
         FloatingText(shot_position.x, shot_position.y, "ø", RGB, 40)
@@ -143,6 +144,7 @@ class Player(CircleShape):
         scream = random.choice(collision_screams)
         FloatingText(self.position.x, self.position.y, scream, RGB, 2000)
         self.shrapnel()
+        explosion = Explosion(self.position.x, self.position.y, 100)
         self.kill()
 
     def bounce(self, other):
