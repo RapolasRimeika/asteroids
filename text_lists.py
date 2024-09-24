@@ -49,3 +49,9 @@ start_messages = [
     "Aliens bet against us. Classic.",
     "Asteroids: 0, Us: Meh."
 ]
+
+player_death_screams = [
+            "ARGHHH!", "No! No! No!  NOOOOOOOOO!!!", "NO!", 
+            "We're crashing!", "Eject!", "Tell her I love her!", 
+            "Beam me out of here!"
+        ]

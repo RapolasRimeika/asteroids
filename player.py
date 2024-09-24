@@ -6,6 +6,7 @@ from shot import Shot
 from floating_text import FloatingText
 from circleshape import Shrapnel
 from explosion import Explosion
+from text_lists import player_death_screams
 
 class Player(CircleShape):
     def __init__(self, x, y):
@@ -23,8 +24,10 @@ class Player(CircleShape):
         self.angular_friction = 0.99  # Rotational friction factor (tweak as needed)
         self.speed = self.velocity.length()
         self.is_player = True
+        
         self.shot_cooldown = PLAYER_SHOOT_COOLDOWN
         self.move_speed = PLAYER_SPEED
+        
         self.forward_direction = pygame.Vector2(0, 1).rotate(self.rotation)
         
         # Stabilisers attributes
@@ -141,12 +144,11 @@ class Player(CircleShape):
 
     def shoot(self):
         # Create a new shot in the direction the player is facing
-        forward = pygame.Vector2(0, 1).rotate(self.rotation)
-        shot_position = self.position + forward * (self.radius + 10)
+        shot_position = self.position + self.forward_direction * (self.radius + 10)
         new_shot = Shot((shot_position.x), (shot_position.y), SHOT_RADIUS, self) # adding a modifyier to y so that the new shot wouldn't collide with the player
         
         # Incorporate the player's velocity into the shot's velocity
-        new_shot.velocity = PLAYER_SHOT_SPEED * forward + self.velocity
+        new_shot.velocity = PLAYER_SHOT_SPEED * self.forward_direction + self.velocity
         if new_shot.velocity.length() < PLAYER_SHOT_SPEED:
             new_shot.velocity.scale_to_length(PLAYER_SHOT_SPEED) 
         # Create visual effect when shooting
@@ -170,43 +172,15 @@ class Player(CircleShape):
 
     def player_death(self):
         RGB = (250, 200, 100)
-        collision_screams = [
-            "ARGHHH!", "No! No! No!  NOOOOOOOOO!!!", "NO!", 
-            "We're crashing!", "Eject!", "Tell her I love her!", 
-            "Beam me out of here!"
-        ]
-        scream = random.choice(collision_screams)
+        scream = random.choice(player_death_screams)
         FloatingText(self.position.x, self.position.y, scream, RGB, 2000)
-        self.shrapnel()
+        self.shrapnel_obj(self.radius, (255, 0, 0))
         explosion = Explosion(self.position.x, self.position.y, 400)
         self.kill()
 
     def bounce(self, other):
         super().bounce(other)
 
-    def shrapnel(self):
-        RGB = (255, 0, 0)
-        FloatingText(self.position.x, self.position.y, "O", RGB, 40)
-        mass = PLAYER_RADIUS
-        while mass > 1:
-            random_angle = random.uniform(90, 270)
-            velocity_a = self.velocity.rotate(random_angle) * random.uniform(0.5, 1.5)
-            new_radius = random.uniform(1, 5)
-            # Spawn shrapnel
-            shrapnel_piece = Shrapnel(self.position.x, self.position.y, new_radius)
-            shrapnel_piece.velocity = velocity_a
-            mass -= new_radius
-
     def destroy_asteroid(self, value):
         self.asteroids_destroyed += value
 
-        RGB = (255, 0, 150)
-        asteroid_down_messages = [
-            "Asteroid shot down!", "Target destroyed!", "Direct hit!", 
-            "Asteroid obliterated!", "Hit confirmed!", "Asteroid vaporized!", 
-            "Threat eliminated!", "Asteroid shattered!", "Bullseye!", 
-            "Rock smashed!", "Target disintegrated!", "Asteroid annihilated!", 
-            "Strike successful!"
-        ]
-        asteroid_down_message = random.choice(asteroid_down_messages)
-        FloatingText(120, 40, (f"{asteroid_down_message}"), RGB, 500)

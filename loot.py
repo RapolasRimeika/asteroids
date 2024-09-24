@@ -57,6 +57,7 @@ class Loot(Asteroid):
 
     def apply_effect(self, player):
         """Applies the specific loot effect to the player"""
+       
         if self.effect_type == 'heal':
             heal_amount = 200  # Heal up to 20 points
             player.health += heal_amount
@@ -71,7 +72,7 @@ class Loot(Asteroid):
             FloatingText(player.position.x, player.position.y, self.description, self.loot_color, 1000)
         
         elif self.effect_type == 'fire':
-            player.shot_cooldown *= 0.7
+            player.shot_cooldown *= 0.7 #faster shooting rate
             FloatingText(player.position.x, player.position.y, self.description, self.loot_color, 1000)
 
     def collision(self, other, bounce=True):
