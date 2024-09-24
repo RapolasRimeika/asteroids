@@ -26,9 +26,10 @@ class Player(CircleShape):
         self.is_player = True
         self.shot_cooldown = PLAYER_SHOOT_COOLDOWN
         self.move_speed = PLAYER_SPEED
+        self.turn_speed = PLAYER_TURN_SPEED
         self.forward_direction = pygame.Vector2(0, 1).rotate(self.rotation)
         # Stabilisers attributes
-        self.stabilisers = True  # Set to True to enable stabilisers
+        self.stabilisers = False  # Set to True to enable stabilisers
         self.stabiliser_strength = 0.7  # Strength of stabilisation (tweak this)
         self.forward_velocity = self.velocity.dot(self.forward_direction)
         self.shot_damage = PLAYER_SHOT_DMG
@@ -61,9 +62,9 @@ class Player(CircleShape):
         # Handle player input and update player state
         keys = pygame.key.get_pressed()
         if keys[pygame.K_a] or keys[pygame.K_LEFT]:
-            self.apply_torque(-PLAYER_TURN_SPEED * dt)
+            self.apply_torque(-self.turn_speed * dt)
         if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
-            self.apply_torque(PLAYER_TURN_SPEED * dt)
+            self.apply_torque(self.turn_speed_SPEED * dt)
         if keys[pygame.K_s] or keys[pygame.K_DOWN]:
             self.move(-self.move_speed * dt)#down
         if keys[pygame.K_w] or keys[pygame.K_UP]:
@@ -80,10 +81,10 @@ class Player(CircleShape):
                     self.move(self.move_speed * dt * self.stabiliser_strength) # move up
             if not (keys[pygame.K_a] or keys[pygame.K_LEFT]):
                 if self.angular_velocity < 0:
-                    self.apply_torque(PLAYER_TURN_SPEED * dt * self.stabiliser_strength) #right
+                    self.apply_torque(self.turn_speed_SPEED * dt * self.stabiliser_strength) #right
             if not (keys[pygame.K_d] or keys[pygame.K_RIGHT]):
                 if self.angular_velocity > 0:          
-                    self.apply_torque(-PLAYER_TURN_SPEED * dt * self.stabiliser_strength) #left
+                    self.apply_torque(-self.turn_speed_SPEED * dt * self.stabiliser_strength) #left
 
         if self.health <= 0:
             self.player_death()

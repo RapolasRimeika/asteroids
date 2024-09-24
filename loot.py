@@ -36,7 +36,10 @@ class Loot(Asteroid):
         'health': {'color': (0, 255, 0), 'effect': 'heal', 'description': '+200 Health'},
         'speed': {'color': (0, 0, 255), 'effect': 'speed', 'description': 'Engine upgrade!'},
         'score': {'color': (255, 255, 0), 'effect': 'score', 'description': '+50 Score'},
-        'fire': {'color': (255, 0, 255), 'effect': 'Big_gun', 'description': 'Fire rate increase!'}
+        'fire': {'color': (255, 0, 255), 'effect': 'fire', 'description': 'Fire rate increase!'},
+        'rotation': {'color': (0, 50, 200), 'effect': 'rotation', 'description': 'Thruster upgrade!'},
+        'stabilisers': {'color': (99, 50, 15), 'effect': 'stabilisers', 'description': 'STABILISERS!!!!'},
+         'dmg': {'color': (255, 0, 75), 'effect': 'dmg', 'description': 'Fire damage increase!'} 
     }
 
     def __init__(self, loot_parent, x, y, radius):
@@ -74,6 +77,19 @@ class Loot(Asteroid):
         elif self.effect_type == 'fire':
             player.shot_cooldown *= 0.7 #faster shooting rate
             FloatingText(player.position.x, player.position.y, self.description, self.loot_color, 1000)
+
+        elif self.effect_type == 'rotation':
+            player.turn_speed *= 0.7 #faster shooting rate
+            FloatingText(player.position.x, player.position.y, self.description, self.loot_color, 1000)
+
+        elif self.effect_type == 'stabilisers':
+            player.stabilisers = True #faster shooting rate
+            FloatingText(player.position.x, player.position.y, self.description, self.loot_color, 1000)
+
+        elif self.effect_type == 'dmg':
+            player.dmg *= 2 # increased damage
+            FloatingText(player.position.x, player.position.y, self.description, self.loot_color, 1000)
+
 
     def collision(self, other, bounce=True):
         # Check for collision with another object
