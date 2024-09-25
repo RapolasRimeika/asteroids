@@ -39,7 +39,7 @@ class Loot(Asteroid):
         'fire': {'color': (255, 0, 255), 'effect': 'fire', 'description': 'Fire rate increase!'},
         'rotation': {'color': (0, 50, 200), 'effect': 'rotation', 'description': 'Thruster upgrade!'},
         'stabilisers': {'color': (99, 50, 15), 'effect': 'stabilisers', 'description': 'STABILISERS!!!!'},
-         'dmg': {'color': (255, 0, 75), 'effect': 'dmg', 'description': 'Fire damage increase!'} 
+        'dmg': {'color': (255, 0, 75), 'effect': 'dmg', 'description': 'Fire damage increase!'} 
     }
 
     def __init__(self, loot_parent, x, y, radius):
@@ -66,10 +66,6 @@ class Loot(Asteroid):
             player.health += heal_amount
             FloatingText(player.position.x, player.position.y, self.description, self.loot_color, 1000)
         
-        elif self.effect_type == 'speed':
-            player.move_speed *= 1.2  # engine upgrade
-            FloatingText(player.position.x, player.position.y, self.description, self.loot_color, 1000)
-        
         elif self.effect_type == 'score':
             player.score_points(50)  # Add 50 points to the player's score
             FloatingText(player.position.x, player.position.y, self.description, self.loot_color, 1000)
@@ -77,24 +73,32 @@ class Loot(Asteroid):
         elif self.effect_type == 'fire':
             player.shot_cooldown *= 0.7 #faster shooting rate
             FloatingText(player.position.x, player.position.y, self.description, self.loot_color, 1000)
+        
+        elif self.effect_type == 'dmg':
+            player.shot_damage *= 2 # increased damage
+            FloatingText(player.position.x, player.position.y, self.description, self.loot_color, 1000)        
+        
+        elif self.effect_type == 'speed':
+            player.move_speed *= 1.2  # engine upgrade
+            FloatingText(player.position.x, player.position.y, self.description, self.loot_color, 1000)
 
         elif self.effect_type == 'rotation':
-            player.turn_speed *= 0.7 #faster shooting rate
+            player.turn_speed *= 1.2 #faster turning speed
             FloatingText(player.position.x, player.position.y, self.description, self.loot_color, 1000)
 
         elif self.effect_type == 'stabilisers':
-            player.stabilisers = True #faster shooting rate
-            FloatingText(player.position.x, player.position.y, self.description, self.loot_color, 1000)
-
-        elif self.effect_type == 'dmg':
-            player.shot_damage *= 2 # increased damage
-            FloatingText(player.position.x, player.position.y, self.description, self.loot_color, 1000)
+            if player.stabilisers == True:
+                 #faster shooting rate
+                player.score_points(50)  # Add 50 points to the player's score
+                FloatingText(player.position.x, player.position.y, "Already have Stabilisers, let's sell it", self.loot_color, 1000)
+            else:
+                FloatingText(player.position.x, player.position.y, self.description, self.loot_color, 1000)
 
 
     def collision(self, other, bounce=True):
         # Check for collision with another object
         distance = self.position.distance_to(other.position)
-        if (self.radius + 5) + other.radius > distance:
+        if (self.radius + 5) + other.radius > distance: # +5 for easy collection
             # If the object colliding with this loot is the player, apply the effect
             if hasattr(other, "is_player") and other.is_player == True:
                 self.apply_effect(other)

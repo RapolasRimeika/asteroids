@@ -24,7 +24,10 @@ class Player(CircleShape):
         self.angular_friction = 0.99  # Rotational friction factor (tweak as needed)
         self.speed = self.velocity.length()
         self.is_player = True
+        
         self.shot_cooldown = PLAYER_SHOOT_COOLDOWN
+        self.shot_damage = PLAYER_SHOT_DMG
+
         self.move_speed = PLAYER_SPEED
         self.turn_speed = PLAYER_TURN_SPEED
         self.forward_direction = pygame.Vector2(0, 1).rotate(self.rotation)
@@ -32,7 +35,8 @@ class Player(CircleShape):
         self.stabilisers = True  # Set to True to enable stabilisers
         self.stabiliser_strength = 0.7  # Strength of stabilisation (tweak this)
         self.forward_velocity = self.velocity.dot(self.forward_direction)
-        self.shot_damage = PLAYER_SHOT_DMG
+        
+
         
     def triangle(self):
         # Calculate the points of the triangle representing the player
@@ -59,32 +63,53 @@ class Player(CircleShape):
         self.timer -= dt         # Decrease the shooting timer 
         self.time += dt
         
-        # Handle player input and update player state
+        # Get the current key states
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_a] or keys[pygame.K_LEFT]:
-            self.apply_torque(-self.turn_speed * dt)
-        if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
-            self.apply_torque(self.turn_speed * dt)
-        if keys[pygame.K_s] or keys[pygame.K_DOWN]:
-            self.move(-self.move_speed * dt)#down
-        if keys[pygame.K_w] or keys[pygame.K_UP]:
-            self.move(self.move_speed * dt) # up
-        if keys[pygame.K_SPACE] and self.timer <= 0:
+
+        # Simplified directional movement and rotation values
+        up = self.move_speed * dt
+        down = -self.move_speed * dt
+        left = -self.turn_speed * dt
+        right = self.turn_speed * dt
+
+        # Key mappings for movement and rotation
+        key_up = keys[pygame.K_w] or keys[pygame.K_UP]
+        key_down = keys[pygame.K_s] or keys[pygame.K_DOWN]
+        key_left = keys[pygame.K_a] or keys[pygame.K_LEFT]
+        key_right = keys[pygame.K_d] or keys[pygame.K_RIGHT]
+
+        # Handle movement and rotation based on key inputs
+        if key_left:  self.apply_torque(left)
+        if key_right: self.apply_torque(right)
+        if key_down:  self.move(down)
+        if key_up:    self.move(up)
+        
+        if keys[pygame.K_SPACE] and self.timer <= 0: # Handle shooting
             self.shoot()
 
-        if self.stabilisers:    # Apply stabilisers for each direction if active
-            if not (keys[pygame.K_w] or keys[pygame.K_UP]):
-                if self.forward_velocity > 0:
-                    self.move(-self.move_speed * dt * self.stabiliser_strength) #down
-            if not (keys[pygame.K_s] or keys[pygame.K_DOWN]):
-                if self.forward_velocity < 0:
-                    self.move(self.move_speed * dt * self.stabiliser_strength) # move up
-            if not (keys[pygame.K_a] or keys[pygame.K_LEFT]):
-                if self.angular_velocity < 0:
-                    self.apply_torque(self.turn_speed * dt * self.stabiliser_strength) #right
-            if not (keys[pygame.K_d] or keys[pygame.K_RIGHT]):
-                if self.angular_velocity > 0:          
-                    self.apply_torque(-self.turn_speed * dt * self.stabiliser_strength) #left
+        if self.stabilisers: # Apply stabilisers for each direction and rotation if active
+            if not key_up and self.forward_velocity > 0:
+                self.move(down * self.stabiliser_strength)  # Apply stabilisers to slow down forward movement
+            if not key_down and self.forward_velocity < 0:
+                self.move(up * self.stabiliser_strength)  # Apply stabilisers to slow down backward movement
+            if not key_left and self.angular_velocity < 0:
+                self.apply_torque(right * self.stabiliser_strength)  # Apply stabilisers to reduce left rotation
+            if not key_right and self.angular_velocity > 0:
+                self.apply_torque(left * self.stabiliser_strength)  # Apply stabilisers to reduce right rotation
+
+            # Additional diagonal velocities (for stabilization)
+            diagonal_up_right = (self.move_speed / (2 ** 0.5)) * dt
+            diagonal_down_left = (-self.move_speed / (2 ** 0.5)) * dt
+            # Diagonal stabilisers
+            
+            if not key_up and not key_right and self.forward_velocity > 0 and self.angular_velocity > 0:
+                self.move(diagonal_down_left * self.stabiliser_strength)  # Reduce drift at 45° (up-right)
+            if not key_down and not key_left and self.forward_velocity < 0 and self.angular_velocity < 0:
+                self.move(diagonal_up_right * self.stabiliser_strength)  # Reduce drift at 225° (down-left)
+            if not key_down and not key_right and self.forward_velocity < 0 and self.angular_velocity > 0:
+                self.move(diagonal_up_right * self.stabiliser_strength)  # Reduce drift at 135° (down-right)
+            if not key_up and not key_left and self.forward_velocity > 0 and self.angular_velocity < 0:
+                self.move(diagonal_down_left * self.stabiliser_strength)  # Reduce drift at 315° (up-left)
 
         if self.health <= 0:
             self.player_death()
