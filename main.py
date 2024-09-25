@@ -76,11 +76,11 @@ def main():
 
         # Optimise the game by killing items that go off screen
         screen_rect = pygame.Rect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)
-        inflated_rect = screen_rect.inflate(10, 10)
-        for item in collidable_group:
-            if not inflated_rect.collidepoint(item.position):
-                item.kill
-                print(f"killing {item}")
+        inflated_rect = screen_rect.inflate(150, 150) # Inflate the screen rectangle by 60 pixels on each side
+        for item in collidable_group: # Loop through each item in the collidable_group
+            if not inflated_rect.collidepoint(item.position): # Check if the item's position is outside the inflated screen area
+                item.kill()
+                print(f"killing {item} with radius {item.radius} at position {item.position}")
 
         # Update all updatable sprites
         for sprite in updatable: 

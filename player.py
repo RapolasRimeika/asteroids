@@ -29,7 +29,7 @@ class Player(CircleShape):
         self.turn_speed = PLAYER_TURN_SPEED
         self.forward_direction = pygame.Vector2(0, 1).rotate(self.rotation)
         # Stabilisers attributes
-        self.stabilisers = False  # Set to True to enable stabilisers
+        self.stabilisers = True  # Set to True to enable stabilisers
         self.stabiliser_strength = 0.7  # Strength of stabilisation (tweak this)
         self.forward_velocity = self.velocity.dot(self.forward_direction)
         self.shot_damage = PLAYER_SHOT_DMG
