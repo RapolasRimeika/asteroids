@@ -99,7 +99,7 @@ class Player(CircleShape):
             self.shoot()
 
         if self.stabilisers:     # Apply stabilisers for strafing and rotation if active
-    # Apply thresholds to stop small movements
+            # Apply thresholds to stop small movements
             velocity_threshold = 0.4
             if abs(self.forward_velocity) < velocity_threshold:
                 self.forward_velocity = 0
