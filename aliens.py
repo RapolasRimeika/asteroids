@@ -12,19 +12,18 @@ from explosion import Explosion
 
 class AlienShip(CircleShape):
     def __init__(self, x, y, ALIEN_RADIUS, player, asteroids):
-        super().__init__(x, y, ALIEN_RADIUS)  # Set radius to 25
-        self.player = player  # Reference to the player object
-        self.asteroids = asteroids  # List of asteroid objects
-        self.timer = 0  # Shooting cooldown timer
-        self.shooting_range = 300  # Max range to shoot at player or asteroids
-        self.color = (50, 190, 50)  # Set the alien ship color to green
+        super().__init__(x, y, ALIEN_RADIUS)                    # Set radius to 25
+        self.player = player                                    # Reference to the player object
+        self.asteroids = asteroids                              # List of asteroid objects
+        self.timer = 0                                          # Shooting cooldown timer
+        self.shooting_range = 300                               # Max range to shoot at player or asteroids
+        self.color = (50, 190, 50)                              # Set the alien ship color to green
         self.health = self.radius * 2
         self.score = 0
         self.isalien = True
         self.shot_damage = PLAYER_SHOT_DMG
 
-    def triangle(self):
-        # Calculate the points of the triangle representing the alien ship
+    def triangle(self): # Calculate the points of the triangle representing the alien ship
         forward = pygame.Vector2(0, 1).rotate(self.rotation)
         right = pygame.Vector2(0, 1).rotate(self.rotation + 90) * self.radius / 1.5
         a = self.position + forward * self.radius  # Tip of the triangle
@@ -41,27 +40,19 @@ class AlienShip(CircleShape):
         if self.health <= 0:
             self.death(dt)
 
-        # Move the alien ship based on its AI behavior
+        # Move the alien ship based on it's behavior
         self.avoid_asteroids(dt)
         self.move_towards_player(dt)
+        self.shoot_if_in_range() # Shoot at the player if within range, or nearby asteroids
 
-        # Shoot at the player if within range, or nearby asteroids
-        self.shoot_if_in_range()
-
-        # Apply linear and angular friction to slow down
+        # Apply linear and angular friction to slow down # Update position and rotation based on velocities
         self.velocity *= self.friction
-        self.angular_velocity *= self.angular_friction
-
-        # Update position and rotation based on velocities
+        self.angular_velocity *= self.angular_friction     
         self.position += self.velocity * dt
         self.rotation += self.angular_velocity * dt
         self.rotation %= 360  # Keep the rotation angle between 0 and 360 degrees
-
-        # Wrap around screen edges
-        self.wrap_around_screen()
-
-        # Decrease shooting cooldown timer
-        self.timer -= dt
+        
+        self.timer -= dt # Decrease shooting cooldown timer
 
     def avoid_asteroids(self, dt):
         # Check for nearby asteroids and move away if too close
@@ -102,22 +93,9 @@ class AlienShip(CircleShape):
 
         if abs(angle_diff) < 30:  # Check if the target is within the 30-degree arc in front
             shot_position = self.position + forward * (self.radius + 10)
-            # Create and fire a shot
-            new_shot = Shot(shot_position.x, shot_position.y, SHOT_RADIUS, self)
+            new_shot = Shot(shot_position.x, shot_position.y, SHOT_RADIUS, self) # Create and fire a shot
             new_shot.velocity = ALIEN_SHOT_SPEED * forward + self.velocity
-            # Reset the shooting timer (alien can't shoot too frequently)
-            self.timer = ALIEN_SHOOT_COOLDOWN
-
-    def wrap_around_screen(self):
-        # Wrap the alien to the opposite side if it moves off-screen
-        if self.position.x < -self.radius:
-            self.position.x = SCREEN_WIDTH + self.radius
-        elif self.position.x > SCREEN_WIDTH + self.radius:
-            self.position.x = -self.radius
-        if self.position.y < -self.radius:
-            self.position.y = SCREEN_HEIGHT + self.radius
-        elif self.position.y > SCREEN_HEIGHT + self.radius:
-            self.position.y = -self.radius
+            self.timer = ALIEN_SHOOT_COOLDOWN # Reset the shooting timer (alien can't shoot too frequently)
 
     def death(self, dt):
         RGB = (250, 200, 100)
@@ -125,7 +103,5 @@ class AlienShip(CircleShape):
         FloatingText(self.position.x, self.position.y, scream, RGB, 3000)
         self.shrapnel_obj(self.radius)
         explosion = Explosion(self.position.x, self.position.y, (self.radius * 7))
-        # Spawn loot upon alien death after delay
         if random.random() < LOOT_DROP_CHANCE:  # Only spawn loot some percentage of the time
             new_loot = LootSpawner(self, self.position.x, self.position.y, 20, 1)  # Delay of 1s
-        self.kill()

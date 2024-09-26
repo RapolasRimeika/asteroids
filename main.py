@@ -38,6 +38,7 @@ def main():
     Shot.containers = (shots, updatable, drawable, collidable_group)
     Shrapnel.containers = (updatable, drawable, collidable_group)
     AsteroidField.containers = updatable
+    AlienField.containers = updatable
     FloatingText.containers = (all_text, updatable, drawable)
     State.containers = (updatable, drawable)
     AlienShip.containers =(updatable, drawable, collidable_group, alien_ships) 
@@ -53,32 +54,18 @@ def main():
     drawable.add(state.player)
     asteroid_field = AsteroidField()
     alien_field = AlienField(state.player, asteroid_group)
-   # black_hole = BLK()
-    
-# Initialize game state and player
-    state = State(False)
-    state.player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2,)
-    updatable.add(state.player)
-    drawable.add(state.player)
-    asteroid_field = AsteroidField()
-    alien_field = AlienField(state.player, asteroid_group)
+
     # Generate and store the static starry background
     star_background = generate_star_background(SCREEN_WIDTH, SCREEN_HEIGHT, 1000, (150, 255))
-
-
 
     state.running = True    
     while state.running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return
-
-        # Clear the screen
-        #screen.fill((15, 15, 0))
-        screen.blit(star_background, (0, 0))
-        # Cap the frame rate at 60 FPS and calculate delta time
-        dt = clock.tick(60) / 1000
-
+            
+        screen.blit(star_background, (0, 0)) # wipe the screen with the generated background
+        dt = clock.tick(60) / 1000  # Cap the frame rate at 60 FPS and calculate delta time
 
         # Update the background based on player position
       #  background.update(dt, state.player.position)
@@ -110,7 +97,7 @@ def main():
         for sprite in updatable: 
             sprite.update(dt)        
         
-        alien_field.update(dt, alien_ships)
+        alien_field.update(dt)
 
         if state.player not in updatable:
             state.player_dead = True
