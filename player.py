@@ -51,7 +51,7 @@ class Player(CircleShape):
 
     def draw(self, screen): # Draw the player as a triangle
         points = self.triangle()
-        pygame.draw.polygon(screen, (255, 255, 255), points, 2)
+        pygame.draw.polygon(screen, (200, 180, 190), points)
 
     def update(self, dt):
         self.forward_direction = pygame.Vector2(0, 1).rotate(self.rotation) # setting forward direction

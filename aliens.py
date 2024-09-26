@@ -17,7 +17,7 @@ class AlienShip(CircleShape):
         self.asteroids = asteroids  # List of asteroid objects
         self.timer = 0  # Shooting cooldown timer
         self.shooting_range = 300  # Max range to shoot at player or asteroids
-        self.color = (0, 255, 0)  # Set the alien ship color to green
+        self.color = (50, 190, 50)  # Set the alien ship color to green
         self.health = self.radius * 2
         self.score = 0
         self.isalien = True
@@ -35,7 +35,7 @@ class AlienShip(CircleShape):
     def draw(self, screen):
         # Draw the alien ship as a triangle
         points = self.triangle()
-        pygame.draw.polygon(screen, self.color, points, 2)
+        pygame.draw.polygon(screen, self.color, points)
 
     def update(self, dt):
         if self.health <= 0:

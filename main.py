@@ -11,6 +11,8 @@ from aliens import AlienShip
 from AlienField import AlienField
 from loot import Loot, LootSpawner
 from explosion import Explosion
+from blk import BLK
+from background_layers import *
 
 def main():
     pygame.init()
@@ -42,6 +44,7 @@ def main():
     Loot.containers = (loot_group, updatable, drawable, collidable_group)
     LootSpawner.containers = (updatable, loot_spawner_group)
     Explosion.containers = (updatable, drawable, all_text, collidable_group)
+    BLK.containers = (updatable, drawable, collidable_group)
 
     # Initialize game state and player
     state = State(False)
@@ -50,6 +53,19 @@ def main():
     drawable.add(state.player)
     asteroid_field = AsteroidField()
     alien_field = AlienField(state.player, asteroid_group)
+   # black_hole = BLK()
+    
+# Initialize game state and player
+    state = State(False)
+    state.player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2,)
+    updatable.add(state.player)
+    drawable.add(state.player)
+    asteroid_field = AsteroidField()
+    alien_field = AlienField(state.player, asteroid_group)
+    # Generate and store the static starry background
+    star_background = generate_star_background(SCREEN_WIDTH, SCREEN_HEIGHT, 1000, (150, 255))
+
+
 
     state.running = True    
     while state.running:
@@ -58,12 +74,20 @@ def main():
                 return
 
         # Clear the screen
-        screen.fill((15, 15, 0))
+        #screen.fill((15, 15, 0))
+        screen.blit(star_background, (0, 0))
         # Cap the frame rate at 60 FPS and calculate delta time
         dt = clock.tick(60) / 1000
 
+
+        # Update the background based on player position
+      #  background.update(dt, state.player.position)
+        # Draw the background
+       # background.draw(screen)
+
         # Update the game state
         state.update(dt, updatable, drawable)
+        
         # Clearing objects at respawning
         if state.player.time >= 0 and state.player.time <= 0.005:
             for text in all_text:
@@ -115,6 +139,7 @@ def main():
         # Draw all drawable sprites
         for sprite in drawable:
             sprite.draw(screen)
+
 
         # Update the display
         pygame.display.flip()

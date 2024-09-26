@@ -158,7 +158,7 @@ class Shrapnel(CircleShape):
 
     def draw(self, screen):
         # Draw the shrapnel as a white circle outline (not filled)
-        pygame.draw.circle(screen, (255, 255, 255), (int(self.position.x), int(self.position.y)), self.radius, 2)
+        pygame.draw.circle(screen, (255, 255, 255), (int(self.position.x), int(self.position.y)), self.radius, )
 
         # Draw random floating flame characters (optional)
         flames = ["§", "¶", "∞", "∑", "≈", "Ω", "µ", "∆", "∫", "≈", "¬", "π", "≠", "√", "≤"]

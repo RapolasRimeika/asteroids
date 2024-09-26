@@ -5,7 +5,7 @@ from floating_text import FloatingText
 from constants import *
 from text_lists import explosion_list
 class Asteroid(CircleShape):
-    def __init__(self, x, y, radius, RGB=(150, 150, 150)):
+    def __init__(self, x, y, radius, RGB=(150, 150, 150), ):
         # Initialize the asteroid with position, radius, and color
         super().__init__(x, y, radius)
         self.color = RGB
@@ -61,5 +61,5 @@ class Asteroid(CircleShape):
 
     def draw(self, screen):
         # Draw the asteroid as a circle outline (not filled)
-        pygame.draw.circle(screen, self.color, (int(self.position.x), int(self.position.y)), self.radius, 2)
+        pygame.draw.circle(screen, self.color, (int(self.position.x), int(self.position.y)), self.radius)
 
