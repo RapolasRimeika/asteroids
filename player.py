@@ -38,8 +38,6 @@ class Player(CircleShape):
         self.forward_velocity = self.velocity.dot(self.forward_direction)
         self.right_velocity = self.velocity.dot(self.right_direction)  # Right velocity relative to facing direction
         
-
-        
     def triangle(self):
         # Calculate the points of the triangle representing the player
         forward = pygame.Vector2(0, 1).rotate(self.rotation)
@@ -66,8 +64,8 @@ class Player(CircleShape):
         self.timer -= dt                                                    # Decrease the shooting timer 
         self.time += dt
                 
-        # Get the current key states
-        keys = pygame.key.get_pressed()
+        
+        keys = pygame.key.get_pressed() # Get the current key states
 
         # Simplified directional movement and rotation values
         up              = self.move_speed   * dt

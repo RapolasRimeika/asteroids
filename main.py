@@ -45,8 +45,7 @@ def main():
     AlienShip.containers =(updatable, drawable, collidable_group, alien_ships, clearable_group) 
     Loot.containers = (loot_group, updatable, drawable, collidable_group, clearable_group)
     Explosion.containers = (updatable, drawable, all_text, collidable_group, clearable_group)
-    BLK.containers = (updatable, drawable, collidable_group, clearable_group)
-    
+    BLK.containers = (updatable, drawable, collidable_group, clearable_group) 
 
     # Initialize game state and player
     state = State(False)
@@ -56,25 +55,21 @@ def main():
     drawable.add(state.player)
     updatable.add(state.player, asteroid_field, alien_field)
     
-    star_background = generate_star_background(SCREEN_WIDTH, SCREEN_HEIGHT, 1000, (150, 255))       # Generate and store the static starry background
-
+    background = generate_star_and_planet_background(SCREEN_WIDTH, SCREEN_HEIGHT, 1000, 3, (50, 100))
+    
     state.running = True    
     while state.running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return
             
-        screen.blit(star_background, (0, 0))        # wipe the screen with the generated background
+        screen.blit(background, (0, 0))             # wipe the screen with the generated background
         dt = clock.tick(60) / 1000                  # Cap the frame rate at 60 FPS and calculate delta time
         fps = round(clock.get_fps(), 2)
         all_objects = len(updatable)
         print(f"FPS: {fps}") 
         FloatingText(900, 20, (f"FPS: {fps} number of objects updatable: {all_objects} number of asteroids: {len(asteroid_group)}"), (255, 255, 255), 60)
 
-    # Update the background based on player position
-    #  background.update(dt, state.player.position)
-    # Draw the background
-    # background.draw(screen)
         state.update(dt, updatable, drawable, collidable_group, clearable_group) # Update the game state
         
         for sprite in updatable:                                # Update all updatable sprites
@@ -91,6 +86,7 @@ def main():
         for sprite in drawable:                     # Draw all drawable sprites
             sprite.draw(screen)
         state.draw(screen)          
+        
         pygame.display.flip()                       # Update the display
 
 if __name__ == "__main__":
