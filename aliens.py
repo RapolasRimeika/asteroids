@@ -11,9 +11,9 @@ from loot import LootSpawner
 from explosion import Explosion
 
 class AlienShip(CircleShape):
-    def __init__(self, x, y, ALIEN_RADIUS, player, asteroids):
+    def __init__(self, x, y, ALIEN_RADIUS, player_target, asteroids):
         super().__init__(x, y, ALIEN_RADIUS)                    # Set radius to 25
-        self.player = player                                    # Reference to the player object
+        self.target = player_target                             # Reference to the player object
         self.asteroids = asteroids                              # List of asteroid objects
         self.timer = 0                                          # Shooting cooldown timer
         self.shooting_range = 300                               # Max range to shoot at player or asteroids
@@ -22,6 +22,9 @@ class AlienShip(CircleShape):
         self.score = 0
         self.isalien = True
         self.shot_damage = PLAYER_SHOT_DMG
+
+        self.move_speed = PLAYER_SPEED
+        self.turn_speed = PLAYER_TURN_SPEED
 
     def triangle(self): # Calculate the points of the triangle representing the alien ship
         forward = pygame.Vector2(0, 1).rotate(self.rotation)
@@ -38,12 +41,12 @@ class AlienShip(CircleShape):
 
     def update(self, dt):
         if self.health <= 0:
-            self.death(dt)
+            self.death()
 
         # Move the alien ship based on it's behavior
         self.avoid_asteroids(dt)
         self.move_towards_player(dt)
-        self.shoot_if_in_range() # Shoot at the player if within range, or nearby asteroids
+        self.shoot_if_in_range() # Shoot if within range, or nearby asteroids
 
         # Apply linear and angular friction to slow down # Update position and rotation based on velocities
         self.velocity *= self.friction
@@ -65,8 +68,9 @@ class AlienShip(CircleShape):
 
     def move_towards_player(self, dt):
         # Move towards the player
-        direction_to_player = self.player.position - self.position
+        direction_to_player = self.target.position - self.position
         direction_to_player.normalize_ip()  # Normalize to get direction
+        
         self.apply_force(direction_to_player * ALIEN_SPEED * dt)  # Move towards player
 
         # Rotate to face the player
@@ -75,9 +79,9 @@ class AlienShip(CircleShape):
 
     def shoot_if_in_range(self):
         # Shoot at the player if within range and if alien is facing the player
-        distance_to_player = self.position.distance_to(self.player.position)
+        distance_to_player = self.position.distance_to(self.target.position)
         if distance_to_player < self.shooting_range and self.timer <= 0:
-            self.shoot_at(self.player)
+            self.shoot_at(self.target)
 
         # Shoot at nearby asteroids if in range
         for asteroid in self.asteroids:
@@ -97,7 +101,7 @@ class AlienShip(CircleShape):
             new_shot.velocity = ALIEN_SHOT_SPEED * forward + self.velocity
             self.timer = ALIEN_SHOOT_COOLDOWN # Reset the shooting timer (alien can't shoot too frequently)
 
-    def death(self, dt):
+    def death(self):
         RGB = (250, 200, 100)
         scream = random.choice(alien_screams)
         FloatingText(self.position.x, self.position.y, scream, RGB, 3000)

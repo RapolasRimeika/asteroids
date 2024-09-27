@@ -20,8 +20,7 @@ class Player(CircleShape):
         self.time = 0
         self.asteroids_destroyed = 0
         self.health = self.radius * 2
-        self.friction = 0.99  # Linear friction factor (tweak as needed)
-        self.angular_friction = 0.99  # Rotational friction factor (tweak as needed)
+        
         self.speed = self.velocity.length()
         self.is_player = True
         
@@ -88,8 +87,6 @@ class Player(CircleShape):
         if key_turn_right:      self.apply_torque(turn_right)
         if key_down:            self.move(down)
         if key_up:              self.move(up)
-        if key_strafe_left:     self.move_x(-self.move_speed * dt)  # Move left along the X-axis
-        if key_strafe_right:    self.move_x(self.move_speed * dt)   # Move right along the X-axis
         if key_strafe_left:     self.move_x(strafe_left)            # Move left along the X-axis
         if key_strafe_right:    self.move_x(strafe_right)           # Move right along the X-axis        
         
