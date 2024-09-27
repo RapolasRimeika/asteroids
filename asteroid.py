@@ -50,28 +50,26 @@ class Asteroid(CircleShape):
         screen.blit(self.image, self.rect.topleft)
 
 def generate_circular_texture(radius, base_color):
-    # Create a square surface with dimensions of (diameter x diameter)
-    texture_size = radius * 2
+    texture_size = radius * 2  # Create a square surface with dimensions of (diameter x diameter)
     texture = pygame.Surface((texture_size, texture_size), pygame.SRCALPHA)  # Use SRCALPHA for transparency
+    texture.fill((0, 0, 0, 0))  # Transparent background (RGBA) (for non-circular areas)
+    
+    center = pygame.Vector2(radius, radius)  # Calculate the center of the texture
 
-    # Fill the surface with transparent color (for non-circular areas)
-    texture.fill((0, 0, 0, 0))  # Transparent background (RGBA)
+    pygame.draw.circle(texture, base_color, (int(center.x), int(center.y)), radius)  # Draw a filled circle with the base color
 
-    # Draw a circular shape with the base color and random noise
-    for _ in range(500):  # Adjust the number of random noise dots
-        # Generate random positions within the circular boundary
-        rand_x = random.randint(0, texture_size - 1)
+    for _ in range(1000):  # Add random noise over the base color
+        rand_x = random.randint(0, texture_size - 1)  # Generate random positions within the circular boundary
         rand_y = random.randint(0, texture_size - 1)
-        # Calculate distance from the center to ensure we are inside the circle
-        center = pygame.Vector2(radius, radius)
-        distance = pygame.Vector2(rand_x, rand_y).distance_to(center)
+        distance = pygame.Vector2(rand_x, rand_y).distance_to(center)  # Calculate distance from the center
         if distance <= radius:
-            brightness = random.randint(-50, 50) # Vary the brightness of the base color for texture
+            brightness = random.randint(-50, 50)  # Vary the brightness of the base color for texture
             random_color = (
                 max(0, min(255, base_color[0] + brightness)),
                 max(0, min(255, base_color[1] + brightness)),
                 max(0, min(255, base_color[2] + brightness)),
                 255  # Fully opaque
-                )
-            texture.set_at((rand_x, rand_y), random_color)
+            )
+            texture.set_at((rand_x, rand_y), random_color)  # Set the pixel color with noise applied
+    
     return texture
