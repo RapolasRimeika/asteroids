@@ -34,7 +34,7 @@ def main():
     clearable_group = pygame.sprite.Group()
 
     # Assign containers to classes for automatic group addition
-    State.containers = (updatable, drawable)
+    State.containers = (drawable)
     Player.containers = (updatable, drawable, collidable_group)
     AsteroidField.containers = (updatable)
     LootSpawner.containers = (updatable, loot_spawner_group)
@@ -65,7 +65,7 @@ def main():
             
         screen.blit(background, (0, 0))             # wipe the screen with the generated background
         dt = clock.tick(60) / 1000                  # Cap the frame rate at 60 FPS and calculate delta time
-        fps = round(clock.get_fps(), 2)
+        fps = round(clock.get_fps(),)
         all_objects = len(updatable)
         print(f"FPS: {fps}") 
         FloatingText(900, 20, (f"FPS: {fps} number of objects updatable: {all_objects} number of asteroids: {len(asteroid_group)}"), (255, 255, 255), 60)
@@ -73,7 +73,7 @@ def main():
         state.update(dt, updatable, drawable, collidable_group, clearable_group) # Update the game state
         
         for sprite in updatable:                                # Update all updatable sprites
-            sprite.update(dt)        
+            sprite.update(dt)
 
         collidable_list = list(collidable_group)                # Check for collisions between objects
         for i in range(len(collidable_list)):

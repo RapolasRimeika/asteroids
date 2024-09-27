@@ -4,6 +4,7 @@ from constants import *
 from player import Player
 from floating_text import FloatingText
 from text_lists import start_messages
+from asteroidfield import AsteroidField
 
 class State():
     def __init__(self, player_dead):
@@ -43,7 +44,6 @@ class State():
         FloatingText(300, 20, (f"Time played {self.play_time} s"), RGB, 3)
 
     def draw(self, screen):
-
         pygame.draw.rect(screen, (100, 200, 100), (1250, 1250, self.health, 10))     # Green health bar
         
 

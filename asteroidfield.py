@@ -1,10 +1,11 @@
 import pygame
 import random
 from asteroid import Asteroid
+from blk import BLK  # Import the BLK class
 from constants import *
 
 class AsteroidField(pygame.sprite.Sprite):
-    # Edges of the screen for spawning asteroids
+    # Edges of the screen for spawning objects
     edges = [
         # Left edge
         [
@@ -28,18 +29,33 @@ class AsteroidField(pygame.sprite.Sprite):
         ],
     ]
 
-    def __init__(self):
-        # Initialize sprite and set the spawn timer
+    def __init__(self,):
+        # Initialize sprite and set the spawn timers
         pygame.sprite.Sprite.__init__(self, self.containers)
         self.spawn_timer = 0.0
+        self.black_hole_timer = 0.0         # Timer for black holes
+        self.black_hole_spawn_delay = 30.0   # Time delay between black hole spawns (in seconds)
+
 
     def spawn(self, radius, position, velocity):
         # Create a new asteroid with specified parameters
         asteroid = Asteroid(position.x, position.y, radius)
         asteroid.velocity = velocity
 
+    def spawn_black_hole(self):
+        # Create a new black hole with specified parameters
+        black_hole = BLK()
+        # Spawn at a random edge
+        edge = random.choice(self.edges)
+        speed = random.randint(100, 150)
+        velocity = edge[0] * speed
+        velocity = velocity.rotate(random.randint(-30, 30))
+        position = edge[1](random.uniform(0, 1))
+        black_hole.position = position
+        black_hole.velocity = velocity
+
     def update(self, dt):
-        # Update the spawn timer
+        # Update the asteroid spawn timer
         self.spawn_timer += dt
         if self.spawn_timer > ASTEROID_SPAWN_RATE:
             self.spawn_timer = 0
@@ -51,3 +67,9 @@ class AsteroidField(pygame.sprite.Sprite):
             position = edge[1](random.uniform(0, 1))
             kind = random.randint(1, ASTEROID_KINDS)
             self.spawn(ASTEROID_MIN_RADIUS * kind, position, velocity)
+        
+    # Handle black hole spawning logic
+        self.black_hole_timer += dt
+        if self.black_hole_timer > self.black_hole_spawn_delay:
+            self.spawn_black_hole()
+            self.black_hole_timer = 0  # Reset the timer after spawning a black hole
