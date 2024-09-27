@@ -19,7 +19,7 @@ class AlienField(pygame.sprite.Sprite):
             pygame.Vector2(random.uniform(0, SCREEN_WIDTH), SCREEN_HEIGHT)  # Bottom
         ]
         position = random.choice(edges)
-        alien_ship = AlienShip(position.x, position.y, ALIEN_RADIUS, self.player, self.asteroids) # Create an alien ship
+        alien_ship = AlienShip(position.x, position.y, ALIEN_RADIUS, self.player, self.asteroids,) # Create an alien ship
         return alien_ship
 
     def update(self, dt):

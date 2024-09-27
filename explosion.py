@@ -30,9 +30,7 @@ class Explosion(pygame.sprite.Sprite):
                 self.calculate_force(other, strength) 
             else:
                 strength = 1
-                self.calculate_force(other, strength)
-
-        
+                self.calculate_force(other, strength) 
         
     def calculate_force(self, other, strength):
         """ Apply force to the object based on proximity """

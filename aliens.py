@@ -12,21 +12,34 @@ from explosion import Explosion
 
 class AlienShip(CircleShape):
     def __init__(self, x, y, ALIEN_RADIUS, player_target, asteroids):
-        super().__init__(x, y, ALIEN_RADIUS)                    # Set radius to 25
+        super().__init__(x, y, ALIEN_RADIUS)
         self.target = player_target                             # Reference to the player object
         self.asteroids = asteroids                              # List of asteroid objects
         self.timer = 0                                          # Shooting cooldown timer
-        self.shooting_range = 300                               # Max range to shoot at player or asteroids
+        self.shooting_range = 600                               # Max range to shoot at player or asteroids
         self.color = (50, 190, 50)                              # Set the alien ship color to green
         self.health = self.radius * 2
         self.score = 0
         self.isalien = True
         self.shot_damage = PLAYER_SHOT_DMG
+        self.angular_velocity = 0 
 
-        self.move_speed = PLAYER_SPEED
-        self.turn_speed = PLAYER_TURN_SPEED
+        self.move_speed = PLAYER_SPEED * 1.5
+        self.turn_speed = PLAYER_TURN_SPEED * 1.5
+        self.forward_direction = pygame.Vector2(0, 1).rotate(self.rotation)
+        self.right_direction = self.forward_direction.rotate(90)
 
-    def triangle(self): # Calculate the points of the triangle representing the alien ship
+        # Stabilisers attributes
+        self.stabilisers = True          # Enable stabilisers
+        self.stabiliser_str = 0.5        # Strength of stabilisation (adjust as needed)
+        self.forward_velocity = 0        # Initialize forward velocity
+        self.right_velocity = 0          # Initialize right velocity
+
+        # Maximum speed
+        self.max_speed = 300             # Define a maximum speed for the alien
+        self.max_angular_velocity = 300  # Maximum angular velocity in degrees per second
+
+    def triangle(self):  # Calculate the points of the triangle representing the alien ship
         forward = pygame.Vector2(0, 1).rotate(self.rotation)
         right = pygame.Vector2(0, 1).rotate(self.rotation + 90) * self.radius / 1.5
         a = self.position + forward * self.radius  # Tip of the triangle
@@ -43,39 +56,116 @@ class AlienShip(CircleShape):
         if self.health <= 0:
             self.death()
 
-        # Move the alien ship based on it's behavior
-        self.avoid_asteroids(dt)
-        self.move_towards_player(dt)
-        self.shoot_if_in_range() # Shoot if within range, or nearby asteroids
+        # Update the forward and right directions based on current rotation
+        self.forward_direction = pygame.Vector2(0, 1).rotate(self.rotation)
+        self.right_direction = self.forward_direction.rotate(90)
 
-        # Apply linear and angular friction to slow down # Update position and rotation based on velocities
+        # Apply friction to linear and angular velocities
         self.velocity *= self.friction
-        self.angular_velocity *= self.angular_friction     
+        self.angular_velocity *= self.angular_friction
+
+        # Calculate velocities relative to the ship's facing direction
+        self.forward_velocity = self.velocity.dot(self.forward_direction)
+        self.right_velocity = self.velocity.dot(self.right_direction)
+
+        # Clamp velocities to maximum values
+        if self.velocity.length() > self.max_speed:
+            self.velocity.scale_to_length(self.max_speed)
+
+        self.angular_velocity = max(-self.max_angular_velocity, min(self.angular_velocity, self.max_angular_velocity))
+
+        # Update position and rotation based on velocities
         self.position += self.velocity * dt
         self.rotation += self.angular_velocity * dt
         self.rotation %= 360  # Keep the rotation angle between 0 and 360 degrees
-        
-        self.timer -= dt # Decrease shooting cooldown timer
+
+        self.timer -= dt  # Decrease shooting cooldown timer
+
+        # Flags to determine if the alien is actively moving or rotating
+        self.is_moving_forward = False
+        self.is_rotating = False
+
+        # Move the alien ship based on its behavior
+        self.avoid_asteroids(dt)
+        self.move_towards_player(dt)
+        self.shoot_if_in_range()  # Shoot if within range, or nearby asteroids
+
+        # Apply stabilisers if enabled
+        if self.stabilisers:
+            # Apply thresholds to stop small movements
+            velocity_threshold = 0.4
+            if abs(self.forward_velocity) < velocity_threshold:
+                self.forward_velocity = 0
+            if abs(self.right_velocity) < velocity_threshold:
+                self.right_velocity = 0
+            if abs(self.angular_velocity) < velocity_threshold:
+                self.angular_velocity = 0
+
+            if not self.is_moving_forward:
+                if self.forward_velocity > 0:
+                    self.move(-self.move_speed * dt * self.stabiliser_str)
+                elif self.forward_velocity < 0:
+                    self.move(self.move_speed * dt * self.stabiliser_str)
+
+            if not self.is_rotating:
+                if self.angular_velocity > 0:
+                    self.apply_torque(-self.turn_speed * dt * self.stabiliser_str)
+                elif self.angular_velocity < 0:
+                    self.apply_torque(self.turn_speed * dt * self.stabiliser_str)
 
     def avoid_asteroids(self, dt):
-        # Check for nearby asteroids and move away if too close
+        # Check for nearby asteroids and adjust movement to avoid them
         for asteroid in self.asteroids:
             distance_to_asteroid = self.position.distance_to(asteroid.position)
-            if distance_to_asteroid < 60:  # Arbitrary distance to avoid asteroids
-                direction_away = self.position - asteroid.position
-                direction_away.normalize_ip()  # Normalize to get the direction
-                self.apply_force(direction_away * ALIEN_AVOID_FORCE * dt)  # Move away from asteroid
+            if distance_to_asteroid < 150:  # Arbitrary distance to start avoiding
+                # Calculate direction away from the asteroid
+                direction_away = (self.position - asteroid.position).normalize()
+                angle_away = self.forward_direction.angle_to(direction_away)
+
+                # Apply torque to turn away from the asteroid
+                max_torque = self.turn_speed * dt
+                torque = max(-max_torque, min(max_torque, (angle_away / 180) * max_torque))
+                self.apply_torque(torque)
+                self.is_rotating = True  # Alien is rotating to avoid asteroid
+
+                # Move backward to avoid collision
+                self.move(-self.move_speed * dt)
+                self.is_moving_forward = True  # Alien is moving (backward in this case)
 
     def move_towards_player(self, dt):
         # Move towards the player
-        direction_to_player = self.target.position - self.position
-        direction_to_player.normalize_ip()  # Normalize to get direction
-        
-        self.apply_force(direction_to_player * ALIEN_SPEED * dt)  # Move towards player
+        direction_to_player = (self.target.position - self.position).normalize()
+        angle_to_player = self.forward_direction.angle_to(direction_to_player)
 
-        # Rotate to face the player
-        angle_to_player = atan2(-direction_to_player.y, direction_to_player.x)
-        self.rotation = degrees(angle_to_player) + 90  # Adjust for vertical sprite orientation
+        # Apply torque to turn towards the player
+        max_torque = self.turn_speed * dt
+        torque = max(-max_torque, min(max_torque, (angle_to_player / 180) * max_torque))
+        self.apply_torque(torque)
+        self.is_rotating = True  # Alien is rotating towards the player
+
+        # Only move if below maximum speed
+        if self.velocity.length() < self.max_speed:
+            self.move(self.move_speed * dt)
+            self.is_moving_forward = True  # Alien is moving forward towards the player
+        else:
+            # If at max speed, don't apply additional force
+            self.is_moving_forward = False
+
+    def move(self, force_magnitude):
+        # Move the alien ship in the direction it is facing
+        force = self.forward_direction * force_magnitude
+        self.velocity += force  # Apply the force to velocity
+        # Optionally, create a visual effect when moving
+        RGB = (0, 255, 0)
+        right = self.right_direction * self.radius / 1.5
+        b = self.position - self.forward_direction * self.radius - right
+        c = self.position - self.forward_direction * self.radius + right
+        FloatingText(b.x, b.y, "^", RGB, 50)
+        FloatingText(c.x, c.y, "^", RGB, 50)
+
+    def apply_torque(self, torque):
+        # Change the angular velocity by applying a torque (for rotation)
+        self.angular_velocity += torque
 
     def shoot_if_in_range(self):
         # Shoot at the player if within range and if alien is facing the player
@@ -83,23 +173,22 @@ class AlienShip(CircleShape):
         if distance_to_player < self.shooting_range and self.timer <= 0:
             self.shoot_at(self.target)
 
-        # Shoot at nearby asteroids if in range
+        """     # Shoot at nearby asteroids if in range
         for asteroid in self.asteroids:
             distance_to_asteroid = self.position.distance_to(asteroid.position)
             if distance_to_asteroid < self.shooting_range and self.timer <= 0:
-                self.shoot_at(asteroid)
+                self.shoot_at(asteroid)"""
 
     def shoot_at(self, target):
         # Only shoot if the alien ship is facing the target
         direction_to_target = (target.position - self.position).normalize()
-        forward = pygame.Vector2(0, 1).rotate(self.rotation)
-        angle_diff = forward.angle_to(direction_to_target)
+        angle_diff = self.forward_direction.angle_to(direction_to_target)
 
         if abs(angle_diff) < 30:  # Check if the target is within the 30-degree arc in front
-            shot_position = self.position + forward * (self.radius + 10)
-            new_shot = Shot(shot_position.x, shot_position.y, SHOT_RADIUS, self) # Create and fire a shot
-            new_shot.velocity = ALIEN_SHOT_SPEED * forward + self.velocity
-            self.timer = ALIEN_SHOOT_COOLDOWN # Reset the shooting timer (alien can't shoot too frequently)
+            shot_position = self.position + self.forward_direction * (self.radius + 10)
+            new_shot = Shot(shot_position.x, shot_position.y, SHOT_RADIUS, self)  # Create and fire a shot
+            new_shot.velocity = ALIEN_SHOT_SPEED * self.forward_direction + self.velocity
+            self.timer = ALIEN_SHOOT_COOLDOWN  # Reset the shooting timer
 
     def death(self):
         RGB = (250, 200, 100)
