@@ -1,69 +1,67 @@
-Asteroids Game Project
-Welcome to my Asteroids game project! 🎮 This was a fun learning exercise where I built basic game mechanics, practiced Object-Oriented Programming (OOP) with Python, and honed my skills with Git and GitHub for version control. The game is developed using the Pygame library and is designed to be modular and maintainable.
+# Asteroids Game Project
 
-What's Inside
-Language: Python 🐍
-Library: Pygame for game development.
-What I Learned
-Object-Oriented Programming:
+Welcome to my Asteroids game project! 🎮 This has been a fun and challenging learning exercise where I implemented complex game mechanics, practiced Object-Oriented Programming (OOP) in Python, and refined my skills in Git and GitHub for version control. The game is built with the Pygame library and designed to be modular, maintainable, and scalable.
 
-Created a hierarchy of classes like CircleShape, Player, Asteroid, Shot, and FloatingText.
-Used inheritance and encapsulation to build flexible game components.
+## What's Inside
 
-Game Mechanics:
+- **Language:** Python 🐍
+- **Libraries:** Pygame for game development, Pillow for image processing (Gaussian blur).
 
-Implemented player controls for rotation and movement.
-Developed asteroid spawning, movement, and splitting mechanics.
-Added collision detection between the player, asteroids, and shots.
-Implemented screen wrapping so objects reappear on the opposite side.
+## What I Learned
 
-Code Modularity:
+### Object-Oriented Programming:
+- Built a hierarchy of classes like `CircleShape`, `Player`, `Asteroid`, `Shot`, `FloatingText`, `Loot`, and `AlienShip`.
+- Applied inheritance, encapsulation, and composition to build reusable, flexible game components.
+- Implemented sprite groups for efficient updates and rendering of game objects.
 
-Organized the code into multiple files for better readability and maintenance.
-Utilized sprite groups in Pygame for efficient updates and rendering.
-Version Control:
+### Game Mechanics:
+- **Player Controls:** Rotate, move, strafe, and shoot with smooth physics.
+- **Asteroids:** Randomly generated textures and splitting mechanics when destroyed. Asteroids also generate shrapnel upon destruction.
+- **Alien Ships:** Alien ships track the player, avoid asteroids, shoot when in range, and drop loot upon destruction.
+- **Loot System:** Different power-ups like health regeneration, speed boosts, stabilizers, and more spawn upon defeating enemies.
+- **Inertia and Stabilizers:** Full physics system with linear and angular inertia, friction, and stabilizers that stop small movements when not pressing movement keys.
+- **Black Holes (BLK Class):** A black hole that spawns randomly, pulls objects in based on proximity, and removes objects when too close.
+- **Background Generation:** Multi-layered star and planet backgrounds with randomly generated textures, Gaussian blur applied to the planet layer for depth.
+- **Explosion Physics:** Objects interact with explosions based on proximity, and forces are applied accordingly.
 
-Managed the project using Git and GitHub, which was great for tracking changes and collaborating.
-How to Play
+### Code Modularity:
+- The code is split into multiple files for readability, maintainability, and scalability:
+  - `constants.py`: Stores all global constants like screen dimensions and object sizes.
+  - `circleshape.py`: A base class for circular game objects with full inertia and friction.
+  - `player.py`: Manages player controls, movement, shooting, and collision detection.
+  - `asteroid.py`: Handles asteroid movement, splitting, and texture generation.
+  - `asteroidfield.py`: Manages asteroid spawning, including black holes.
+  - `aliens.py` and `AlienField.py`: Manages alien ship behavior and interactions with the player.
+  - `loot.py`: Implements the loot system with power-ups for the player.
+  - `explosion.py`: Handles explosion interactions with objects.
+  - `floating_text.py`: Displays text effects during gameplay.
+  - `background_layers.py`: Generates dynamic star and planet backgrounds.
+  - `main.py`: The main game loop handling events, updates, and rendering.
 
-Controls:
+### Version Control:
+- Managed the entire project using Git and GitHub, effectively tracking changes and allowing collaboration.
 
-Rotate: Left/Right arrow keys or A/D.
-Move: Up/Down arrow keys or W/S.
-Shoot: Spacebar.
-Restart: Press Enter after game over.
+## How to Play
 
-Objective:
+**Controls:**
+- Rotate: Left/Right arrow keys or A/D.
+- Move: Up/Down arrow keys or W/S.
+- Strafe: A/D or 4/6 on the numpad.
+- Shoot: Spacebar.
+- Stabilizers: Automatically engage when not pressing movement keys to stop small movements.
+- Restart: Press Enter after game over.
 
-Navigate your spaceship, avoid collisions with asteroids, and destroy them by shooting. Asteroids will split into smaller ones when hit until they reach the smallest size.
+**Objective:**
+Navigate your spaceship, avoid asteroids, and destroy them by shooting. Collect loot from defeated enemies to gain power-ups and increase your score. Survive as long as possible!
 
-Future Plans. I'm excited to add more features soon:
+## Future Plans
 
-Alien Ships: Introducing new challenges.
-Scoring System: Displaying current and high scores.
-Player Profiles: Adding a menu to enter player names before starting.
+- **More Alien Ships:** New enemy types with unique behaviors.
+- **Persistent High Score System:** A way to save and display the high score.
+- **Player Profiles:** Adding a menu to enter player names and track performance.
 
-Getting Started:
+## Getting Started
 
-pip install pygame
-git clone https://github.com/RapolasRimeika/asteroids-game.git
-cd asteroids-game
-python3 main.py
-
-
-File Structure
-
-constants.py: Defines game-wide constants like screen dimensions and object sizes.
-circleshape.py: Base class CircleShape for circular game objects.
-player.py: Implements the Player class for the player-controlled spaceship.
-asteroid.py: Defines the Asteroid class for asteroid objects.
-asteroidfield.py: Manages the spawning and updating of asteroids.
-shot.py: Implements the Shot class for player projectiles.
-floating_text.py: Handles floating text messages displayed during gameplay.
-state.py: Manages the game state, including player lives and respawning.
-main.py: The main game loop, handling events, updates, and rendering.
-
-Contact
-
-Feel free to reach out if you have any questions or suggestions. I'm always open to feedback!
-
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/RapolasRimeika/asteroids-game.git
