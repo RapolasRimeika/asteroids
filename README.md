@@ -15,7 +15,7 @@ Welcome to my Asteroids game project! 🎮 This has been a fun and challenging l
 - Implemented sprite groups for efficient updates and rendering of game objects.
 
 ### Game Mechanics:
-- **Player Controls:** Rotate, move, strafe, and shoot with smooth physics.
+- **Player Controls:** Rotate, move, and shoot with smooth physics.
 - **Asteroids:** Randomly generated textures and splitting mechanics when destroyed. Asteroids also generate shrapnel upon destruction.
 - **Alien Ships:** Alien ships track the player, avoid asteroids, shoot when in range, and drop loot upon destruction.
 - **Loot System:** Different power-ups like health regeneration, speed boosts, stabilizers, and more spawn upon defeating enemies.
@@ -26,17 +26,17 @@ Welcome to my Asteroids game project! 🎮 This has been a fun and challenging l
 
 ### Code Modularity:
 - The code is split into multiple files for readability, maintainability, and scalability:
-  - `constants.py`: Stores all global constants like screen dimensions and object sizes.
-  - `circleshape.py`: A base class for circular game objects with full inertia and friction.
-  - `player.py`: Manages player controls, movement, shooting, and collision detection.
-  - `asteroid.py`: Handles asteroid movement, splitting, and texture generation.
-  - `asteroidfield.py`: Manages asteroid spawning, including black holes.
-  - `aliens.py` and `AlienField.py`: Manages alien ship behavior and interactions with the player.
-  - `loot.py`: Implements the loot system with power-ups for the player.
-  - `explosion.py`: Handles explosion interactions with objects.
-  - `floating_text.py`: Displays text effects during gameplay.
+  - `constants.py`        : Stores all global constants like screen dimensions and object sizes.
+  - `circleshape.py`      : A base class for circular game objects with full inertia and friction.
+  - `player.py`           : Manages player controls, movement, shooting, and collision detection.
+  - `asteroid.py`         : Handles asteroid movement, splitting, and texture generation.
+  - `asteroidfield.py`    : Manages asteroid spawning, including black holes.
+  - `aliens.py`           : Manages alien ship behavior and interactions with the player.
+  - `loot.py`             : Implements the loot system with power-ups for the player.
+  - `explosion.py`        : Handles explosion interactions with objects.
+  - `floating_text.py`    : Displays text effects during gameplay.
   - `background_layers.py`: Generates dynamic star and planet backgrounds.
-  - `main.py`: The main game loop handling events, updates, and rendering.
+  - `main.py`             : The main game loop handling events, updates, and rendering.
 
 ### Version Control:
 - Managed the entire project using Git and GitHub, effectively tracking changes and allowing collaboration.
@@ -46,13 +46,16 @@ Welcome to my Asteroids game project! 🎮 This has been a fun and challenging l
 **Controls:**
 - Rotate: Left/Right arrow keys or A/D.
 - Move: Up/Down arrow keys or W/S.
-- Strafe: A/D or 4/6 on the numpad.
 - Shoot: Spacebar.
 - Stabilizers: Automatically engage when not pressing movement keys to stop small movements.
 - Restart: Press Enter after game over.
+- Quit Game: Press Escape.
 
 **Objective:**
-Navigate your spaceship, avoid asteroids, and destroy them by shooting. Collect loot from defeated enemies to gain power-ups and increase your score. Survive as long as possible!
+Navigate your spaceship, avoid asteroids, black holes and enemy fire.
+Destroy aliens and asteroids by shooting at them. 
+Collect loot from defeated enemies to gain power-ups and increase your score. 
+Survive as long as possible!
 
 ## Future Plans
 
@@ -63,5 +66,8 @@ Navigate your spaceship, avoid asteroids, and destroy them by shooting. Collect 
 ## Getting Started
 
 1. Clone the repository:
-   ```bash
-   git clone https://github.com/RapolasRimeika/asteroids-game.git
+    git clone https://github.com/RapolasRimeika/asteroids-game.git
+2. Install the dependencies:
+    pip install -r requirements.txt
+3. Run the game:
+    python3 main.py
