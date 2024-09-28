@@ -13,7 +13,7 @@ class Explosion(pygame.sprite.Sprite):
         self.mid_radius =   EXPLOSION_MID_RADIUS
         self.far_radius =   EXPLOSION_FAR_RADIUS
         self.color =        EXPLOSION_COLOR
-
+        self.health = 1
 
     def update(self, dt):
         pass

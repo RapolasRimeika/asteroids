@@ -20,7 +20,7 @@ class LootSpawner(pygame.sprite.Sprite):
         
     def update(self, dt):
         self.timer += dt
-       # Check if delay has passed to spawn loot
+        # Check if delay has passed to spawn loot
         if self.timer >= self.delay and not self.loot_spawned:
             self.spawn_loot()
 
@@ -31,13 +31,13 @@ class LootSpawner(pygame.sprite.Sprite):
 class Loot(Asteroid):
     # Define the types of loot with their effects and colors
     loot_types = {
-        'health': {'color': (0, 255, 0), 'effect': 'heal', 'description': '+200 Health'},
-        'speed': {'color': (0, 0, 255), 'effect': 'speed', 'description': 'Engine upgrade!'},
-        'score': {'color': (255, 255, 0), 'effect': 'score', 'description': '+50 Score'},
-        'fire': {'color': (255, 0, 255), 'effect': 'fire', 'description': 'Fire rate increase!'},
-        'rotation': {'color': (0, 50, 200), 'effect': 'rotation', 'description': 'Thruster upgrade!'},
-        'stabilisers': {'color': (99, 50, 15), 'effect': 'stabilisers', 'description': 'STABILISERS!!!!'},
-        'dmg': {'color': (255, 0, 75), 'effect': 'dmg', 'description': 'Fire damage increase!'} 
+        'health': {'color': LOOT_COLOR_HEALTH, 'effect': LOOT_EFFECT_HEAL, 'description': LOOT_DESCRIPTION_HEAL},
+        'speed': {'color': LOOT_COLOR_SPEED, 'effect': LOOT_EFFECT_SPEED, 'description': LOOT_DESCRIPTION_SPEED},
+        'score': {'color': LOOT_COLOR_SCORE, 'effect': LOOT_EFFECT_SCORE, 'description': LOOT_DESCRIPTION_SCORE},
+        'fire': {'color': LOOT_COLOR_FIRE, 'effect': LOOT_EFFECT_FIRE, 'description': LOOT_DESCRIPTION_FIRE},
+        'rotation': {'color': LOOT_COLOR_ROTATION, 'effect': LOOT_EFFECT_ROTATION, 'description': LOOT_DESCRIPTION_ROTATION},
+        'stabilisers': {'color': LOOT_COLOR_STABILISERS, 'effect': LOOT_EFFECT_STABILISERS, 'description': LOOT_DESCRIPTION_STABILISERS},
+        'dmg': {'color': LOOT_COLOR_DMG, 'effect': LOOT_EFFECT_DMG, 'description': LOOT_DESCRIPTION_DMG}
     }
 
     def __init__(self, loot_parent, x, y, radius):
@@ -49,7 +49,7 @@ class Loot(Asteroid):
         self.effect_type = loot_data['effect']
         self.loot_color = loot_data['color']
         self.description = loot_data['description']
-        self.health = 1000000000  # To ensure loot stays until picked up
+        self.health = LOOT_HEALTH  # To ensure loot stays until picked up
         self.radius = radius
         self.is_loot = True
 
@@ -57,47 +57,42 @@ class Loot(Asteroid):
         super().__init__(x, y, radius, self.loot_color)
 
     def apply_effect(self, player):
-       
-        if self.effect_type == 'heal':
-            heal_amount = 200  # Heal up to 20 points
-            player.health += heal_amount
-            FloatingText(player.position.x, player.position.y, self.description, self.loot_color, 1000)
+        if self.effect_type == LOOT_EFFECT_HEAL:
+            player.health += LOOT_HEAL_AMOUNT
+            FloatingText(player.position.x, player.position.y, self.description, self.loot_color, LOOT_MSG_DURATION)
         
-        elif self.effect_type == 'score':
-            player.score_points(50)  # Add 50 points to the player's score
-            FloatingText(player.position.x, player.position.y, self.description, self.loot_color, 1000)
+        elif self.effect_type == LOOT_EFFECT_SCORE:
+            player.score_points(LOOT_SCORE_POINTS)
+            FloatingText(player.position.x, player.position.y, self.description, self.loot_color, LOOT_MSG_DURATION)
         
-        elif self.effect_type == 'fire':
-            player.shot_cooldown *= 0.7 #faster shooting rate
-            FloatingText(player.position.x, player.position.y, self.description, self.loot_color, 1000)
+        elif self.effect_type == LOOT_EFFECT_FIRE:
+            player.shot_cooldown *= LOOT_FIRE_COOLDOWN_MULTIPLIER
+            FloatingText(player.position.x, player.position.y, self.description, self.loot_color, LOOT_MSG_DURATION)
         
-        elif self.effect_type == 'dmg':
-            player.shot_damage *= 2 # increased damage
-            FloatingText(player.position.x, player.position.y, self.description, self.loot_color, 1000)        
+        elif self.effect_type == LOOT_EFFECT_DMG:
+            player.shot_damage *= LOOT_DMG_MULTIPLIER
+            FloatingText(player.position.x, player.position.y, self.description, self.loot_color, LOOT_MSG_DURATION)        
         
-        elif self.effect_type == 'speed':
-            player.move_speed *= 1.2  # engine upgrade
-            FloatingText(player.position.x, player.position.y, self.description, self.loot_color, 1000)
+        elif self.effect_type == LOOT_EFFECT_SPEED:
+            player.move_speed *= LOOT_SPEED_MULTIPLIER
+            FloatingText(player.position.x, player.position.y, self.description, self.loot_color, LOOT_MSG_DURATION)
 
-        elif self.effect_type == 'rotation':
-            player.turn_speed *= 1.2 #faster turning speed
-            FloatingText(player.position.x, player.position.y, self.description, self.loot_color, 1000)
+        elif self.effect_type == LOOT_EFFECT_ROTATION:
+            player.turn_speed *= LOOT_ROTATION_MULTIPLIER
+            FloatingText(player.position.x, player.position.y, self.description, self.loot_color, LOOT_MSG_DURATION)
 
-        elif self.effect_type == 'stabilisers':
+        elif self.effect_type == LOOT_EFFECT_STABILISERS:
             if player.stabilisers == True:
-                 #faster shooting rate
-                player.score_points(50)  # Add 50 points to the player's score
-                FloatingText(player.position.x, player.position.y, "Already have Stabilisers, let's sell it", self.loot_color, 1000)
+                player.score_points(LOOT_ALREADY_HAVE_STABILISERS_POINTS)
+                FloatingText(player.position.x, player.position.y, LOOT_ALREADY_HAVE_STABILISERS_MSG, self.loot_color, LOOT_MSG_DURATION)
             else:
-                FloatingText(player.position.x, player.position.y, self.description, self.loot_color, 1000)
-
+                FloatingText(player.position.x, player.position.y, self.description, self.loot_color, LOOT_MSG_DURATION)
 
     def collision(self, other, bounce=True):
         # Check for collision with another object
         distance = self.position.distance_to(other.position)
-        if (self.radius + 5) + other.radius > distance: # +5 for easy collection
+        if (self.radius + LOOT_COLLECTION_BUFFER) + other.radius > distance:  # Use buffer for easy collection
             # If the object colliding with this loot is the player, apply the effect
             if hasattr(other, "is_player") and other.is_player == True:
                 self.apply_effect(other)
                 self.kill()  # Remove loot after applying the effect
-            
