@@ -13,23 +13,24 @@ from explosion import Explosion
 class AlienShip(CircleShape):
     def __init__(self, x, y, ALIEN_RADIUS, player_target, asteroids):
         super().__init__(x, y, ALIEN_RADIUS)
+        self.isalien =          True
+        self.color =            ALIEN_COLOR 
+        self.move_speed =       ALIEN_MOVE_SPEED
+        self.turn_speed =       ALIEN_TURN_SPEED        
+        self.shooting_range =   ALIEN_SHOOTING_RANGE              # Max range to shoot at player or asteroids
+        self.shot_damage =      PLAYER_SHOT_DMG
+        self.health =           ALIEN_HEALTH
         self.target = player_target                             # Reference to the player object
         self.asteroids = asteroids                              # List of asteroid objects
         self.timer = 0                                          # Shooting cooldown timer
-        self.shooting_range = 600                               # Max range to shoot at player or asteroids
-        self.color = (50, 190, 50)                              # Set the alien ship color to green
-        self.health = self.radius * 3
+        self.angular_velocity = 0                               # Init velocity
         self.score = 0
-        self.isalien = True
-        self.shot_damage = PLAYER_SHOT_DMG
-        self.angular_velocity = 0
-        self.move_speed = PLAYER_SPEED * 1.5
-        self.turn_speed = PLAYER_TURN_SPEED * 1.5
+
         self.forward_direction = pygame.Vector2(0, 1).rotate(self.rotation)
         self.right_direction = self.forward_direction.rotate(90)
         # Stabilisers attributes
         self.stabilisers = True          # Enable stabilisers
-        self.stabiliser_str = 0.5        # Strength of stabilisation (adjust as needed)
+        self.stabiliser_str = 0.5        # Strength of stabilisation
         self.forward_velocity = 0        # Initialize forward velocity
         self.right_velocity = 0          # Initialize right velocity
         self.max_speed = 300             # Define a maximum speed for the alien
@@ -144,12 +145,11 @@ class AlienShip(CircleShape):
         force = self.forward_direction * force_magnitude
         self.velocity += force  # Apply the force to velocity
         # Optionally, create a visual effect when moving
-        RGB = (0, 255, 0)
         right = self.right_direction * self.radius / 1.5
         b = self.position - self.forward_direction * self.radius - right
         c = self.position - self.forward_direction * self.radius + right
-        FloatingText(b.x, b.y, "^", RGB, 50)
-        FloatingText(c.x, c.y, "^", RGB, 50)
+        FloatingText(b.x, b.y, "^", ALIEN_COLOR, 50)
+        FloatingText(c.x, c.y, "^", ALIEN_COLOR, 50)
 
     def apply_torque(self, torque):
         # Change the angular velocity by applying a torque (for rotation)
@@ -182,9 +182,8 @@ class AlienShip(CircleShape):
             self.timer = ALIEN_SHOOT_COOLDOWN                                       # Reset the shooting timer
 
     def death(self):
-        RGB = (250, 200, 100)
         scream = random.choice(alien_screams)
-        FloatingText(self.position.x, self.position.y, scream, RGB, 3000)
+        FloatingText(self.position.x, self.position.y, scream, ALIEN_COLOR, 3000)
         self.shrapnel_obj(self.radius)
         explosion = Explosion(self.position.x, self.position.y, (self.radius * 7))
         if random.random() < LOOT_DROP_CHANCE:  # Only spawn loot some percentage of the time

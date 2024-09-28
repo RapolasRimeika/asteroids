@@ -1,20 +1,21 @@
 import pygame
 from circleshape import CircleShape
+from constants import *
 
 class BLK(CircleShape):
     def __init__(self):
-        x = 100
-        y = 100
-        radius = 75
-        friction = 1
-        angular_friction = 1
-        super().__init__(x, y, radius, friction, angular_friction)
+        super().__init__(BLACK_HOLE_X, BLACK_HOLE_Y, BLACK_HOLE_RADIUS, BLACK_HOLE_FRICTION, BLACK_HOLE_ANGULAR_FRICTION)
         self.is_explosion = True
-        self.far_radius = 700
-        self.near = self.far_radius / 4
-        self.mid_radius = self.far_radius / 2
-        self.color = (150, 120, 160)
-        self.health = 1_000_000_000_000_000  
+        self.color =        BLACK_HOLE_COLOR
+        self.health =       BLACK_HOLE_HEALTH
+        self.radius =       BLACK_HOLE_RADIUS
+        self.near =         BLACK_HOLE_NEAR
+        self.mid_radius =   BLACK_HOLE_MID_RADIUS
+        self.far_radius =   BLACK_HOLE_FAR_RADIUS
+        self.colli_buffer = BLACK_HOLE_COLLI_BUFFER
+        self.near_pull =    BLACK_HOLE_NEAR_PULL
+        self.mid_pull =     BLACK_HOLE_MID_PULL
+        self.far_pull =     BLACK_HOLE_FAR_PULL
 
     def update(self, dt):
         super().update(dt)
@@ -25,16 +26,16 @@ class BLK(CircleShape):
         print(f"Black hole swallowed {other}")
         distance = self.position.distance_to(other.position)
         if distance <= self.far_radius + other.radius:      # Within range
-            if distance <= self.radius + 15:                # Black hole 
+            if distance <= self.radius + self.colli_buffer: # Black hole death radius
                 other.kill()
-            if distance <= self.near:                       # Close range
-                strength = -100
+            if distance <= self.near:                         # Close range
+                strength = self.near_pull
                 self.calculate_force(other, strength)
             elif distance <= self.mid_radius:               # Mid range
-                strength = -10
+                strength = self.mid_pull
                 self.calculate_force(other, strength)
             else:                                           # Far range
-                strength = -3
+                strength = self.far_pull
                 self.calculate_force(other, strength)
 
         bounce = False

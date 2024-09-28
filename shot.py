@@ -8,7 +8,7 @@ class Shot(CircleShape):
     def __init__(self, x, y, radius, owner):
         # Initialize the shot with position and radius
         super().__init__(x, y, radius)
-        self.lifetime = 2000  # Lifetime in milliseconds
+        self.lifetime = SHOT_LIFETIME
         self.spawn_time = pygame.time.get_ticks()
         self.owner = owner
         owner = self.owner
