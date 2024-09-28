@@ -9,6 +9,7 @@ from background_layers import generate_star_and_planet_background
 
 class State():
     def __init__(self, player_dead):
+        self.background = generate_star_and_planet_background(SCREEN_WIDTH, SCREEN_HEIGHT, 1000, 3, (50, 100))
         self.player_dead = player_dead
         self.player = None
         self.running = True
@@ -16,7 +17,6 @@ class State():
         self.high_score = 0  # Initialize high score
         self.score = 0
         self.health = 0
-        self.background = generate_star_and_planet_background(SCREEN_WIDTH, SCREEN_HEIGHT, 1000, 3, (50, 100))
 
     def update(self, dt, updatable, drawable, collidable_group, clearable_group):    
         keys = pygame.key.get_pressed()
@@ -43,25 +43,22 @@ class State():
         self.score = self.player.score
         self.play_time = round(self.player.time)
         self.health = self.player.health
-        RGB = (200, 200, 200)
-        FloatingText(70, 20, (f"Score is {self.score}"), RGB, 10)
-        FloatingText(300, 20, (f"Time played {self.play_time} s"), RGB, 10)
+        FloatingText(70, 20, (f"Score is {self.score}"), TEXT_COLOR, 10)
+        FloatingText(300, 20, (f"Time played {self.play_time} s"), TEXT_COLOR, 10)
 
     def draw(self, screen):
         pygame.draw.rect(screen, (100, 200, 100), (1250, 1250, self.health, 10))     # Green health bar
         
-
     def player_death(self): # Draw death summary
-        RGB = (250, 200, 100)
-        FloatingText(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2,           (f"Game Over!"), RGB, 10)
-        FloatingText(SCREEN_WIDTH / 2, ((SCREEN_HEIGHT / 2)+ 40),   (f"Your Score is {self.player.score}"), RGB, 10)
-        FloatingText(SCREEN_WIDTH / 2, ((SCREEN_HEIGHT / 2)+ 80),   (f"Yuo lasted {round(self.player.time)} seconds"), RGB, 10) 
-        FloatingText(SCREEN_WIDTH / 2, ((SCREEN_HEIGHT / 2)+ 120),  (f"High Score: {self.high_score}"), RGB, 10)
-        FloatingText(SCREEN_WIDTH / 2, ((SCREEN_HEIGHT / 2)+ 160),  (f"Press Return to play again"), RGB, 10)
-        FloatingText(SCREEN_WIDTH / 2, ((SCREEN_HEIGHT / 2)+ 200),  (f"Press ESC to quit"), RGB, 10)
-        
+        death_summary = (
+                f"Game Over!\n"
+                f"Your Score is {self.player.score}\n"
+                f"You lasted {round(self.player.time)} seconds\n"
+                f"High Score: {self.high_score}\n"
+                f"Press Return to play again\n"
+                f"Press ESC to quit")
+        FloatingText(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, death_summary, TEXT_COLOR, 10)
+
     def new_game(self):
         start_message = random.choice(start_messages)
-        RGB = (250, 200, 100)
-        FloatingText(SCREEN_WIDTH / 2, (SCREEN_HEIGHT / 2) - 100, (f"{start_message}"), RGB, 4000)
-
+        FloatingText(SCREEN_WIDTH / 2, (SCREEN_HEIGHT / 2) - 100, (f"{start_message}"), TEXT_COLOR, 4000)

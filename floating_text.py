@@ -1,9 +1,10 @@
 import pygame
+from constants import *
 
 class FloatingText(pygame.sprite.Sprite):
     containers = []  # This will be set to the relevant sprite groups from the main loop
 
-    def __init__(self, x, y, message, RGB, duration):
+    def __init__(self, x, y, message, RGB, duration, line_spacing=LINE_SPACING):
         super().__init__(self.containers)  # Automatically add to all specified sprite groups
         self.x = x
         self.y = y
@@ -11,9 +12,17 @@ class FloatingText(pygame.sprite.Sprite):
         self.duration = duration 
         self.RGB = RGB
         self.start_time = pygame.time.get_ticks()
-        # Create a font and render the text surface
         self.font = pygame.font.Font(None, 34)
-        self.text_surface = self.font.render(self.message, True, self.RGB)
+        self.line_spacing = line_spacing
+        self.render_lines()
+
+    def render_lines(self):
+        """Splits the message into multiple lines and creates a surface for each."""
+        self.lines = self.message.split('\n')
+        self.text_surfaces = []
+        for line in self.lines:
+            text_surface = self.font.render(line, True, self.RGB)
+            self.text_surfaces.append(text_surface)
 
     def update(self, dt):
         # Check if the duration has elapsed
@@ -22,6 +31,8 @@ class FloatingText(pygame.sprite.Sprite):
             self.kill()  # Remove the floating text after its duration
 
     def draw(self, screen):
-        # Draw the text on the screen at its (x, y) position
-        text_rect = self.text_surface.get_rect(center=(self.x, self.y))
-        screen.blit(self.text_surface, text_rect)
+        """Draw each line with appropriate line spacing."""
+        for i, text_surface in enumerate(self.text_surfaces):
+            line_y = self.y + i * self.line_spacing
+            text_rect = text_surface.get_rect(center=(self.x, line_y))
+            screen.blit(text_surface, text_rect)
