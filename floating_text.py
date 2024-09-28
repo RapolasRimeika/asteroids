@@ -12,7 +12,7 @@ class FloatingText(pygame.sprite.Sprite):
         self.duration = duration 
         self.RGB = RGB
         self.start_time = pygame.time.get_ticks()
-        self.font = pygame.font.Font(None, 34)
+        self.font = pygame.font.Font(None, FONT_SIZE)  # Use font size constant
         self.line_spacing = line_spacing
         self.render_lines()
 

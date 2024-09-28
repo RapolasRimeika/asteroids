@@ -73,6 +73,7 @@ BLACK_HOLE_FAR_PULL = -3
 
 TEXT_COLOR = (250, 200, 100)
 LINE_SPACING = 30
+FONT_SIZE = 34           # Font size for FloatingText
 PLAYER_FIRE_COLOR = (255, 0, 0)
 
 # Loot constants
