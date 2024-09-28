@@ -3,7 +3,6 @@ import random
 from circleshape import CircleShape
 from floating_text import FloatingText
 from constants import *
-from text_lists import explosion_list
 
 class Asteroid(CircleShape):
     def __init__(self, x, y, radius, RGB=(150, 150, 150), ):

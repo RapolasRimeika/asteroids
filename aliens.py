@@ -1,6 +1,5 @@
 import pygame
 import random
-from math import atan2, degrees
 from constants import *
 from circleshape import CircleShape
 from shot import Shot
@@ -29,7 +28,7 @@ class AlienShip(CircleShape):
             shot_damage (int): The amount of damage the alien's shots deal to targets.
             health (int): The current health of the alien ship.
             max_speed (float): The maximum linear speed the alien can achieve.
-            max_angular_velocity (float): The maximum angular velocity for turning.
+            max_ang_velocity (float): The maximum angular velocity for turning.
             target (Player): A reference to the player object, which the alien targets.
             asteroids (list): A list of asteroid objects, used for avoiding collisions.
             timer (float): A cooldown timer for controlling the rate at which the alien fires shots.
@@ -58,28 +57,26 @@ class AlienShip(CircleShape):
 
     def __init__(self, x, y, ALIEN_RADIUS, player_target, asteroids):
         super().__init__(x, y, ALIEN_RADIUS)
-        self.isalien =          True
-        self.color =            ALIEN_COLOR 
-        self.move_speed =       ALIEN_MOVE_SPEED
-        self.turn_speed =       ALIEN_TURN_SPEED        
+        self.isalien =          True                            # Flag to mark this object as an alien ship
+        self.color =            ALIEN_COLOR                     # The color of the alien ship for rendering
+        self.move_speed =       ALIEN_MOVE_SPEED                # Speed at which the alien ship moves
+        self.turn_speed =       ALIEN_TURN_SPEED                # Speed at which the alien ship turns/rotates
         self.shooting_range =   ALIEN_SHOOTING_RANGE            # Max range to shoot at player or asteroids
-        self.shot_damage =      PLAYER_SHOT_DMG
-        self.health =           ALIEN_HEALTH
-        self.max_speed =        ALIEN_MAX_SPEED
-        self.max_angular_velocity = ALIEN_MAX_ANGULAR_VELOCITY
+        self.shot_damage =      PLAYER_SHOT_DMG                 # Damage dealt by each shot fired by the alien
+        self.health =           ALIEN_HEALTH                    # Health of the alien ship
+        self.max_speed =        ALIEN_MAX_SPEED                 # Maximum speed the alien ship can reach
+        self.max_ang_velocity = ALIEN_MAX_ANGULAR_VELOCITY      # Maximum rotational speed for the alien
         self.target = player_target                             # Reference to the player object
-        self.asteroids = asteroids                              # List of asteroid objects
+        self.asteroids = asteroids                              # List of asteroid objects in the game
         self.timer = 0                                          # Shooting cooldown timer
-        self.angular_velocity = 0                               # Init velocity
-        self.forward_velocity = 0                               # Initialize forward velocity
-        self.right_velocity = 0                                 # Initialize right velocity
-        self.score = 0
+        self.angular_velocity = 0                               # Initial angular velocity (rotation speed)
+        self.forward_velocity = 0                               # Initial forward velocity of the alien ship
+        self.right_velocity = 0                                 # Initial rightward velocity of the alien ship        self.score = 0
         self.forward_direction = pygame.Vector2(0, 1).rotate(self.rotation)
         self.right_direction = self.forward_direction.rotate(90)
         self.stabilisers = True                                 # Enable stabilisers
         self.stabiliser_str = ALIEN_STABILISER_STRENGTH         # Strength of stabilisation
-
-
+        self.score =0
 
     def triangle(self):  # Calculate the points of the triangle representing the alien ship
         forward = pygame.Vector2(0, 1).rotate(self.rotation)
@@ -110,7 +107,7 @@ class AlienShip(CircleShape):
         # Clamp velocities to maximum values
         if self.velocity.length() > self.max_speed:
             self.velocity.scale_to_length(self.max_speed)
-        self.angular_velocity = max(-self.max_angular_velocity, min(self.angular_velocity, self.max_angular_velocity))
+        self.angular_velocity = max(-self.max_ang_velocity, min(self.angular_velocity, self.max_ang_velocity))
         # Update position and rotation based on velocities
         self.position += self.velocity * dt
         self.rotation += self.angular_velocity * dt
@@ -126,26 +123,36 @@ class AlienShip(CircleShape):
 
         # Apply stabilisers if enabled
         if self.stabilisers:
-            # Apply thresholds to stop small movements
-            velocity_threshold = 0.4
-            if abs(self.forward_velocity) < velocity_threshold:
-                self.forward_velocity = 0
-            if abs(self.right_velocity) < velocity_threshold:
-                self.right_velocity = 0
-            if abs(self.angular_velocity) < velocity_threshold:
-                self.angular_velocity = 0
+            self.stabilise(dt)
+    
+    def stabilise(self, dt):
+        """
+        Applies stabilisers to reduce small movements and rotational drifts if enabled.
+        Args: dt (float): The time delta for frame-based updates.
+        """
+        # Apply thresholds to stop small movements
+        velocity_threshold = 0.4
+        if abs(self.forward_velocity) < velocity_threshold:
+            self.forward_velocity = 0
+        if abs(self.right_velocity) < velocity_threshold:
+            self.right_velocity = 0
+        if abs(self.angular_velocity) < velocity_threshold:
+            self.angular_velocity = 0
 
-            if not self.is_moving_forward:
-                if self.forward_velocity > 0:
-                    self.move(-self.move_speed * dt * self.stabiliser_str)
-                elif self.forward_velocity < 0:
-                    self.move(self.move_speed * dt * self.stabiliser_str)
+        # Apply force to stabilise forward movement if not actively moving
+        if not self.is_moving_forward:
+            if self.forward_velocity > 0:
+                self.move(-self.move_speed * dt * self.stabiliser_str)
+            elif self.forward_velocity < 0:
+                self.move(self.move_speed * dt * self.stabiliser_str)
 
-            if not self.is_rotating:
-                if self.angular_velocity > 0:
-                    self.apply_torque(-self.turn_speed * dt * self.stabiliser_str)
-                elif self.angular_velocity < 0:
-                    self.apply_torque(self.turn_speed * dt * self.stabiliser_str)
+        # Apply torque to stabilise rotation if not actively rotating
+        if not self.is_rotating:
+            if self.angular_velocity > 0:
+                self.apply_torque(-self.turn_speed * dt * self.stabiliser_str)
+            elif self.angular_velocity < 0:
+                self.apply_torque(self.turn_speed * dt * self.stabiliser_str)
+
 
     def avoid_asteroids(self, dt):
         # Check for nearby asteroids and adjust movement to avoid them
@@ -167,23 +174,18 @@ class AlienShip(CircleShape):
                 self.is_moving_forward = True  # Alien is moving (backward in this case)
 
     def move_towards_player(self, dt):
-        # Move towards the player
-        direction_to_player = (self.target.position - self.position).normalize()
-        angle_to_player = self.forward_direction.angle_to(direction_to_player)
-
-        # Apply torque to turn towards the player
-        max_torque = self.turn_speed * dt
-        torque = max(-max_torque, min(max_torque, (angle_to_player / 180) * max_torque))
-        self.apply_torque(torque)
-        self.is_rotating = True  # Alien is rotating towards the player
-
-        # Only move if below maximum speed
-        if self.velocity.length() < self.max_speed:
-            self.move(self.move_speed * dt)
-            self.is_moving_forward = True  # Alien is moving forward towards the player
+        direction_to_player = (self.target.position - self.position).normalize()  # Direction vector from alien to player
+        angle_to_player = self.forward_direction.angle_to(direction_to_player)    # Angle between alien's forward direction and player
+        max_torque = self.turn_speed * dt                                         # Max torque applied for turning based on delta time
+        torque = max(-max_torque, min(max_torque, (angle_to_player / 180) * max_torque))  # Clamp torque within the max range
+        self.apply_torque(torque)                                                 # Apply the calculated torque to the alien ship
+        self.is_rotating = True                                                   # Flag to indicate the alien is rotating towards the player
+        if self.velocity.length() < self.max_speed:                               # Move forward if velocity is below max speed
+            self.move(self.move_speed * dt)                                       # Move the alien towards the player
+            self.is_moving_forward = True                                         # Flag to indicate the alien is moving forward
         else:
-            # If at max speed, don't apply additional force
-            self.is_moving_forward = False
+            self.is_moving_forward = False                                        # Alien is at max speed, no further acceleration
+
 
     def move(self, force_magnitude):
         # Move the alien ship in the direction it is facing
