@@ -11,6 +11,51 @@ from loot import LootSpawner
 from explosion import Explosion
 
 class AlienShip(CircleShape):
+    class AlienShip(CircleShape):
+        """
+        Represents an AI-controlled alien ship that targets the player and avoids asteroids.
+
+        The `AlienShip` class extends the `CircleShape` class and manages all the behaviors related to
+        an alien ship, including movement, shooting, avoiding obstacles, and handling death. The alien ship
+        moves towards the player, adjusts its path to avoid asteroids, and shoots at the player and nearby
+        asteroids within range. It also uses stabilizers to maintain control over small movements and rotation.
+
+        Attributes:
+            isalien (bool): Marks the object as an alien ship.
+            color (tuple): The color of the alien ship, used for rendering.
+            move_speed (float): The speed at which the alien moves.
+            turn_speed (float): The speed at which the alien turns.
+            shooting_range (float): The maximum distance from which the alien can shoot at the player or asteroids.
+            shot_damage (int): The amount of damage the alien's shots deal to targets.
+            health (int): The current health of the alien ship.
+            max_speed (float): The maximum linear speed the alien can achieve.
+            max_angular_velocity (float): The maximum angular velocity for turning.
+            target (Player): A reference to the player object, which the alien targets.
+            asteroids (list): A list of asteroid objects, used for avoiding collisions.
+            timer (float): A cooldown timer for controlling the rate at which the alien fires shots.
+            angular_velocity (float): The current angular velocity (turn speed) of the alien.
+            forward_velocity (float): The current forward velocity of the alien.
+            right_velocity (float): The current rightward velocity of the alien.
+            score (int): The score value awarded for destroying the alien.
+            forward_direction (Vector2): The vector representing the direction the alien is facing.
+            right_direction (Vector2): The vector perpendicular to the forward direction.
+            stabilisers (bool): A flag indicating whether stabilizers are enabled to smooth movements.
+            stabiliser_str (float): The strength of the stabilizers in counteracting movement and rotation.
+
+        Methods:
+            triangle(): Calculates the points of the triangle used to represent the alien ship on screen.
+            draw(screen): Renders the alien ship as a triangle on the screen.
+            update(dt): Updates the alien ship's position, rotation, and behavior each frame.
+            avoid_asteroids(dt): Adjusts the alien's movement to avoid nearby asteroids.
+            move_towards_player(dt): Moves the alien towards the player's position.
+            move(force_magnitude): Moves the alien in the direction it is facing by applying a force.
+            apply_torque(torque): Changes the alien's angular velocity by applying a rotational force.
+            shoot_if_in_range(): Shoots at the player or nearby asteroids if within range and facing them.
+            shoot_at(target): Fires a shot at the specified target if the alien is facing it.
+            death(): Handles the alien's death, including visual effects, spawning shrapnel, and dropping loot.
+        """
+
+
     def __init__(self, x, y, ALIEN_RADIUS, player_target, asteroids):
         super().__init__(x, y, ALIEN_RADIUS)
         self.isalien =          True
