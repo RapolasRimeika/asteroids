@@ -6,7 +6,6 @@ from constants import *
 class AlienField(pygame.sprite.Sprite):
     def __init__(self, player, asteroids):
         pygame.sprite.Sprite.__init__(self)
-        
         self.player = player        # Reference to the player object
         self.asteroids = asteroids  # Reference to the asteroid list
         self.spawn_timer = 0.0      # Timer to control spawn intervals

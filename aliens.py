@@ -17,24 +17,24 @@ class AlienShip(CircleShape):
         self.color =            ALIEN_COLOR 
         self.move_speed =       ALIEN_MOVE_SPEED
         self.turn_speed =       ALIEN_TURN_SPEED        
-        self.shooting_range =   ALIEN_SHOOTING_RANGE              # Max range to shoot at player or asteroids
+        self.shooting_range =   ALIEN_SHOOTING_RANGE            # Max range to shoot at player or asteroids
         self.shot_damage =      PLAYER_SHOT_DMG
         self.health =           ALIEN_HEALTH
+        self.max_speed =        ALIEN_MAX_SPEED
+        self.max_angular_velocity = ALIEN_MAX_ANGULAR_VELOCITY
         self.target = player_target                             # Reference to the player object
         self.asteroids = asteroids                              # List of asteroid objects
         self.timer = 0                                          # Shooting cooldown timer
         self.angular_velocity = 0                               # Init velocity
+        self.forward_velocity = 0                               # Initialize forward velocity
+        self.right_velocity = 0                                 # Initialize right velocity
         self.score = 0
-
         self.forward_direction = pygame.Vector2(0, 1).rotate(self.rotation)
         self.right_direction = self.forward_direction.rotate(90)
-        # Stabilisers attributes
-        self.stabilisers = True          # Enable stabilisers
-        self.stabiliser_str = 0.5        # Strength of stabilisation
-        self.forward_velocity = 0        # Initialize forward velocity
-        self.right_velocity = 0          # Initialize right velocity
-        self.max_speed = 300             # Define a maximum speed for the alien
-        self.max_angular_velocity = 300  # Maximum angular velocity in degrees per second
+        self.stabilisers = True                                 # Enable stabilisers
+        self.stabiliser_str = ALIEN_STABILISER_STRENGTH         # Strength of stabilisation
+
+
 
     def triangle(self):  # Calculate the points of the triangle representing the alien ship
         forward = pygame.Vector2(0, 1).rotate(self.rotation)

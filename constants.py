@@ -31,6 +31,10 @@ ALIEN_SHOOTING_RANGE = 600
 ALIEN_TURN_SPEED = PLAYER_TURN_SPEED * 1.5
 ALIEN_MOVE_SPEED = PLAYER_SPEED * 1.5
 ALIEN_COLOR = (50, 190, 50)
+ALIEN_MAX_SPEED = 300               # Maximum speed for the alien
+ALIEN_MAX_ANGULAR_VELOCITY = 300    # Maximum angular velocity in degrees per second
+ALIEN_STABILISER_STRENGTH = 0.5     # Strength of stabilisation
+
 
 # Global settings
 GLOBAL_COLLISION_MODIFIER = 0.002

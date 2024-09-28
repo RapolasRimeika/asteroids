@@ -22,20 +22,20 @@ class Explosion(pygame.sprite.Sprite):
 
         if distance <= self.far_radius + other.radius: #whitin range
             if distance <= self.near: #close range
-                strength = 4
+                strength = 400
                 self.calculate_force(other, strength)
             elif distance <= self.mid_radius: #mid range
-                strength = 2
+                strength = 200
                 self.calculate_force(other, strength) 
             else:
-                strength = 1
+                strength = 100
                 self.calculate_force(other, strength) 
         
     def calculate_force(self, other, strength):
         explosion_vector = other.position - self.position
         if explosion_vector.length() > 0:
             explosion_vector.normalize_ip()
-        force = explosion_vector * strength * 100  # Scale force
+        force = explosion_vector * strength 
         other.apply_force(force)
         self.kill()  # Remove the explosion after applying force
 
