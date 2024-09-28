@@ -1,3 +1,14 @@
+"""
+Collection of humorous and dramatic phrases for various in-game events.
+
+Attributes:
+    alien_screams (list): A list of funny or sarcastic phrases aliens shout when destroyed.
+    start_messages (list): Quirky and humorous messages displayed when the game starts.
+    player_death_screams (list): Exclamations shouted by the player upon death.
+    shrapnel_flames (list): Special characters used to represent shrapnel flames.
+"""
+
+# Alien destruction phrases
 alien_screams = [
     "Ouch! Right in the thrusters!", 
     "Boom! There goes my day!",
@@ -20,6 +31,7 @@ alien_screams = [
     "F*** me! It’s over!"
 ]
 
+# Messages displayed at game start
 start_messages = [
     "More rocks? Yay.",
     "Asteroids? How fun.",
@@ -36,10 +48,12 @@ start_messages = [
     "Aliens bet against us. Classic.",
 ]
 
+# Player's death exclamations
 player_death_screams = [
-            "ARGHHH!", "No! No! No!  NOOOOOOOOO!!!", "NO!", 
-            "We're crashing!", "Eject!", "Tell her I love her!", 
-            "Beam me out!"
-        ]
+    "ARGHHH!", "No! No! No!  NOOOOOOOOO!!!", "NO!", 
+    "We're crashing!", "Eject!", "Tell her I love her!", 
+    "Beam me out!"
+]
 
+# Symbols representing shrapnel flames
 shrapnel_flames = ["§", "¶", "∞", "∑", "≈", "Ω", "µ", "∆", "∫", "≈", "¬", "π", "≠", "√", "≤"]
