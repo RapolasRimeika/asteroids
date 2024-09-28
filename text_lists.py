@@ -55,3 +55,5 @@ player_death_screams = [
             "We're crashing!", "Eject!", "Tell her I love her!", 
             "Beam me out of here!"
         ]
+
+shrapnel_flames = ["§", "¶", "∞", "∑", "≈", "Ω", "µ", "∆", "∫", "≈", "¬", "π", "≠", "√", "≤"]

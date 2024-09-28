@@ -2,6 +2,7 @@ import pygame
 import random
 from floating_text import FloatingText
 from constants import GLOBAL_COLLISION_MODIFIER
+from text_lists import shrapnel_flames
 
 # Base class for circular game objects with full inertia and friction
 class CircleShape(pygame.sprite.Sprite):
@@ -11,7 +12,6 @@ class CircleShape(pygame.sprite.Sprite):
             super().__init__(self.containers)
         else:
             super().__init__()
-
         self.position = pygame.Vector2(x, y)
         self.velocity = pygame.Vector2(0, 0)  # Linear velocity for movement
         self.radius = radius
@@ -123,45 +123,32 @@ class CircleShape(pygame.sprite.Sprite):
             random_angle = random.uniform(0, 360)
             velocity_a = self.velocity.rotate(random_angle) * random.uniform(0.1, 2)
             new_radius = random.uniform(1, 3)
-            # Spawn shrapnel
+            # Spawn shrapnel proportional to object radius
             shrapnel_piece = Shrapnel(self.position.x, self.position.y, new_radius, RGB)
             shrapnel_piece.velocity = velocity_a
             mass -= new_radius
             self.kill()
 
-
 class Shrapnel(CircleShape):
     def __init__(self, x, y, radius, RGB=(235, 5, 2)):
         super().__init__(x, y, radius)
-        self.lifetime = random.randrange(100, 700, 100)  # Lifetime in milliseconds
+        self.lifetime = random.randrange(100, 700, 100)     # Lifetime in milliseconds
         self.spawn_time = pygame.time.get_ticks()
         self.rgb = RGB
-
-        # Disable angular velocity
-        self.angular_velocity = 0
+        self.angular_velocity = 0                           # Disable angular velocity
 
     def update(self, dt):
-        # Update position based on velocity and time delta
-        self.position += self.velocity * dt
-        
-        # Apply linear friction to slow down movement over time
-        self.velocity *= self.friction
-
-        # Remove the shrapnel if its lifetime has expired
+        self.position += self.velocity * dt                 # Update position based on velocity and time delta
+        self.velocity *= self.friction                      # Apply linear friction to slow down movement over time
         current_time = pygame.time.get_ticks()
-        if current_time - self.spawn_time > self.lifetime:
+        if current_time - self.spawn_time > self.lifetime:  # Remove the shrapnel if its lifetime has expired
             self.kill()
 
-    def apply_torque(self, torque):
-        # Override to do nothing, so no angular momentum is applied
-        pass
-
-    def draw(self, screen):
-        # Draw the shrapnel as a white circle outline (not filled)
+    def draw(self, screen):                                 # Draw the shrapnel as a white circle outline
         pygame.draw.circle(screen, (255, 255, 255), (int(self.position.x), int(self.position.y)), self.radius, )
-
-        # Draw random floating flame characters (optional)
-        flames = ["§", "¶", "∞", "∑", "≈", "Ω", "µ", "∆", "∫", "≈", "¬", "π", "≠", "√", "≤"]
-        flame = random.choice(flames)
+        
+        flame = random.choice(shrapnel_flames)              # Draw random floating flame characters
         FloatingText(self.position.x, self.position.y, (f"{flame}"), self.rgb, 40)
-
+    
+    def apply_torque(self, torque):
+        pass

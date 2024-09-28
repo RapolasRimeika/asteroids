@@ -178,7 +178,7 @@ class AlienShip(CircleShape):
             new_shot.velocity = ALIEN_SHOT_SPEED * self.forward_direction + self.velocity
             if new_shot.velocity.length() < PLAYER_SHOT_SPEED:
                 new_shot.velocity.scale_to_length(PLAYER_SHOT_SPEED)
-            FloatingText(shot_position.x, shot_position.y, "ø", (15, 250, 15), 40)  # Create visual effect
+            FloatingText(shot_position.x, shot_position.y, "ø", (ALIEN_COLOR), 40)  # Create visual effect
             self.timer = ALIEN_SHOOT_COOLDOWN                                       # Reset the shooting timer
 
     def death(self):

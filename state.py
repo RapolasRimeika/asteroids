@@ -35,7 +35,7 @@ class State():
             self.new_game()
 
         off_screen_rect = pygame.Rect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)    # Optimise the game by killing items that go off screen
-        inflated_rect = off_screen_rect.inflate(150, 150)                   # Inflate the screen rectangle by amount of pixels on each side
+        inflated_rect = off_screen_rect.inflate(125, 125)                   # Inflate the screen rectangle by amount of pixels on each side
         for item in collidable_group:                                       # Loop through each item in the collidable_group
             if not inflated_rect.collidepoint(item.position):               # Check if the item's position is outside the inflated screen area
                 item.kill()
@@ -43,8 +43,7 @@ class State():
         self.score = self.player.score
         self.play_time = round(self.player.time)
         self.health = self.player.health
-        FloatingText(70, 20, (f"Score is {self.score}"), TEXT_COLOR, 10)
-        FloatingText(300, 20, (f"Time played {self.play_time} s"), TEXT_COLOR, 10)
+        FloatingText(175, 20, (f"Score is {self.score}  Time played {self.play_time} s"), TEXT_COLOR, 10)
 
     def draw(self, screen):
         pygame.draw.rect(screen, (100, 200, 100), (1250, 1250, self.health, 10))     # Green health bar
