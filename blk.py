@@ -25,7 +25,7 @@ class BLK(CircleShape):
         print(f"Black hole swallowed {other}")
         distance = self.position.distance_to(other.position)
         if distance <= self.far_radius + other.radius:      # Within range
-            if distance <= self.radius:                     # Black hole 
+            if distance <= self.radius + 15:                # Black hole 
                 other.kill()
             if distance <= self.near:                       # Close range
                 strength = -100

@@ -31,7 +31,7 @@ class Shot(CircleShape):
     def collision(self, other, bounce=True):
         bounce = False
         distance = self.position.distance_to(other.position)
-        if (self.radius + 2) + other.radius > distance:
+        if (self.radius + 3) + other.radius > distance:
             self.shot_score(other, self.owner)
             self.shot_explode()    
 

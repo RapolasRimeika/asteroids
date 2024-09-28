@@ -161,7 +161,7 @@ class AlienShip(CircleShape):
         if distance_to_player < self.shooting_range and self.timer <= 0:
             self.shoot_at(self.target)
 
-# Shoot at nearby asteroids if in range
+        # Shoot at nearby asteroids if in range
         for asteroid in self.asteroids:
             distance_to_asteroid = self.position.distance_to(asteroid.position)
             if distance_to_asteroid < self.shooting_range and self.timer <= 0:
@@ -174,12 +174,12 @@ class AlienShip(CircleShape):
 
         if abs(angle_diff) < 30:  # Check if the target is within the 30-degree arc in front
             shot_position = self.position + self.forward_direction * (self.radius + 10)
-            new_shot = Shot(shot_position.x, shot_position.y, SHOT_RADIUS, self)  # Create and fire a shot
+            new_shot = Shot(shot_position.x, shot_position.y, SHOT_RADIUS, self)    # Create and fire a shot
             new_shot.velocity = ALIEN_SHOT_SPEED * self.forward_direction + self.velocity
             if new_shot.velocity.length() < PLAYER_SHOT_SPEED:
                 new_shot.velocity.scale_to_length(PLAYER_SHOT_SPEED)
-            FloatingText(shot_position.x, shot_position.y, "ø", (15, 250, 15), 40) # Create visual effect
-            self.timer = ALIEN_SHOOT_COOLDOWN  # Reset the shooting timer
+            FloatingText(shot_position.x, shot_position.y, "ø", (15, 250, 15), 40)  # Create visual effect
+            self.timer = ALIEN_SHOOT_COOLDOWN                                       # Reset the shooting timer
 
     def death(self):
         RGB = (250, 200, 100)

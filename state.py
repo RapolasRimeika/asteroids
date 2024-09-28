@@ -40,8 +40,8 @@ class State():
         self.play_time = round(self.player.time)
         self.health = self.player.health
         RGB = (200, 200, 200)
-        FloatingText(70, 20, (f"Score is {self.score}"), RGB, 3)
-        FloatingText(300, 20, (f"Time played {self.play_time} s"), RGB, 3)
+        FloatingText(70, 20, (f"Score is {self.score}"), RGB, 10)
+        FloatingText(300, 20, (f"Time played {self.play_time} s"), RGB, 10)
 
     def draw(self, screen):
         pygame.draw.rect(screen, (100, 200, 100), (1250, 1250, self.health, 10))     # Green health bar
@@ -49,12 +49,12 @@ class State():
 
     def player_death(self): # Draw death summary
         RGB = (250, 200, 100)
-        FloatingText(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2,           (f"Game Over!"), RGB, 4)
-        FloatingText(SCREEN_WIDTH / 2, ((SCREEN_HEIGHT / 2)+ 40),   (f"Your Score is {self.player.score}"), RGB, 4)
-        FloatingText(SCREEN_WIDTH / 2, ((SCREEN_HEIGHT / 2)+ 80),   (f"Yuo lasted {round(self.player.time)} seconds"), RGB, 4) 
-        FloatingText(SCREEN_WIDTH / 2, ((SCREEN_HEIGHT / 2)+ 120),  (f"High Score: {self.high_score}"), RGB, 4)
-        FloatingText(SCREEN_WIDTH / 2, ((SCREEN_HEIGHT / 2)+ 160),  (f"Press Return to play again"), RGB, 4)
-        FloatingText(SCREEN_WIDTH / 2, ((SCREEN_HEIGHT / 2)+ 200),  (f"Press ESC to quit"), RGB, 4)
+        FloatingText(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2,           (f"Game Over!"), RGB, 10)
+        FloatingText(SCREEN_WIDTH / 2, ((SCREEN_HEIGHT / 2)+ 40),   (f"Your Score is {self.player.score}"), RGB, 10)
+        FloatingText(SCREEN_WIDTH / 2, ((SCREEN_HEIGHT / 2)+ 80),   (f"Yuo lasted {round(self.player.time)} seconds"), RGB, 10) 
+        FloatingText(SCREEN_WIDTH / 2, ((SCREEN_HEIGHT / 2)+ 120),  (f"High Score: {self.high_score}"), RGB, 10)
+        FloatingText(SCREEN_WIDTH / 2, ((SCREEN_HEIGHT / 2)+ 160),  (f"Press Return to play again"), RGB, 10)
+        FloatingText(SCREEN_WIDTH / 2, ((SCREEN_HEIGHT / 2)+ 200),  (f"Press ESC to quit"), RGB, 10)
         
     def new_game(self):
         start_message = random.choice(start_messages)
