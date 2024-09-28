@@ -15,14 +15,22 @@ Welcome to my Asteroids game project! 🎮 This has been a fun and challenging l
 - Implemented sprite groups for efficient updates and rendering of game objects.
 
 ### Game Mechanics:
-- **Player Controls:** Rotate, move, and shoot with smooth physics.
-- **Asteroids:** Randomly generated textures and splitting mechanics when destroyed. Asteroids also generate shrapnel upon destruction.
-- **Alien Ships:** Alien ships track the player, avoid asteroids, shoot when in range, and drop loot upon destruction.
-- **Loot System:** Different power-ups like health regeneration, speed boosts, stabilizers, and more spawn upon defeating enemies.
-- **Inertia and Stabilizers:** Full physics system with linear and angular inertia, friction, and stabilizers that stop small movements when not pressing movement keys.
-- **Black Holes (BLK Class):** A black hole that spawns randomly, pulls objects in based on proximity, and removes objects when too close.
-- **Background Generation:** Multi-layered star and planet backgrounds with randomly generated textures, Gaussian blur applied to the planet layer for depth.
-- **Explosion Physics:** Objects interact with explosions based on proximity, and forces are applied accordingly.
+- **Player Controls:** 
+    Rotate, move, and shoot with smooth physics.
+- **Asteroids:** 
+    Randomly generated textures and splitting mechanics when destroyed. Asteroids also generate shrapnel upon destruction.
+- **Alien Ships:** 
+    Alien ships track the player, avoid asteroids, shoot when in range, and drop loot upon destruction.
+- **Loot System:** 
+    Different power-ups like health regeneration, speed boosts, stabilizers, and more spawn upon defeating enemies.
+- **Inertia and Stabilizers:** 
+    Full physics system with linear and angular inertia, friction, and stabilizers that stop small movements when not pressing movement keys.
+- **Black Holes (BLK Class):** 
+    A black hole that spawns randomly, pulls objects in based on proximity, and removes objects when too close.
+- **Background Generation:** 
+    Multi-layered star and planet backgrounds with randomly generated textures, Gaussian blur applied to the planet layer for depth.
+- **Explosion Physics:** 
+    Objects interact with explosions based on proximity, and forces are applied accordingly.
 
 ### Code Modularity:
 - The code is split into multiple files for readability, maintainability, and scalability:
