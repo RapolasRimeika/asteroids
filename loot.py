@@ -25,9 +25,7 @@ class LootSpawner(pygame.sprite.Sprite):
             self.spawn_loot()
 
     def spawn_loot(self):
-        # Create the loot after the delay
         new_loot = Loot(self.loot_parent, self.x, self.y, self.radius)
-       # FloatingText(self.position.x, self.position.y, "SPAWNING LOOOT", (255, 255, 255), 500)  # For debugging
         self.loot_spawned = True  # Mark the loot as spawned
 
 class Loot(Asteroid):
@@ -59,7 +57,6 @@ class Loot(Asteroid):
         super().__init__(x, y, radius, self.loot_color)
 
     def apply_effect(self, player):
-        """Applies the specific loot effect to the player"""
        
         if self.effect_type == 'heal':
             heal_amount = 200  # Heal up to 20 points

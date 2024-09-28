@@ -34,7 +34,6 @@ def main():
     clearable_group = pygame.sprite.Group()
 
     # Assign containers to classes for automatic group addition
-    State.containers = (drawable)
     Player.containers = (updatable, drawable, collidable_group)
     AsteroidField.containers = (updatable)
     LootSpawner.containers = (updatable, loot_spawner_group)
@@ -47,14 +46,13 @@ def main():
     Explosion.containers = (updatable, drawable, all_text, collidable_group, clearable_group)
     BLK.containers = (updatable, drawable, collidable_group, clearable_group) 
 
-    # Initialize game state and player
+    # Initialize game state, spawn flields, player, background
     state = State(False)
     state.player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2,)
     alien_field = AlienField(state.player, asteroid_group)
     asteroid_field = AsteroidField()
     drawable.add(state.player)
     updatable.add(state.player, asteroid_field, alien_field)
-    
     background = generate_star_and_planet_background(SCREEN_WIDTH, SCREEN_HEIGHT, 1000, 3, (50, 100))
     
     state.running = True    
@@ -62,20 +60,14 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return
-            
         screen.blit(background, (0, 0))             # wipe the screen with the generated background
+        state.draw(screen)   
         dt = clock.tick(60) / 1000                  # Cap the frame rate at 60 FPS and calculate delta time
-        fps = round(clock.get_fps(),)
-        all_objects = len(updatable)
-        print(f"FPS: {fps}") 
-        FloatingText(900, 20, (f"FPS: {fps} number of objects updatable: {all_objects} number of asteroids: {len(asteroid_group)}"), (255, 255, 255), 60)
-
-        state.update(dt, updatable, drawable, collidable_group, clearable_group) # Update the game state
-        
-        for sprite in updatable:                                # Update all updatable sprites
+        state.update(dt, updatable, drawable, collidable_group, clearable_group)# Update the game state        
+        for sprite in updatable:                                                # Update all updatable sprites
             sprite.update(dt)
 
-        collidable_list = list(collidable_group)                # Check for collisions between objects
+        collidable_list = list(collidable_group)                                # Check for collisions between objects
         for i in range(len(collidable_list)):
             obj1 = collidable_list[i]
             for j in range(i + 1, len(collidable_list)):
@@ -83,11 +75,15 @@ def main():
                 obj1.collision(obj2)
                 obj2.collision(obj1)
         
-        for sprite in drawable:                     # Draw all drawable sprites
+        #DEBUGGING stuff
+        """fps = round(clock.get_fps(),)
+        all_objects = len(updatable)
+        print(f"FPS: {fps}") 
+        FloatingText(900, 20, (f"FPS: {fps} number of objects updatable: {all_objects} number of asteroids: {len(asteroid_group)}"), (255, 255, 255), 60)"""
+        for sprite in drawable:                                                 # Draw all drawable sprites
             sprite.draw(screen)
         state.draw(screen)          
-        
-        pygame.display.flip()                       # Update the display
+        pygame.display.flip()                                                    # Update the display
 
 if __name__ == "__main__":
     main()

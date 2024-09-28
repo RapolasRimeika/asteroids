@@ -174,11 +174,11 @@ class Player(CircleShape):
         shot_position = self.position + self.forward_direction * (self.radius + 10) # +10 forward from the ship to avoid collision
         new_shot = Shot((shot_position.x), (shot_position.y), SHOT_RADIUS, self) 
         # Incorporate the player's velocity into the shot's velocity
-        new_shot.velocity = PLAYER_SHOT_SPEED * self.forward_direction + self.velocity
+        new_shot.velocity = PLAYER_SHOT_SPEED * self.forward_direction + self.velocity #add player velocity to shot
         if new_shot.velocity.length() < PLAYER_SHOT_SPEED:
             new_shot.velocity.scale_to_length(PLAYER_SHOT_SPEED) 
         FloatingText(shot_position.x, shot_position.y, "ø", (255, 0, 0), 40) # Create visual effect when shooting
-        self.timer = self.shot_cooldown # Reset the shooting timer
+        self.timer = self.shot_cooldown                     # Reset the shooting timer
 
     def player_death(self):
         scream = random.choice(player_death_screams)

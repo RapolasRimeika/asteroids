@@ -8,7 +8,7 @@ class FloatingText(pygame.sprite.Sprite):
         self.x = x
         self.y = y
         self.message = message
-        self.duration = duration  # Duration in milliseconds
+        self.duration = duration 
         self.RGB = RGB
         self.start_time = pygame.time.get_ticks()
         # Create a font and render the text surface

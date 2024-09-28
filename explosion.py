@@ -14,7 +14,6 @@ class Explosion(pygame.sprite.Sprite):
         self.radius = 1  # Explosion's own radius for collision detection
 
     def update(self, dt):
-        """ Placeholder for updates if needed later """
         pass
 
     def collision(self, other, bounce=True):
@@ -33,18 +32,16 @@ class Explosion(pygame.sprite.Sprite):
                 self.calculate_force(other, strength) 
         
     def calculate_force(self, other, strength):
-        """ Apply force to the object based on proximity """
         explosion_vector = other.position - self.position
         if explosion_vector.length() > 0:
             explosion_vector.normalize_ip()
         force = explosion_vector * strength * 100  # Scale force
         other.apply_force(force)
+        self.kill()  # Remove the explosion after applying force
 
     def draw(self, screen):
-        """ Visualize the explosion radius on the screen """
         for radius in [self.near, self.mid_radius, self.far_radius]:
             pygame.draw.circle(screen, self.color, (int(self.position.x +1 ), int(self.position.y + 1)), int(radius), 2)
-            self.kill()  # Remove the explosion after applying force
     
     def apply_force(self, other):
         pass

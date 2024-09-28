@@ -18,24 +18,20 @@ class AlienShip(CircleShape):
         self.timer = 0                                          # Shooting cooldown timer
         self.shooting_range = 600                               # Max range to shoot at player or asteroids
         self.color = (50, 190, 50)                              # Set the alien ship color to green
-        self.health = self.radius * 2
+        self.health = self.radius * 3
         self.score = 0
         self.isalien = True
         self.shot_damage = PLAYER_SHOT_DMG
-        self.angular_velocity = 0 
-
+        self.angular_velocity = 0
         self.move_speed = PLAYER_SPEED * 1.5
         self.turn_speed = PLAYER_TURN_SPEED * 1.5
         self.forward_direction = pygame.Vector2(0, 1).rotate(self.rotation)
         self.right_direction = self.forward_direction.rotate(90)
-
         # Stabilisers attributes
         self.stabilisers = True          # Enable stabilisers
         self.stabiliser_str = 0.5        # Strength of stabilisation (adjust as needed)
         self.forward_velocity = 0        # Initialize forward velocity
         self.right_velocity = 0          # Initialize right velocity
-
-        # Maximum speed
         self.max_speed = 300             # Define a maximum speed for the alien
         self.max_angular_velocity = 300  # Maximum angular velocity in degrees per second
 
@@ -59,32 +55,24 @@ class AlienShip(CircleShape):
         # Update the forward and right directions based on current rotation
         self.forward_direction = pygame.Vector2(0, 1).rotate(self.rotation)
         self.right_direction = self.forward_direction.rotate(90)
-
         # Apply friction to linear and angular velocities
         self.velocity *= self.friction
         self.angular_velocity *= self.angular_friction
-
         # Calculate velocities relative to the ship's facing direction
         self.forward_velocity = self.velocity.dot(self.forward_direction)
         self.right_velocity = self.velocity.dot(self.right_direction)
-
         # Clamp velocities to maximum values
         if self.velocity.length() > self.max_speed:
             self.velocity.scale_to_length(self.max_speed)
-
         self.angular_velocity = max(-self.max_angular_velocity, min(self.angular_velocity, self.max_angular_velocity))
-
         # Update position and rotation based on velocities
         self.position += self.velocity * dt
         self.rotation += self.angular_velocity * dt
-        self.rotation %= 360  # Keep the rotation angle between 0 and 360 degrees
-
-        self.timer -= dt  # Decrease shooting cooldown timer
-
+        self.rotation %= 360                # Keep the rotation angle between 0 and 360 degrees
+        self.timer -= dt                    # Decrease shooting cooldown timer
         # Flags to determine if the alien is actively moving or rotating
         self.is_moving_forward = False
         self.is_rotating = False
-
         # Move the alien ship based on its behavior
         self.avoid_asteroids(dt)
         self.move_towards_player(dt)
@@ -173,11 +161,11 @@ class AlienShip(CircleShape):
         if distance_to_player < self.shooting_range and self.timer <= 0:
             self.shoot_at(self.target)
 
-        """     # Shoot at nearby asteroids if in range
+# Shoot at nearby asteroids if in range
         for asteroid in self.asteroids:
             distance_to_asteroid = self.position.distance_to(asteroid.position)
             if distance_to_asteroid < self.shooting_range and self.timer <= 0:
-                self.shoot_at(asteroid)"""
+                self.shoot_at(asteroid)
 
     def shoot_at(self, target):
         # Only shoot if the alien ship is facing the target
@@ -188,6 +176,9 @@ class AlienShip(CircleShape):
             shot_position = self.position + self.forward_direction * (self.radius + 10)
             new_shot = Shot(shot_position.x, shot_position.y, SHOT_RADIUS, self)  # Create and fire a shot
             new_shot.velocity = ALIEN_SHOT_SPEED * self.forward_direction + self.velocity
+            if new_shot.velocity.length() < PLAYER_SHOT_SPEED:
+                new_shot.velocity.scale_to_length(PLAYER_SHOT_SPEED)
+            FloatingText(shot_position.x, shot_position.y, "ø", (15, 250, 15), 40) # Create visual effect
             self.timer = ALIEN_SHOOT_COOLDOWN  # Reset the shooting timer
 
     def death(self):
