@@ -53,14 +53,13 @@ def main():
     asteroid_field = AsteroidField()
     drawable.add(state.player)
     updatable.add(state.player, asteroid_field, alien_field)
-    background = generate_star_and_planet_background(SCREEN_WIDTH, SCREEN_HEIGHT, 1000, 3, (50, 100))
-    
+        
     state.running = True    
     while state.running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return
-        screen.blit(background, (0, 0))             # wipe the screen with the generated background
+        screen.blit(state.background, (0, 0))             # wipe the screen with the generated background
         state.draw(screen)   
         dt = clock.tick(60) / 1000                  # Cap the frame rate at 60 FPS and calculate delta time
         state.update(dt, updatable, drawable, collidable_group, clearable_group)# Update the game state        

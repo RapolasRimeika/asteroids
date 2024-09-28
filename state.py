@@ -5,6 +5,7 @@ from player import Player
 from floating_text import FloatingText
 from text_lists import start_messages
 from asteroidfield import AsteroidField
+from background_layers import generate_star_and_planet_background
 
 class State():
     def __init__(self, player_dead):
@@ -15,6 +16,7 @@ class State():
         self.high_score = 0  # Initialize high score
         self.score = 0
         self.health = 0
+        self.background = generate_star_and_planet_background(SCREEN_WIDTH, SCREEN_HEIGHT, 1000, 3, (50, 100))
 
     def update(self, dt, updatable, drawable, collidable_group, clearable_group):    
         keys = pygame.key.get_pressed()
@@ -25,6 +27,8 @@ class State():
             self.player_dead = True
         if self.player_dead and keys[pygame.K_RETURN]:                      # Player is dead and Enter key is pressed
             self.player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)       # Create a new player instance
+            self.background = generate_star_and_planet_background(SCREEN_WIDTH, SCREEN_HEIGHT, 1000, 3, (50, 100))
+ 
             self.player_dead = False
         if self.player.time >= 0 and self.player.time <= 0.005:             # Clearing objects at respawning
             for i in clearable_group: i.kill()
