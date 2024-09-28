@@ -20,15 +20,12 @@ class Player(CircleShape):
         self.time = 0
         self.asteroids_destroyed = 0
         self.health = self.radius * 2
-        
         self.speed = self.velocity.length()
         self.is_player = True
-        
-        self.shot_cooldown = PLAYER_SHOOT_COOLDOWN
-        self.shot_damage = PLAYER_SHOT_DMG
-
-        self.move_speed = PLAYER_SPEED
-        self.turn_speed = PLAYER_TURN_SPEED
+        self.shot_cooldown =    PLAYER_SHOOT_COOLDOWN
+        self.shot_damage =      PLAYER_SHOT_DMG
+        self.move_speed =       PLAYER_SPEED
+        self.turn_speed =       PLAYER_TURN_SPEED
         self.forward_direction = pygame.Vector2(0, 1).rotate(self.rotation)
         self.right_direction = self.forward_direction.rotate(90)
         # Stabilisers attributes
@@ -128,8 +125,8 @@ class Player(CircleShape):
         right = pygame.Vector2(0, 1).rotate(self.rotation + 90) * self.radius / 1.5
         b = self.position - self.forward_direction * self.radius - right
         c = self.position - self.forward_direction * self.radius + right
-        FloatingText(b.x, b.y, "^", RGB, 50)
-        FloatingText(c.x, c.y, "^", RGB, 50)
+        FloatingText(b.x, b.y, "^", PLAYER_FIRE_COLOR, 50)
+        FloatingText(c.x, c.y, "^", PLAYER_FIRE_COLOR, 50)
 
     def move_x(self, force_magnitude):
         # Determine the direction relative to player's facing direction
@@ -144,12 +141,11 @@ class Player(CircleShape):
             force = -self.right_direction * abs(force_magnitude)  # Move left
             visual_char = "<"  # Left movement, show right-pointing visual effect
         # Create visual effect when moving horizontally (relative to player's direction)
-        RGB = (255, 0, 0)
         right = self.right_direction * self.radius / 1.5
         b = self.position - self.forward_direction * self.radius - right
         c = self.position - self.forward_direction * self.radius + right
-        FloatingText(b.x, b.y, visual_char, RGB, 50)
-        FloatingText(c.x, c.y, visual_char, RGB, 50)
+        FloatingText(b.x, b.y, visual_char, PLAYER_FIRE_COLOR, 50)
+        FloatingText(c.x, c.y, visual_char, PLAYER_FIRE_COLOR, 50)
 
     def apply_torque(self, torque):
         # Change the angular velocity by applying a torque (for rotation)

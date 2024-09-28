@@ -36,7 +36,7 @@ class Shot(CircleShape):
             self.shot_explode()    
 
     def shot_explode(self):
-        explosion = Explosion(self.position.x, self.position.y, 200)  # Create the explosion object
+        explosion = Explosion(self.position.x, self.position.y)  # Create the explosion object
         self.shrapnel_obj(self.radius, (150, 10, 15))
         self.kill()
 

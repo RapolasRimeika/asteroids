@@ -1,17 +1,19 @@
 import pygame
+from constants import *
 
 class Explosion(pygame.sprite.Sprite):
-    def __init__(self, x, y, far_radius):
+    def __init__(self, x, y, multiplier=1):
         # Automatically add the Explosion to the appropriate groups
         super().__init__(self.containers if hasattr(self, "containers") else None)
         self.is_explosion = True
         # Set position and explosion properties
         self.position = pygame.Vector2(x, y)
-        self.near = far_radius / 3
-        self.mid_radius = far_radius / 1.5
-        self.far_radius = far_radius
-        self.color = (189, 12, 16)
-        self.radius = 1  # Explosion's own radius for collision detection
+        self.radius =       EXPLOSION_INITIAL_RADIUS * multiplier # Explosion's own radius for collision detection
+        self.near =         EXPLOSION_NEAR_RADIUS
+        self.mid_radius =   EXPLOSION_MID_RADIUS
+        self.far_radius =   EXPLOSION_FAR_RADIUS
+        self.color =        EXPLOSION_COLOR
+
 
     def update(self, dt):
         pass
@@ -22,13 +24,13 @@ class Explosion(pygame.sprite.Sprite):
 
         if distance <= self.far_radius + other.radius: #whitin range
             if distance <= self.near: #close range
-                strength = 400
+                strength = EXPLOSION_NEAR_STRENGTH
                 self.calculate_force(other, strength)
             elif distance <= self.mid_radius: #mid range
-                strength = 200
+                strength = EXPLOSION_MID_STRENGTH
                 self.calculate_force(other, strength) 
             else:
-                strength = 100
+                strength = EXPLOSION_FAR_STRENGTH
                 self.calculate_force(other, strength) 
         
     def calculate_force(self, other, strength):
