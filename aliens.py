@@ -77,14 +77,16 @@ class AlienShip(CircleShape):
         self.stabilisers = True                                 # Enable stabilisers
         self.stabiliser_str = ALIEN_STABILISER_STRENGTH         # Strength of stabilisation
         self.score =0
+        self.velocity_threshold = STABILISER_VELOSITY_THRESHOLD
 
-    def triangle(self):  # Calculate the points of the triangle representing the alien ship
-        forward = pygame.Vector2(0, 1).rotate(self.rotation)
-        right = pygame.Vector2(0, 1).rotate(self.rotation + 90) * self.radius / 1.5
-        a = self.position + forward * self.radius  # Tip of the triangle
-        b = self.position - forward * self.radius - right  # Left corner
-        c = self.position - forward * self.radius + right  # Right corner
-        return [a, b, c]
+    def triangle(self):                                               # Calculate the points of the triangle representing the alien ship
+        forward = pygame.Vector2(0, 1).rotate(self.rotation)          # Forward direction vector based on the alien's current rotation
+        right = pygame.Vector2(0, 1).rotate(self.rotation + 90) * self.radius / 1.5  # Right direction vector, scaled by the radius
+        a = self.position + forward * self.radius                     # Tip of the triangle, positioned forward by the radius
+        b = self.position - forward * self.radius - right             # Left corner of the triangle
+        c = self.position - forward * self.radius + right             # Right corner of the triangle
+        return [a, b, c]                                              # Return the list of triangle points
+
 
     def draw(self, screen):
         # Draw the alien ship as a triangle
@@ -92,51 +94,49 @@ class AlienShip(CircleShape):
         pygame.draw.polygon(screen, self.color, points)
 
     def update(self, dt):
-        if self.health <= 0:
-            self.death()
-
+        if self.health <= 0:                                # Check if the alien's health is zero or below
+            self.death()                                    # Call death method if the alien is dead
         # Update the forward and right directions based on current rotation
-        self.forward_direction = pygame.Vector2(0, 1).rotate(self.rotation)
-        self.right_direction = self.forward_direction.rotate(90)
+        self.forward_direction = pygame.Vector2(0, 1).rotate(self.rotation)   # Update forward direction based on rotation
+        self.right_direction = self.forward_direction.rotate(90)              # Right direction is perpendicular to forward
         # Apply friction to linear and angular velocities
-        self.velocity *= self.friction
-        self.angular_velocity *= self.angular_friction
+        self.velocity *= self.friction                                      # Apply friction to the linear velocity
+        self.angular_velocity *= self.angular_friction                      # Apply friction to the angular velocity
         # Calculate velocities relative to the ship's facing direction
-        self.forward_velocity = self.velocity.dot(self.forward_direction)
-        self.right_velocity = self.velocity.dot(self.right_direction)
+        self.forward_velocity = self.velocity.dot(self.forward_direction)   # Calculate forward velocity component
+        self.right_velocity = self.velocity.dot(self.right_direction)       # Calculate rightward velocity component
         # Clamp velocities to maximum values
-        if self.velocity.length() > self.max_speed:
-            self.velocity.scale_to_length(self.max_speed)
-        self.angular_velocity = max(-self.max_ang_velocity, min(self.angular_velocity, self.max_ang_velocity))
+        if self.velocity.length() > self.max_speed:                         # Ensure velocity doesn't exceed max speed
+            self.velocity.scale_to_length(self.max_speed)                   # Scale velocity to max speed if necessary
+        self.angular_velocity = max(-self.max_ang_velocity, min(self.angular_velocity, self.max_ang_velocity))  # Clamp angular velocity
         # Update position and rotation based on velocities
-        self.position += self.velocity * dt
-        self.rotation += self.angular_velocity * dt
-        self.rotation %= 360                # Keep the rotation angle between 0 and 360 degrees
-        self.timer -= dt                    # Decrease shooting cooldown timer
+        self.position += self.velocity * dt                                 # Update position based on velocity and time delta
+        self.rotation += self.angular_velocity * dt                         # Update rotation based on angular velocity
+        self.rotation %= 360                                                # Keep rotation within 0 to 360 degrees
+        self.timer -= dt                                                    # Decrease shooting cooldown timer
         # Flags to determine if the alien is actively moving or rotating
-        self.is_moving_forward = False
-        self.is_rotating = False
+        self.is_moving_forward = False                                      # Reset forward movement flag
+        self.is_rotating = False                                            # Reset rotation flag
         # Move the alien ship based on its behavior
-        self.avoid_asteroids(dt)
-        self.move_towards_player(dt)
-        self.shoot_if_in_range()  # Shoot if within range, or nearby asteroids
-
+        self.avoid_asteroids(dt)                                            # Call method to avoid asteroids
+        self.move_towards_player(dt)                                        # Call method to move towards the player
+        self.shoot_if_in_range()                                            # Shoot if within range, or shoot nearby asteroids
         # Apply stabilisers if enabled
-        if self.stabilisers:
-            self.stabilise(dt)
-    
+        if self.stabilisers:                                                # Check if stabilisers are enabled
+            self.stabilise(dt)                                              # Apply stabilisation logic to smooth movements
+
     def stabilise(self, dt):
         """
         Applies stabilisers to reduce small movements and rotational drifts if enabled.
         Args: dt (float): The time delta for frame-based updates.
         """
         # Apply thresholds to stop small movements
-        velocity_threshold = 0.4
-        if abs(self.forward_velocity) < velocity_threshold:
+        
+        if abs(self.forward_velocity) < self.velocity_threshold:
             self.forward_velocity = 0
-        if abs(self.right_velocity) < velocity_threshold:
+        if abs(self.right_velocity) < self.velocity_threshold:
             self.right_velocity = 0
-        if abs(self.angular_velocity) < velocity_threshold:
+        if abs(self.angular_velocity) < self.velocity_threshold:
             self.angular_velocity = 0
 
         # Apply force to stabilise forward movement if not actively moving

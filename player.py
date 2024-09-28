@@ -33,16 +33,16 @@ class Player(CircleShape):
         self.stabiliser_str = 0.5  # Strength of stabilisation (tweak this)
         self.forward_velocity = self.velocity.dot(self.forward_direction)
         self.right_velocity = self.velocity.dot(self.right_direction)  # Right velocity relative to facing direction
-        
-    def triangle(self):
-        # Calculate the points of the triangle representing the player
-        forward = pygame.Vector2(0, 1).rotate(self.rotation)
-        right = pygame.Vector2(0, 1).rotate(self.rotation + 90) * self.radius / 1.5 
-        a = self.position + forward * self.radius  # Tip of the triangle
-        b = self.position - forward * self.radius - right  # Left corner
-        c = self.position - forward * self.radius + right  # Right corner
-        return [a, b, c]
-
+        self.stabiliser_velocity_threshold = STABILISER_VELOSITY_THRESHOLD 
+    
+    def triangle(self):                                               # Calculate the points of the triangle representing the alien ship
+        forward = pygame.Vector2(0, 1).rotate(self.rotation)          # Forward direction vector based on the alien's current rotation
+        right = pygame.Vector2(0, 1).rotate(self.rotation + 90) * self.radius / 1.5  # Right direction vector, scaled by the radius
+        a = self.position + forward * self.radius                     # Tip of the triangle, positioned forward by the radius
+        b = self.position - forward * self.radius - right             # Left corner of the triangle
+        c = self.position - forward * self.radius + right             # Right corner of the triangle
+        return [a, b, c]                                              # Return the list of triangle points
+   
     def draw(self, screen): # Draw the player as a triangle
         points = self.triangle()
         pygame.draw.polygon(screen, (200, 180, 190), points)
@@ -60,7 +60,6 @@ class Player(CircleShape):
         self.timer -= dt                                                    # Decrease the shooting timer 
         self.time += dt
                 
-        
         keys = pygame.key.get_pressed() # Get the current key states
 
         # Simplified directional movement and rotation values
@@ -90,31 +89,48 @@ class Player(CircleShape):
         if keys[pygame.K_SPACE] and self.timer <= 0:
             self.shoot()
 
-        if self.stabilisers:     # Apply stabilisers for strafing and rotation if active
-            # Apply thresholds to stop small movements
-            velocity_threshold = 0.4
-            if abs(self.forward_velocity) < velocity_threshold:
-                self.forward_velocity = 0
-            if abs(self.right_velocity) < velocity_threshold:
-                self.right_velocity = 0
-            if abs(self.angular_velocity) < velocity_threshold:
-                self.angular_velocity = 0
-
-            if not key_up and self.forward_velocity > 0:            # No forward input and moving forward
-                self.move(down * self.stabiliser_str)               # Slow down forward movement
-            if not key_down and self.forward_velocity < 0:          # No backward input and moving backward
-                self.move(up * self.stabiliser_str)                 # Slow down backward movement
-            if not key_strafe_left and self.right_velocity < 0:     # No strafe left input and moving left
-                self.move_x(strafe_right * self.stabiliser_str)     # Slow down left strafe
-            if not key_strafe_right and self.right_velocity > 0:    # No strafe right input and moving right
-                self.move_x(strafe_left * self.stabiliser_str)      # Slow down right strafe
-            if not key_turn_left and self.angular_velocity < 0:     # No turn left input and rotating left
-                self.apply_torque(turn_right * self.stabiliser_str) # Reduce left rotation
-            if not key_turn_right and self.angular_velocity > 0:    # No turn right input and rotating right
-                self.apply_torque(turn_left * self.stabiliser_str)  # Reduce right rotation
+        if self.stabilisers: 
+            self.apply_stabilisers(dt, key_up, key_down, key_strafe_left, key_strafe_right, key_turn_left, key_turn_right)
 
         if self.health <= 0:
             self.player_death()
+    
+    def apply_stabilisers(self, dt, key_up, key_down, key_strafe_left, key_strafe_right, key_turn_left, key_turn_right):
+        """
+        Applies stabilisation to stop small movements and rotations if no input is provided.
+
+        Args:
+            dt (float): The time delta for frame-based updates.
+            key_up (bool): Whether the 'move forward' key is pressed.
+            key_down (bool): Whether the 'move backward' key is pressed.
+            key_strafe_left (bool): Whether the 'strafe left' key is pressed.
+            key_strafe_right (bool): Whether the 'strafe right' key is pressed.
+            key_turn_left (bool): Whether the 'turn left' key is pressed.
+            key_turn_right (bool): Whether the 'turn right' key is pressed.
+        """
+        # Apply thresholds to stop small movements
+        if abs(self.forward_velocity) < self.stabiliser_velocity_threshold:       # Check forward velocity
+            self.forward_velocity = 0
+        if abs(self.right_velocity) < self.stabiliser_velocity_threshold:         # Check rightward velocity
+            self.right_velocity = 0
+        if abs(self.angular_velocity) < self.stabiliser_velocity_threshold:       # Check angular velocity
+            self.angular_velocity = 0
+        # Apply forward/backward stabilisers
+        if not key_up and self.forward_velocity > 0:                              # No forward input, moving forward
+            self.move(-self.move_speed * dt * self.stabiliser_str)                # Slow down forward movement
+        if not key_down and self.forward_velocity < 0:                            # No backward input, moving backward
+            self.move(self.move_speed * dt * self.stabiliser_str)                 # Slow down backward movement
+        # Apply strafe stabilisers
+        if not key_strafe_left and self.right_velocity < 0:                       # No strafe left input, moving left
+            self.move_x(self.move_speed * dt * self.stabiliser_str)               # Slow down leftward movement
+        if not key_strafe_right and self.right_velocity > 0:                      # No strafe right input, moving right
+            self.move_x(-self.move_speed * dt * self.stabiliser_str)              # Slow down rightward movement
+        # Apply rotational stabilisers
+        if not key_turn_left and self.angular_velocity < 0:                       # No turn left input, rotating left
+            self.apply_torque(self.turn_speed * dt * self.stabiliser_str)         # Reduce leftward rotation
+        if not key_turn_right and self.angular_velocity > 0:                      # No turn right input, rotating right
+            self.apply_torque(-self.turn_speed * dt * self.stabiliser_str)        # Reduce rightward rotation
+
 
     def move(self, force_magnitude):
         # Move the player in the direction they are facing
