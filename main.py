@@ -52,7 +52,7 @@ def main():
     alien_field = AlienField(state.player, asteroid_group)
     asteroid_field = AsteroidField()
     drawable.add(state.player)
-    updatable.add(state.player, asteroid_field, alien_field)
+    updatable.add(state.player, alien_field, asteroid_field)
         
     state.running = True    
     while state.running:

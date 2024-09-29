@@ -1,8 +1,9 @@
 import pygame
 import random
 from floating_text import FloatingText
-from constants import GLOBAL_COLLISION_MODIFIER
+from constants import GLOBAL_COLLISION_MODIFIER, ASTEROID_MIN_RADIUS, PLAYER_SHOT_SPEED
 from text_lists import shrapnel_flames
+
 
 # Base class for circular game objects with full inertia and friction
 class CircleShape(pygame.sprite.Sprite):
@@ -12,6 +13,7 @@ class CircleShape(pygame.sprite.Sprite):
             super().__init__(self.containers)
         else:
             super().__init__()
+        self.destroyed = False  # Add a flag to track if the object has been destroyed
         self.position = pygame.Vector2(x, y)
         self.velocity = pygame.Vector2(0, 0)  # Linear velocity for movement
         self.radius = radius
@@ -48,23 +50,32 @@ class CircleShape(pygame.sprite.Sprite):
         # Optional: Keep rotation within 0-360 degrees
         self.rotation %= 360
 
-        if self.health <= 0:
-            self.shrapnel_obj(self.radius)
-
     def collision(self, other, bounce=True):
         if hasattr(other, "is_explosion") and other.is_explosion == True:
             return
+
         # Check for collision with another CircleShape
         distance = self.position.distance_to(other.position)
         if self.radius + other.radius > distance:
-
+            if hasattr(other, "is_shot") and other.is_shot == True:
+                other.shot_explode(self)
+                return
+            
             # Calculate damage based combined object radius and speed
             impact_force = (other.radius * other.velocity.length() + self.radius * self.velocity.length()) 
             self.health -= impact_force * GLOBAL_COLLISION_MODIFIER
             other.health -= impact_force * GLOBAL_COLLISION_MODIFIER
             
-            # Bounce if enabled
-            if bounce:
+            # Handle destruction and shrapnel generation for `self`
+            if self.health <= 0 and not self.destroyed:
+                self.shrapnel_obj(self.radius)
+
+            # Handle destruction and shrapnel generation for `other`
+            if other.health <= 0 and not other.destroyed:
+                other.shrapnel_obj(other.radius)  # Use `other.radius` instead of `self.radius` here
+
+
+            if bounce:                      # Bounce if enabled
                 self.bounce(other)
 
 
@@ -119,15 +130,50 @@ class CircleShape(pygame.sprite.Sprite):
         pass
 
     def shrapnel_obj(self, mass, RGB=(150, 150, 150),):
-        while mass > 1:
-            random_angle = random.uniform(0, 360)
-            velocity_a = self.velocity.rotate(random_angle) * random.uniform(0.1, 2)
-            new_radius = random.uniform(1, 3)
-            # Spawn shrapnel proportional to object radius
-            shrapnel_piece = Shrapnel(self.position.x, self.position.y, new_radius, RGB)
+        if self.destroyed:      # Check if the object is already destroyed
+            return              # If destroyed, exit early to prevent multiple splits
+
+        self.kill()             # Kill the object
+        self.destroyed = True   # Mark the object as destroyed to prevent further shrapnel or split calls
+        
+        if hasattr(self, "is_explosion") and self.is_explosion == True:
+            return
+        
+        if hasattr(self, 'death'): # Player and Alien classes have .death() method
+            self.death()  # Call death() if it exists
+            self.create_shrapnel(30)
+            return
+        
+        if hasattr(self, 'split'):                  # if asteroid
+            if self.radius > ASTEROID_MIN_RADIUS:   # bigger radius than 20
+                self.split()                        # split
+                return                              # skip
+        self.create_shrapnel(mass)
+
+
+    def create_shrapnel(self, mass):
+        while mass > 3:
+            random_angle = random.uniform(0, 360)  # Generate a random angle for the shrapnel direction
+            velocity_a = self.velocity.rotate(random_angle) * random.uniform(0.1, 2)  # Generate random velocity
+
+            new_radius = random.randrange(1, 3, 1)  # Create a random radius for the shrapnel piece
+            shrapnel_piece = Shrapnel(self.position.x, self.position.y, new_radius, self.color)  # Create shrapnel piece
+
+            # Check if velocity is effectively zero (e.g., if the object is stationary)
+            if velocity_a.length() == 0:
+                # Set a minimum velocity based on PLAYER_SHOT_SPEED to ensure it's not zero
+                velocity_a = pygame.Vector2(1, 0).rotate(random_angle) * PLAYER_SHOT_SPEED
+
+            # Apply the velocity to the shrapnel piece
             shrapnel_piece.velocity = velocity_a
-            mass -= new_radius
-            self.kill()
+
+            # Ensure shrapnel velocity is at least PLAYER_SHOT_SPEED
+            if shrapnel_piece.velocity.length() < PLAYER_SHOT_SPEED/10:
+                shrapnel_piece.velocity.scale_to_length(PLAYER_SHOT_SPEED/10)
+
+            mass -= new_radius  # Decrease the remaining mass
+            print(f"New shrapnel from {self}, shrapnel mass {new_radius}, remaining mass is {mass}")
+
 
 class Shrapnel(CircleShape):
     def __init__(self, x, y, radius, RGB=(235, 5, 2)):
@@ -146,9 +192,9 @@ class Shrapnel(CircleShape):
 
     def draw(self, screen):                                 # Draw the shrapnel as a white circle outline
         pygame.draw.circle(screen, (255, 255, 255), (int(self.position.x), int(self.position.y)), self.radius, )
-        
         flame = random.choice(shrapnel_flames)              # Draw random floating flame characters
         FloatingText(self.position.x, self.position.y, (f"{flame}"), self.rgb, 40)
     
     def apply_torque(self, torque):
         pass
+

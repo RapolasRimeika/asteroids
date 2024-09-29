@@ -47,3 +47,6 @@ class Explosion(pygame.sprite.Sprite):
     
     def apply_force(self, other):
         pass
+
+    def shrapnel_obj(self, mass, RGB=(150, 150, 150),):
+        pass

@@ -17,6 +17,7 @@ class Shot(CircleShape):
         self.forward_direction = pygame.Vector2(0, 1).rotate(self.rotation)
         self.forward_velocity = self.velocity.dot(self.forward_direction)
         self.back_pos = self.get_backward_pos()
+        self.color = (250, 0, 0)
 
     def update(self, dt):
         self.position += self.velocity * dt # Update position based on velocity and time delta
@@ -29,16 +30,35 @@ class Shot(CircleShape):
             self.kill()
         
     def collision(self, other, bounce=True):
+        if hasattr(other, "is_explosion") and other.is_explosion == True:
+            return
         bounce = False
         distance = self.position.distance_to(other.position)
-        if (self.radius + 3) + other.radius > distance:
-            self.shot_score(other, self.owner)
-            self.shot_explode()    
+        if self.radius + other.radius > distance -5:                # Check collision, -5 explode before colision
+            self.shot_explode(other)                                # Trigger explosion on collision
 
-    def shot_explode(self):
-        explosion = Explosion(self.position.x, self.position.y)  # Create the explosion object
-        self.shrapnel_obj(self.radius, (150, 10, 15))
-        self.kill()
+    def shot_explode(self, other):
+        if self.owner != other:                                     # Prevent self-hit
+            print(f"other health before shot: {other.health}")
+            other.health -= self.owner.shot_damage                  # Apply shot damage to the other object
+            self.shot_score(other, self.owner)                      # Update score
+            print(f"other health after shot: {other.health}")
+            explosion = Explosion(self.position.x, self.position.y) # Create explosion force
+            self.shrapnel_obj(10)                                   # Create Shrapnel
+
+    def shot_score(self, other, owner):
+        print(f"shot exploded on {other} with damage {PLAYER_SHOT_DMG}")
+        if hasattr(other, "isalien") and other.isalien == True and other.health <= 0:  # Check if target is alien and dead
+            owner.score += 5                                        # Alien kill gives 5 points
+            other.shrapnel_obj(other.radius)
+            print(f"KILL ALIEN CONFIRMED by OWNER {owner} {round(other.health)}")
+            print(f"Player's new score: {owner.score}")
+        elif other.health <= 0:                                     # Check if non-alien object is dead
+            owner.score += 1                                        # Non-alien kill gives 1 point
+            other.shrapnel_obj(other.radius)
+            print(f"KILL CONFIRMED OWNER {owner} {round(other.health)}")
+            print(f"Player's new score: {owner.score}")
+
 
     def apply_torque(self, torque):
         pass
@@ -49,21 +69,6 @@ class Shot(CircleShape):
         back_pos = self.position + self.forward_direction.rotate(180) * self.radius
         RGB = (255, 0, 0)
         FloatingText(self.back_pos.x, self.back_pos.y, "*", RGB, 40)
-
-    def shot_score(self, other, owner):
-        other.health -= owner.shot_damage
-        print(f"shot exploded on {other} with damage {PLAYER_SHOT_DMG}")
-        if hasattr(other, "isalien") and other.isalien == True and other.health <= 0:
-            print(f"KILL ALIEN CONFIRMED by OWNER{owner} {round(other.health)}")
-            owner.score += 5
-            print(f"Player's new score: {owner.score}")
-            return True
-        elif other.health <= 0:
-            print(f"KILL CONFIRMED OWNER{owner} {round(other.health)}")
-            owner.score += 1
-            print(f"Player's new score: {owner.score}")
-            return True
-        self.shrapnel_obj(self.radius)  # Create shrapnel pieces when the shot explodes
 
     def get_backward_pos(self):
         # Normalize the forward velocity to get the direction (avoid division by zero)

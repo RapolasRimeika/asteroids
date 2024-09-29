@@ -94,8 +94,8 @@ class AlienShip(CircleShape):
         pygame.draw.polygon(screen, self.color, points)
 
     def update(self, dt):
-        if self.health <= 0:                                # Check if the alien's health is zero or below
-            self.death()                                    # Call death method if the alien is dead
+        #if self.health <= 0:                                # Check if the alien's health is zero or below
+         #   self.death()                                    # Call death method if the alien is dead
         # Update the forward and right directions based on current rotation
         self.forward_direction = pygame.Vector2(0, 1).rotate(self.rotation)   # Update forward direction based on rotation
         self.right_direction = self.forward_direction.rotate(90)              # Right direction is perpendicular to forward
@@ -228,10 +228,12 @@ class AlienShip(CircleShape):
             FloatingText(shot_position.x, shot_position.y, "ø", (ALIEN_COLOR), 40)  # Create visual effect
             self.timer = ALIEN_SHOOT_COOLDOWN                                       # Reset the shooting timer
 
+
+
     def death(self):
         scream = random.choice(alien_screams)
         FloatingText(self.position.x, self.position.y, scream, ALIEN_COLOR, 3000)
-        self.shrapnel_obj(self.radius)
         explosion = Explosion(self.position.x, self.position.y, 7)
         if random.random() < LOOT_DROP_CHANCE:  # Only spawn loot some percentage of the time
             new_loot = LootSpawner(self, self.position.x, self.position.y, 20, 1)  # Delay of 1s
+        self.kill()

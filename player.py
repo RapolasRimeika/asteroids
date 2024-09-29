@@ -33,7 +33,8 @@ class Player(CircleShape):
         self.stabiliser_str = 0.5  # Strength of stabilisation (tweak this)
         self.forward_velocity = self.velocity.dot(self.forward_direction)
         self.right_velocity = self.velocity.dot(self.right_direction)  # Right velocity relative to facing direction
-        self.stabiliser_velocity_threshold = STABILISER_VELOSITY_THRESHOLD 
+        self.stabiliser_velocity_threshold = STABILISER_VELOSITY_THRESHOLD
+        self.color = PLAYER_COLOR 
     
     def triangle(self):                                               # Calculate the points of the triangle representing the alien ship
         forward = pygame.Vector2(0, 1).rotate(self.rotation)          # Forward direction vector based on the alien's current rotation
@@ -93,7 +94,7 @@ class Player(CircleShape):
             self.apply_stabilisers(dt, key_up, key_down, key_strafe_left, key_strafe_right, key_turn_left, key_turn_right)
 
         if self.health <= 0:
-            self.player_death()
+            self.death()
     
     def apply_stabilisers(self, dt, key_up, key_down, key_strafe_left, key_strafe_right, key_turn_left, key_turn_right):
         """
@@ -189,14 +190,14 @@ class Player(CircleShape):
         new_shot.velocity = PLAYER_SHOT_SPEED * self.forward_direction + self.velocity #add player velocity to shot
         if new_shot.velocity.length() < PLAYER_SHOT_SPEED:
             new_shot.velocity.scale_to_length(PLAYER_SHOT_SPEED) 
-        FloatingText(shot_position.x, shot_position.y, "ø", (255, 0, 0), 40) # Create visual effect when shooting
-        self.timer = self.shot_cooldown                     # Reset the shooting timer
+        FloatingText(shot_position.x, shot_position.y, "ø", (255, 0, 0), 40)    # Create visual effect when shooting
+        self.timer = self.shot_cooldown                                         # Reset the shooting timer
 
-    def player_death(self):
+    def death(self):
         scream = random.choice(player_death_screams)
         FloatingText(self.position.x, self.position.y, scream, (250, 200, 100), 2000)
         player_explosion = Explosion(self.position.x, self.position.y, 400)
-        self.shrapnel_obj(self.radius, (255, 10, 15))
+        self.kill()    
 
     def bounce(self, other):
         super().bounce(other)
