@@ -11,7 +11,7 @@ from aliens import AlienShip
 from AlienField import AlienField
 from loot import Loot, LootSpawner
 from explosion import Explosion
-from background_layers import *
+from background import *
 from black_hole import BlackHole
 def main():
     """
