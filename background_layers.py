@@ -17,7 +17,7 @@ def generate_star_and_planet_background(screen_width, screen_height, num_stars, 
 def generate_stars(screen_width, screen_height, num_stars, color_range):
     # Create a surface for the stars
     stars_surface = pygame.Surface((screen_width, screen_height), pygame.SRCALPHA)
-    stars_surface.fill((5, 5, 15))  # Fill with black or dark color for space
+    stars_surface.fill((8, 8, 20))  # Fill with black or dark color for space
 
     # Draw random stars
     for _ in range(num_stars):
