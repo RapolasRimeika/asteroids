@@ -47,7 +47,6 @@ class State():
 
         if self.player_dead and keys[pygame.K_RETURN]:   # Respawn player when Enter is pressed
             self.player_respawn(keys, clearable_group)
-
         self.cull_offscreen_objects(collidable_group)   # Call the culling function
         self.update_player_stats()                      # Call the player stats update function
 
