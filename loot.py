@@ -38,13 +38,13 @@ class LootSpawner(pygame.sprite.Sprite):              # Class for spawning loot 
 
 class Loot(Asteroid):                                 # Loot class inherits from Asteroid
     loot_types = {                                    # Define types of loot with effects and colors
-        'health': {'color': LOOT_COLOR_HEALTH, 'effect': LOOT_EFFECT_HEAL, 'description': LOOT_DESCRIPTION_HEAL},
-        'speed': {'color': LOOT_COLOR_SPEED, 'effect': LOOT_EFFECT_SPEED, 'description': LOOT_DESCRIPTION_SPEED},
-        'score': {'color': LOOT_COLOR_SCORE, 'effect': LOOT_EFFECT_SCORE, 'description': LOOT_DESCRIPTION_SCORE},
-        'fire': {'color': LOOT_COLOR_FIRE, 'effect': LOOT_EFFECT_FIRE, 'description': LOOT_DESCRIPTION_FIRE},
-        'rotation': {'color': LOOT_COLOR_ROTATION, 'effect': LOOT_EFFECT_ROTATION, 'description': LOOT_DESCRIPTION_ROTATION},
-        'stabilisers': {'color': LOOT_COLOR_STABILISERS, 'effect': LOOT_EFFECT_STABILISERS, 'description': LOOT_DESCRIPTION_STABILISERS},
-        'dmg': {'color': LOOT_COLOR_DMG, 'effect': LOOT_EFFECT_DMG, 'description': LOOT_DESCRIPTION_DMG}
+        'health':       {'color': LOOT_COLOR_HEALTH,        'effect': LOOT_EFFECT_HEAL,         'description': LOOT_DESCRIPTION_HEAL},
+        'speed':        {'color': LOOT_COLOR_SPEED,         'effect': LOOT_EFFECT_SPEED,        'description': LOOT_DESCRIPTION_SPEED},
+        'score':        {'color': LOOT_COLOR_SCORE,         'effect': LOOT_EFFECT_SCORE,        'description': LOOT_DESCRIPTION_SCORE},
+        'fire':         {'color': LOOT_COLOR_FIRE,          'effect': LOOT_EFFECT_FIRE,         'description': LOOT_DESCRIPTION_FIRE},
+        'rotation':     {'color': LOOT_COLOR_ROTATION,      'effect': LOOT_EFFECT_ROTATION,     'description': LOOT_DESCRIPTION_ROTATION},
+        'stabilisers':  {'color': LOOT_COLOR_STABILISERS,   'effect': LOOT_EFFECT_STABILISERS,  'description': LOOT_DESCRIPTION_STABILISERS},
+        'dmg':          {'color': LOOT_COLOR_DMG,           'effect': LOOT_EFFECT_DMG,          'description': LOOT_DESCRIPTION_DMG}
     }
 
     def __init__(self, loot_parent, x, y, radius):
