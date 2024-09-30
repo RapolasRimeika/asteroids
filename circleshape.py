@@ -55,7 +55,6 @@ class CircleShape(pygame.sprite.Sprite):
     def collision(self, other, bounce=True):
         if hasattr(other, "is_explosion") and other.is_explosion == True:     # Ignore collisions with explosion objects
             return
-
         distance = self.position.distance_to(other.position)                  # Check for collision with another CircleShape
         if self.radius + other.radius > distance:                             # Check if the objects are overlapping
             if hasattr(other, "is_shot") and other.is_shot == True:           # Handle collisions with shots
@@ -101,22 +100,16 @@ class CircleShape(pygame.sprite.Sprite):
     def draw(self, screen):                                             # Subclasses should override this method to draw themselves
         pass
 
-    def shrapnel_obj(self, mass, RGB=(150, 150, 150),):
+    def shrapnel_obj(self, mass):
+        """
+        Generalized shrapnel generation method.
+        This can be overridden by subclasses for custom behavior (e.g., death, splitting).
+        """
         if self.destroyed:                                              # Check if the object is already destroyed
-            return                                                      # If destroyed, exit early to prevent multiple splits
+            return                                                      # Exit early if already destroyed
         self.kill()                                                     # Kill the object
-        self.destroyed = True                                           # Mark the object as destroyed to prevent further shrapnel or split calls
-        if hasattr(self, "is_explosion") and self.is_explosion == True: # Skip if the object is an explosion
-            return
-        if hasattr(self, 'death'):                                      # Check if the object has a .death() method (e.g., Player, Alien)
-            self.death()                                                # Call the death() method if it exists
-            self.create_shrapnel(30)                                    # Create shrapnel after death
-            return
-        if hasattr(self, 'split'):                                      # Check if the object has a .split() method (e.g., Asteroid)
-            if self.radius > ASTEROID_MIN_RADIUS:                       # Only split if the radius is larger than the minimum
-                self.split()                                            # Call split() for the asteroid
-                return                                                  # Skip shrapnel generation if split is successful
-        self.create_shrapnel(mass)                                      # Create shrapnel using the remaining mass
+        self.destroyed = True                                           # Mark the object as destroyed
+        self.create_shrapnel(mass)       
 
     def create_shrapnel(self, mass):
         while mass > 3:
@@ -132,8 +125,8 @@ class CircleShape(pygame.sprite.Sprite):
             mass -= new_radius                                                                  # Decrease the remaining mass
             print(f"New shrapnel from {self}, shrapnel mass {new_radius}, remaining mass is {mass}")
 
-class Shrapnel(CircleShape):
-    def __init__(self, x, y, radius, RGB=(235, 5, 2)):
+class Shrapnel(CircleShape):                                        # Cannot move out of CircularShapes because it would result in circular import.
+    def __init__(self, x, y, radius, RGB=(155, 155, 155)):          # Default shrapnel color eg( asteroid splitting shrapnel)
         super().__init__(x, y, radius)
         self.lifetime = random.randrange(100, 700, 100)             # Set random lifetime for the shrapnel in milliseconds
         self.spawn_time = pygame.time.get_ticks()                   # Get the spawn time in ticks

@@ -199,6 +199,17 @@ class Player(CircleShape):
         player_explosion = Explosion(self.position.x, self.position.y, 400)
         self.kill()    
 
+    def shrapnel_obj(self, mass):
+        """
+        Player's custom shrapnel generation, including death logic.
+        """
+        if self.destroyed:
+            return
+        self.kill()
+        self.destroyed = True
+        self.death()                                                        # Call player's death method
+        self.create_shrapnel(mass)                                          # Custom player sharpnel mass   
+
     def bounce(self, other):
         super().bounce(other)
 

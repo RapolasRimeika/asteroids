@@ -20,6 +20,18 @@ class Asteroid(CircleShape):
         self.velocity *= self.friction # Apply linear friction to slow down movement over time
         self.rect = self.image.get_rect(center=(int(self.position.x), int(self.position.y)))        
 
+    def shrapnel_obj(self, mass):
+        """
+        Asteroid's custom shrapnel generation, including splitting logic.
+        """
+        if self.destroyed:
+            return
+        self.kill()
+        self.destroyed = True
+        if self.radius > ASTEROID_MIN_RADIUS:                            # If the asteroid is large enough to split
+            self.split()                                                 # Split the asteroid
+        else:
+            self.create_shrapnel(mass)                              # Otherwise, just create shrapnel
 
     def split(self):
             # Split the asteroid into two smaller pieces

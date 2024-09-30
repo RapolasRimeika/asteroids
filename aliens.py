@@ -237,3 +237,14 @@ class AlienShip(CircleShape):
         if random.random() < LOOT_DROP_CHANCE:  # Only spawn loot some percentage of the time
             new_loot = LootSpawner(self, self.position.x, self.position.y, 20, 1)  # Delay of 1s
         self.kill()
+    
+    def shrapnel_obj(self, mass):
+        """
+        AlienShip's custom shrapnel generation, including death logic.
+        """
+        if self.destroyed:
+            return
+        self.kill()
+        self.destroyed = True
+        self.death()                                                     # Call alien's death method
+        self.create_shrapnel(mass)   
