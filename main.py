@@ -15,6 +15,15 @@ from blk import BLK
 from background_layers import *
 
 def main():
+    """
+    The main function initializes the Pygame environment, creates game entities and sprite groups,
+    and runs the game loop. It handles events, updates the game state, checks for collisions, and
+    renders all game elements on the screen. The game loop continues until the player exits the game.
+
+    Sprite groups include updatable, drawable, collidable, and clearable objects such as the player,
+    asteroids, alien ships, shots, and various effects like explosions and floating text.
+    """
+
     pygame.init()
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     clock = pygame.time.Clock()
@@ -53,36 +62,29 @@ def main():
     asteroid_field = AsteroidField()
     drawable.add(state.player)
     updatable.add(state.player, alien_field, asteroid_field)
-        
-    state.running = True    
-    while state.running:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                return
-        screen.blit(state.background, (0, 0))             # wipe the screen with the generated background
-        state.draw(screen)   
-        dt = clock.tick(60) / 1000                  # Cap the frame rate at 60 FPS and calculate delta time
-        state.update(dt, updatable, drawable, collidable_group, clearable_group)# Update the game state        
-        for sprite in updatable:                                                # Update all updatable sprites
-            sprite.update(dt)
+            
+    state.running = True                                        # Set game state to running
+    while state.running:                                        # Game loop runs while state is active
+        for event in pygame.event.get():                        # Process all game events
+            if event.type == pygame.QUIT:                       # Check if the quit event is triggered
+                return                                          # Exit the game loop if quit is triggered
+        screen.blit(state.background, (0, 0))                   # Wipe the screen with the generated background
+        state.draw(screen)                                      # Draw the game state on the screen
+        dt = clock.tick(60) / 1000                              # Cap the frame rate at 60 FPS and calculate delta time
+        state.update(dt, updatable, drawable, collidable_group, clearable_group) # Update game state, passing groups for updating
+        for sprite in updatable:                                # Update all sprites marked as updatable
+            sprite.update(dt)                                   # Call the update method for each sprite with delta time
+        collidable_list = list(collidable_group)                # Create a list of collidable objects
+        for i in range(len(collidable_list)):                   # Loop through each collidable object
+            obj1 = collidable_list[i]                           # First object in the collision pair
+            for j in range(i + 1, len(collidable_list)):        # Loop through the remaining objects to check for collisions
+                obj2 = collidable_list[j]                       # Second object in the collision pair
+                obj1.collision(obj2)                            # Check for a collision between obj1 and obj2
+                obj2.collision(obj1)                            # Check for a collision between obj2 and obj1 (reverse order)
+        for sprite in drawable:                                 # Loop through all drawable sprites
+            sprite.draw(screen)                                 # Draw each sprite on the screen
+        state.draw(screen)                                      # Draw the game state elements on the screen
+        pygame.display.flip()                                   # Update the display with all the new drawings
 
-        collidable_list = list(collidable_group)                                # Check for collisions between objects
-        for i in range(len(collidable_list)):
-            obj1 = collidable_list[i]
-            for j in range(i + 1, len(collidable_list)):
-                obj2 = collidable_list[j]
-                obj1.collision(obj2)
-                obj2.collision(obj1)
-        
-        #DEBUGGING stuff
-        """fps = round(clock.get_fps(),)
-        all_objects = len(updatable)
-        print(f"FPS: {fps}") 
-        FloatingText(900, 20, (f"FPS: {fps} number of objects updatable: {all_objects} number of asteroids: {len(asteroid_group)}"), (255, 255, 255), 60)"""
-        for sprite in drawable:                                                 # Draw all drawable sprites
-            sprite.draw(screen)
-        state.draw(screen)          
-        pygame.display.flip()                                                    # Update the display
-
-if __name__ == "__main__":
-    main()
+if __name__ == "__main__":                                      # If this script is run as the main program
+    main()                                                      # Call the main function to start the game

@@ -14,6 +14,7 @@ ASTEROID_MAX_RADIUS = ASTEROID_MIN_RADIUS * ASTEROID_KINDS
 PLAYER_RADIUS = 20
 PLAYER_TURN_SPEED = 300
 PLAYER_SPEED = 200
+STABILISER_STR = 0.5
 
 # Key mappings for movement and rotation
 KEY_UP =            [pygame.K_w, pygame.K_UP, pygame.K_KP8]
