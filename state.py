@@ -44,43 +44,28 @@ class State():
         self.name_entered = False             # Flag to indicate if the name has been entered
         self.state = 'PLAYING'                # Possible states: 'PLAYING', 'GAME_OVER', 'NAME_ENTRY', 'RESPAWN_WAIT'
         self.floating_texts = pygame.sprite.Group()  # Group to manage floating text sprites
-        self.new_game()  # Start a new game
+        self.new_game()                       # Start a new game
 
     def update(self, dt, updatable, drawable, collidable_group, clearable_group, events):
-        keys = pygame.key.get_pressed()
+        keys = pygame.key.get_pressed()                                       # Get current key presses
         if keys[pygame.K_ESCAPE]:
-                self.running = False
-
+                self.running = False                                          # Exit game if ESCAPE is pressed
         if self.state == 'PLAYING':
-            # Update player stats
-            self.update_player_stats()
-
-            # Check if the player has died
+            self.update_player_stats()                                        # Update player statistics
             if self.player not in updatable:
-                self.state = 'GAME_OVER'
-
+                self.state = 'GAME_OVER'                                      # Switch to GAME_OVER state if player is dead
         elif self.state == 'GAME_OVER':
             for event in events:
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
-                    self.state = 'NAME_ENTRY'
-
+                    self.state = 'NAME_ENTRY'                                 # Proceed to NAME_ENTRY on ENTER key press
         elif self.state == 'NAME_ENTRY':
-            self.input_player_name(events)
+            self.input_player_name(events)                                    # Handle name input events
             if self.name_entered:
-                self.save_score()
-                self.state = 'RESPAWN_WAIT'
-
-        elif self.state == 'RESPAWN_WAIT':
-            for event in events:
-                if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
-                    self.player_respawn(clearable_group)
-                    self.state = 'PLAYING'
-
-        # Update floating texts
-        self.floating_texts.update(dt)
-
-        # Cull offscreen objects
-        self.cull_offscreen_objects(collidable_group)
+                self.save_score()                                             # Save the player's score
+                self.player_respawn(clearable_group)                          # Respawn player for a new game
+                self.state = 'PLAYING'                                        # Change state back to PLAYING
+        self.floating_texts.update(dt)                                        # Update any floating text animations
+        self.cull_offscreen_objects(collidable_group)                         # Remove objects that have moved off-screen
 
     def update_player_stats(self):
         """Updates the player's score, playtime, and health."""
@@ -91,79 +76,52 @@ class State():
 
     def draw(self, screen):
         if self.state == 'PLAYING':
-            self.draw_stats(screen)
-            # Draw floating texts
+            self.draw_stats(screen)                                         # Draw player stats (health, score, etc.)
             for floating_text in self.floating_texts:
-                floating_text.draw(screen)
+                floating_text.draw(screen)                                  # Draw any floating texts on the screen
         elif self.state == 'GAME_OVER':
-            # Draw game over screen
-            self.draw_game_over(screen)
+            self.draw_game_over(screen)                                     # Draw the game over screen
         elif self.state == 'NAME_ENTRY':
-            # Draw name entry screen
-            self.draw_name_entry(screen)
-        elif self.state == 'RESPAWN_WAIT':
-            # Draw respawn prompt
-            self.draw_respawn_prompt(screen)
-
-            # Always draw floating texts
-            self.floating_texts.draw(screen)
+            self.draw_name_entry(screen)                                    # Draw the name entry screen
+            self.floating_texts.draw(screen)                                # Always draw floating texts in name entry state
 
     def draw_stats(self, screen):
-        # --- Draw Health Bar ---
-        # Set the width of the health bar
-        max_health_width = 200
-        health_ratio = self.health / 100  # Assuming health is out of 100
-        health_bar_width = max(0, max_health_width * health_ratio)  # Ensure health bar width is non-negative
-
-        # Move health bar slightly up from the bottom (increase gap)
-        health_bar_y_position = SCREEN_HEIGHT - 100  # Adjust Y position of the health bar
-
-        # Draw the health bar in the bottom center
-        pygame.draw.rect(screen, (100, 0, 0), 
-                        (SCREEN_WIDTH / 2, health_bar_y_position, max_health_width, 10))  # Background
-        pygame.draw.rect(screen, (0, 250, 0), 
-                        (SCREEN_WIDTH / 2, health_bar_y_position, health_bar_width, 10))  # Health bar
-
-        # --- Draw Score and Time ---
-        font = pygame.font.SysFont(None, FONT_SIZE)
-
-        # Prepare the text with score and time
-        score_time_text = f"Score: {self.score} | Time: {self.play_time}s"
-        score_time_surface = font.render(score_time_text, True, TEXT_COLOR)
-
-        # Draw the score and time with more padding from the edges
-        padding = 40
-        screen.blit(score_time_surface, (SCREEN_WIDTH - score_time_surface.get_width() - padding, padding))
+        health_bar_width = self.health
+        health_bar_y_position = SCREEN_HEIGHT - 100                           # Position health bar slightly up from the bottom
+        pygame.draw.rect(screen, (0, 250, 0), (SCREEN_WIDTH / 2, health_bar_y_position, health_bar_width, 10))  # Draw the actual health bar
+        font = pygame.font.SysFont(None, FONT_SIZE)                           # Load the font for rendering text
+        score_time_text = f"Score: {self.score} | Time: {self.play_time}s"    # Prepare the score and time text
+        score_time_surface = font.render(score_time_text, True, TEXT_COLOR)   # Render the score and time surface
+        padding = 40                                                          # Define padding for score and time placement
+        screen.blit(score_time_surface, (padding, padding))                   # Draw score and time text in the top left corner
 
     def cull_offscreen_objects(self, collidable_group):
-        """
-        Removes objects that are off-screen by a certain margin.
-        """
-        off_screen_rect = pygame.Rect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)
-        inflated_rect = off_screen_rect.inflate(125, 125)
+        """Removes objects that are off-screen by a certain margin."""
+        off_screen_rect = pygame.Rect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)    # Create a rectangle covering the screen
+        inflated_rect = off_screen_rect.inflate(125, 125)                   # Inflate rectangle to add margin
         for item in collidable_group:
             if not inflated_rect.collidepoint(item.position):
-                item.kill()
+                item.kill()                                                 # Remove the object if it's outside the margin
 
     def input_player_name(self, events):
         """Handles player name input after death."""
         for event in events:
-            if event.type == pygame.KEYDOWN:
+            if event.type == pygame.KEYDOWN:                                # Check if a key was pressed
                 if event.key == pygame.K_RETURN:
                     if self.player_name:
-                        self.name_entered = True
+                        self.name_entered = True                            # Confirm name entry on ENTER key
                 elif event.key == pygame.K_BACKSPACE:
-                    self.player_name = self.player_name[:-1]
+                    self.player_name = self.player_name[:-1]                # Remove the last character on BACKSPACE
                 else:
                     if len(self.player_name) < 10 and event.unicode.isprintable():
-                        self.player_name += event.unicode.upper()
+                        self.player_name += event.unicode.upper()           # Add new character if valid and under length limit
 
     def save_score(self):
         """Saves the player's score and sorts the high score list."""
-        new_entry = {'name': self.player_name, 'score': self.score, 'time': self.play_time}
-        self.high_scores.append(new_entry)
-        self.high_scores = sorted(self.high_scores, key=lambda x: -x['score'])[:10]  # Keep top 10
-        save_high_scores(self.high_scores)
+        new_entry = {'name': self.player_name, 'score': self.score, 'time': self.play_time} # Create new score entry
+        self.high_scores.append(new_entry)                                                  # Add new entry to high scores
+        self.high_scores = sorted(self.high_scores, key=lambda x: -x['score'])[:10]         # Sort and keep top 10 scores
+        save_high_scores(self.high_scores)                                                  # Save high scores to storage
 
     def player_respawn(self, clearable_group):
         """Respawns the player, resets the background, and clears relevant game objects."""
@@ -183,7 +141,6 @@ class State():
 
     def draw_game_over(self, screen):
         """Draws the game over screen with instructions."""
-        # Display game over message
         lines = [
             "Game Over!",
             f"Your Score: {self.score}",
@@ -195,20 +152,12 @@ class State():
 
     def draw_name_entry(self, screen):
         """Draws the name entry screen with instructions."""
-        # Display name entry prompt
         lines = [
             "Enter your name (max 10 characters):",
             self.player_name,
-            "Press Return when done"
+            "Press Return when done to respawn and start a new game"
         ]
         self.display_multiline_text(screen, lines, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 50)
-
-    def draw_respawn_prompt(self, screen):
-        """Draws the respawn prompt screen with instructions."""
-        lines = [
-            "Press Return to respawn and start a new game"
-        ]
-        self.display_multiline_text(screen, lines, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
 
     def display_multiline_text(self, screen, lines, x, y):
         """Helper method to display multiple lines of text."""
@@ -229,10 +178,7 @@ class State():
         title_rect = title_surface.get_rect(center=(x, y))
         screen.blit(title_surface, title_rect)
         y += line_height * 1.5
-
-        # Iterate through the high score entries
         for entry in self.high_scores:
-            # Only display if the entry has a valid name
             if len(entry['name']) >= 1:
                 line = f"{entry['name']} - {entry['score']} pts, {entry['time']}s"
                 text_surface = font.render(line, True, TEXT_COLOR)
@@ -246,7 +192,6 @@ def load_high_scores():
         with open(HIGH_SCORE_FILE, 'r') as file:
             return json.load(file)
     except (FileNotFoundError, json.JSONDecodeError):
-        # Return default high score list with 0 scores and times
         return [{'name': '', 'score': 0, 'time': 0} for _ in range(10)]
 
 def save_high_scores(high_scores):
