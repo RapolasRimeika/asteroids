@@ -39,7 +39,6 @@ class Shot(CircleShape):
         current_time = pygame.time.get_ticks()
         if current_time - self.spawn_time > self.lifetime:                  # Check if the shot's lifetime has expired
             self.kill()                                                     # Remove the shot if its lifetime has expired
-
         
     def collision(self, other, bounce=True):
         if hasattr(other, "is_explosion") and other.is_explosion == True:   # Ignore collisions with explosion objects
@@ -57,7 +56,6 @@ class Shot(CircleShape):
             print(f"other health after shot: {other.health}")               # Log the target's health after damage
             explosion = Explosion(self.position.x, self.position.y)         # Create an explosion at the shot's position
             self.shrapnel_obj(self.radius)                                  # Generate shrapnel after the explosion
-
 
     def shot_score(self, other, owner):
         print(f"shot exploded on {other} with damage {PLAYER_SHOT_DMG}")                # Log explosion event with damage details

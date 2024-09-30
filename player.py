@@ -10,58 +10,56 @@ from text_lists import player_death_screams
 
 class Player(CircleShape):
     def __init__(self, x, y):
-        # Initialize the player with position and radius
-        super().__init__(x, y, PLAYER_RADIUS)
-        self.velocity = pygame.Vector2(0, 0)  # Linear velocity for movement
-        self.angular_velocity = 0  # Angular velocity for rotation
-        self.rotation = 0  # Initial rotation angle
-        self.timer = 0  # Timer for shooting cooldown
-        self.score = 0  # Initialize score
-        self.time = 0
-        self.asteroids_destroyed = 0
-        self.health = self.radius * 2
-        self.speed = self.velocity.length()
-        self.is_player = True
-        self.shot_cooldown =    PLAYER_SHOOT_COOLDOWN
-        self.shot_damage =      PLAYER_SHOT_DMG
-        self.move_speed =       PLAYER_SPEED
-        self.turn_speed =       PLAYER_TURN_SPEED
-        self.forward_direction = pygame.Vector2(0, 1).rotate(self.rotation)
-        self.right_direction = self.forward_direction.rotate(90)
-        # Stabilisers attributes
-        self.stabilisers = True  # Set to True to enable stabilisers
-        self.stabiliser_str = 0.5  # Strength of stabilisation (tweak this)
-        self.forward_velocity = self.velocity.dot(self.forward_direction)
-        self.right_velocity = self.velocity.dot(self.right_direction)  # Right velocity relative to facing direction
-        self.stabiliser_velocity_threshold = STABILISER_VELOSITY_THRESHOLD
-        self.color = PLAYER_COLOR 
+        super().__init__(x, y, PLAYER_RADIUS)                                   # Initialize the player with position and radius
+        self.velocity = pygame.Vector2(0, 0)                                    # Linear velocity for movement
+        self.angular_velocity = 0                                               # Angular velocity for rotation
+        self.rotation = 0                                                       # Initial rotation angle
+        self.timer = 0                                                          # Timer for shooting cooldown
+        self.score = 0                                                          # Initialize player's score
+        self.time = 0                                                           # Track the player's time in the game
+        self.asteroids_destroyed = 0                                            # Track the number of asteroids destroyed
+        self.health = self.radius * 2                                           # Set health based on player radius
+        self.speed = self.velocity.length()                                     # Speed is the magnitude of the velocity
+        self.is_player = True                                                   # Flag to identify the object as a player
+        self.shot_cooldown = PLAYER_SHOOT_COOLDOWN                              # Set the cooldown time between shots
+        self.shot_damage = PLAYER_SHOT_DMG                                      # Set the damage caused by player's shot
+        self.move_speed = PLAYER_SPEED                                          # Set the player's movement speed
+        self.turn_speed = PLAYER_TURN_SPEED                                     # Set the player's turning speed
+        self.forward_direction = pygame.Vector2(0, 1).rotate(self.rotation)     # Forward direction vector based on current rotation
+        self.right_direction = self.forward_direction.rotate(90)                # Right direction vector (perpendicular to forward)
+        self.stabilisers = True                                                 # Enable or disable stabilisers for the player
+        self.stabiliser_str = 0.5                                               # Set the strength of the stabilisers
+        self.forward_velocity = self.velocity.dot(self.forward_direction)       # Calculate forward velocity relative to direction
+        self.right_velocity = self.velocity.dot(self.right_direction)           # Calculate right velocity relative to direction
+        self.stabiliser_velocity_threshold = STABILISER_VELOSITY_THRESHOLD      # Threshold for stabilising velocity
+        self.color = PLAYER_COLOR                                               # Set the player's color
+
     
-    def triangle(self):                                               # Calculate the points of the triangle representing the alien ship
-        forward = pygame.Vector2(0, 1).rotate(self.rotation)          # Forward direction vector based on the alien's current rotation
+    def triangle(self):                                                         # Calculate the points of the triangle representing the alien ship
+        forward = pygame.Vector2(0, 1).rotate(self.rotation)                    # Forward direction vector based on the alien's current rotation
         right = pygame.Vector2(0, 1).rotate(self.rotation + 90) * self.radius / 1.5  # Right direction vector, scaled by the radius
-        a = self.position + forward * self.radius                     # Tip of the triangle, positioned forward by the radius
-        b = self.position - forward * self.radius - right             # Left corner of the triangle
-        c = self.position - forward * self.radius + right             # Right corner of the triangle
-        return [a, b, c]                                              # Return the list of triangle points
+        a = self.position + forward * self.radius                               # Tip of the triangle, positioned forward by the radius
+        b = self.position - forward * self.radius - right                       # Left corner of the triangle
+        c = self.position - forward * self.radius + right                       # Right corner of the triangle
+        return [a, b, c]                                                        # Return the list of triangle points
    
-    def draw(self, screen): # Draw the player as a triangle
+    def draw(self, screen):                                                     # Draw the player as a triangle
         points = self.triangle()
         pygame.draw.polygon(screen, (200, 180, 190), points)
 
     def update(self, dt):
-        self.forward_direction = pygame.Vector2(0, 1).rotate(self.rotation) # setting forward direction
-        self.right_direction = self.forward_direction.rotate(90)
-        self.velocity *= self.friction                                      # Apply linear friction
-        self.angular_velocity *= self.angular_friction                      # Apply rotational friction
-        self.forward_velocity = self.velocity.dot(self.forward_direction)
-        self.right_velocity = self.velocity.dot(self.right_direction)       # Calculate the x-axis velocity (relative to the object's forward direction)
-        self.position += self.velocity * dt                                 # Update position based on velocity
-        self.rotation += self.angular_velocity * dt                         # Update rotation based on angular velocity
-        self.wrap_around_screen()                                           # Wrap around screen edge detection
-        self.timer -= dt                                                    # Decrease the shooting timer 
-        self.time += dt
-                
-        keys = pygame.key.get_pressed() # Get the current key states
+        self.forward_direction = pygame.Vector2(0, 1).rotate(self.rotation)   # Set the forward direction based on rotation
+        self.right_direction = self.forward_direction.rotate(90)              # Set the right direction (perpendicular to forward)
+        self.velocity *= self.friction                                        # Apply linear friction to reduce movement over time
+        self.angular_velocity *= self.angular_friction                        # Apply rotational friction to slow down turning
+        self.forward_velocity = self.velocity.dot(self.forward_direction)     # Calculate forward velocity relative to facing direction
+        self.right_velocity = self.velocity.dot(self.right_direction)         # Calculate rightward velocity relative to facing direction
+        self.position += self.velocity * dt                                   # Update position based on velocity and time delta
+        self.rotation += self.angular_velocity * dt                           # Update rotation based on angular velocity
+        self.wrap_around_screen()                                             # Ensure player wraps around screen edges
+        self.timer -= dt                                                      # Decrease the shooting cooldown timer
+        self.time += dt                                                       # Track the total time the player has been in the game
+        keys = pygame.key.get_pressed()                                       # Get the current key states
 
         # Simplified directional movement and rotation values
         up              = self.move_speed   * dt
@@ -131,7 +129,6 @@ class Player(CircleShape):
             self.apply_torque(self.turn_speed * dt * self.stabiliser_str)         # Reduce leftward rotation
         if not key_turn_right and self.angular_velocity > 0:                      # No turn right input, rotating right
             self.apply_torque(-self.turn_speed * dt * self.stabiliser_str)        # Reduce rightward rotation
-
 
     def move(self, force_magnitude):
         # Move the player in the direction they are facing
@@ -210,8 +207,6 @@ class Player(CircleShape):
         self.death()                                                        # Call player's death method
         self.create_shrapnel(mass)                                          # Custom player sharpnel mass   
 
-    def bounce(self, other):
-        super().bounce(other)
 
     def destroy_asteroid(self, value):
         self.asteroids_destroyed += value
