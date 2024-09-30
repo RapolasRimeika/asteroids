@@ -4,40 +4,53 @@ from floating_text import FloatingText
 from constants import GLOBAL_COLLISION_MODIFIER, ASTEROID_MIN_RADIUS, PLAYER_SHOT_SPEED
 from text_lists import shrapnel_flames
 
-
-# Base class for circular game objects with full inertia and friction
 class CircleShape(pygame.sprite.Sprite):
+    """
+    A base class for circular objects in the game. This class includes attributes 
+    for linear and angular movement, friction, and health, and provides collision 
+    handling and shrapnel generation on destruction.
+
+    Attributes:
+        position (pygame.Vector2): The position of the object in 2D space.
+        velocity (pygame.Vector2): The linear velocity of the object.
+        radius (float): The radius of the object.
+        angular_velocity (float): The angular velocity of the object (rotational speed).
+        rotation (float): The current rotation angle of the object.
+        friction (float): The factor to slow down linear velocity over time.
+        angular_friction (float): The factor to slow down angular velocity over time.
+        health (float): The health of the object, based on its radius.
+        destroyed (bool): A flag to determine if the object is destroyed.
+    """
     def __init__(self, x, y, radius, friction=0.995, angular_friction=0.95):
-        # Initialize sprite and add to groups if containers are set
-        if hasattr(self, "containers"):
+        if hasattr(self, "containers"):                                       # Initialize sprite and add to groups if containers are set
             super().__init__(self.containers)
         else:
-            super().__init__()
-        self.destroyed = False  # Add a flag to track if the object has been destroyed
-        self.position = pygame.Vector2(x, y)
-        self.velocity = pygame.Vector2(0, 0)  # Linear velocity for movement
-        self.radius = radius
-        self.angular_velocity = 0  # Angular velocity (rotational inertia)
-        self.rotation = 0  # Current rotation angle
-        self.friction = friction  # Linear friction factor
-        self.angular_friction = angular_friction  # Rotational friction factor
-        self.speed = self.velocity.length() # Speed is the lenght of the vector "velocity"
-        self.health = self.radius * 2
-        self.max_health = self.health
-        self.color = (255, 255, 255)
+            super().__init__()                                                # Initialize sprite without containers
+        self.destroyed = False                                                # Add a flag to track if the object has been destroyed
+        self.position = pygame.Vector2(x, y)                                  # Set position as a 2D vector
+        self.velocity = pygame.Vector2(0, 0)                                  # Linear velocity for movement, starts at (0,0)
+        self.radius = radius                                                  # Set the radius of the object
+        self.angular_velocity = 0                                             # Angular velocity (rotational inertia), initially 0
+        self.rotation = 0                                                     # Current rotation angle, starts at 0
+        self.friction = friction                                              # Linear friction factor to reduce velocity over time
+        self.angular_friction = angular_friction                              # Rotational friction factor to reduce angular velocity
+        self.speed = self.velocity.length()                                   # Speed is the magnitude (length) of the velocity vector
+        self.health = self.radius * 2                                         # Health is twice the radius
+        self.max_health = self.health                                         # Max health is the initial health value
+        self.color = (255, 255, 255)                                          # Default color of the object is white
 
     def update(self, dt):
-        self.velocity *= self.friction                  # Apply linear friction to slow down movement over time
-        self.angular_velocity *= self.angular_friction  # Apply rotational friction to slow down rotation
-        self.position += self.velocity * dt             # Update position based on velocity (linear inertia)
-        self.rotation += self.angular_velocity * dt     # Update rotation based on angular velocity
-        self.rotation %= 360                            # Keep rotation within 0-360 degrees (optional)
+        self.velocity *= self.friction                          # Apply linear friction to slow down movement over time
+        self.angular_velocity *= self.angular_friction          # Apply rotational friction to slow down rotation
+        self.position += self.velocity * dt                     # Update position based on velocity (linear inertia)
+        self.rotation += self.angular_velocity * dt             # Update rotation based on angular velocity
+        self.rotation %= 360                                    # Keep rotation within 0-360 degrees (optional)
 
     def apply_force(self, force):
-        self.velocity += force                          # Apply force to velocity for linear movement
+        self.velocity += force                                  # Apply force to velocity for linear movement
 
     def apply_torque(self, torque):
-        self.angular_velocity += torque                 # Apply torque to angular velocity for rotation
+        self.angular_velocity += torque                         # Apply torque to angular velocity for rotation
         
     def collision(self, other, bounce=True):
         if hasattr(other, "is_explosion") and other.is_explosion == True:     # Ignore collisions with explosion objects
@@ -85,7 +98,7 @@ class CircleShape(pygame.sprite.Sprite):
         other.apply_torque(-collision_torque_other)                               # Apply opposite torque to the other object
 
 
-    def draw(self, screen):                                              # Subclasses should override this method to draw themselves
+    def draw(self, screen):                                             # Subclasses should override this method to draw themselves
         pass
 
     def shrapnel_obj(self, mass, RGB=(150, 150, 150),):
@@ -122,22 +135,22 @@ class CircleShape(pygame.sprite.Sprite):
 class Shrapnel(CircleShape):
     def __init__(self, x, y, radius, RGB=(235, 5, 2)):
         super().__init__(x, y, radius)
-        self.lifetime = random.randrange(100, 700, 100)          # Set random lifetime for the shrapnel in milliseconds
-        self.spawn_time = pygame.time.get_ticks()                # Get the spawn time in ticks
-        self.rgb = RGB                                           # Set the color of the shrapnel (default or passed in)
-        self.angular_velocity = 0                                # Disable angular velocity (no rotation)
+        self.lifetime = random.randrange(100, 700, 100)             # Set random lifetime for the shrapnel in milliseconds
+        self.spawn_time = pygame.time.get_ticks()                   # Get the spawn time in ticks
+        self.rgb = RGB                                              # Set the color of the shrapnel (default or passed in)
+        self.angular_velocity = 0                                   # Disable angular velocity (no rotation)
 
     def update(self, dt):
-        self.position += self.velocity * dt                      # Update position based on velocity and time delta
-        self.velocity *= self.friction                           # Apply friction to slow down movement
-        current_time = pygame.time.get_ticks()                   # Get current time in ticks
-        if current_time - self.spawn_time > self.lifetime:       # Check if lifetime has expired
-            self.kill()                                          # Remove shrapnel if its lifetime is over
+        self.position += self.velocity * dt                         # Update position based on velocity and time delta
+        self.velocity *= self.friction                              # Apply friction to slow down movement
+        current_time = pygame.time.get_ticks()                      # Get current time in ticks
+        if current_time - self.spawn_time > self.lifetime:          # Check if lifetime has expired
+            self.kill()                                             # Remove shrapnel if its lifetime is over
 
-    def draw(self, screen):                                      # Draw the shrapnel on the screen as a white circle as the shrapnel outline
+    def draw(self, screen):                                         # Draw the shrapnel on the screen as a white circle as the shrapnel outline
         pygame.draw.circle(screen, (255, 255, 255), (int(self.position.x), int(self.position.y)), self.radius)
-        flame = random.choice(shrapnel_flames)                   # Choose a random floating flame character
+        flame = random.choice(shrapnel_flames)                      # Choose a random floating flame character
         FloatingText(self.position.x, self.position.y, (f"{flame}"), self.rgb, 40) # Display floating flame text
     
-    def apply_torque(self, torque):                              # Torque is disabled for shrapnel (no rotation)
+    def apply_torque(self, torque):                                 # Torque is disabled for shrapnel (no rotation)
         pass
