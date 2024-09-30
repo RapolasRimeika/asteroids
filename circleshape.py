@@ -26,31 +26,21 @@ class CircleShape(pygame.sprite.Sprite):
         self.max_health = self.health
         self.color = (255, 255, 255)
 
-    def apply_force(self, force):
-        # Apply force to the velocity (affects linear movement)
-        self.velocity += force
-    
-    def apply_torque(self, torque):
-        # Apply torque to angular velocity (affects rotation)
-        self.angular_velocity += torque
-
     def update(self, dt):
-        # Apply linear friction to slow down movement over time
-        self.velocity *= self.friction
+        self.velocity *= self.friction                  # Apply linear friction to slow down movement over time
+        self.angular_velocity *= self.angular_friction  # Apply rotational friction to slow down rotation
+        self.position += self.velocity * dt             # Update position based on velocity (linear inertia)
+        self.rotation += self.angular_velocity * dt     # Update rotation based on angular velocity
+        self.rotation %= 360                            # Keep rotation within 0-360 degrees (optional)
 
-        # Apply rotational friction to slow down rotation over time
-        self.angular_velocity *= self.angular_friction
+    def apply_force(self, force):
+        self.velocity += force                          # Apply force to velocity for linear movement
 
-        # Update position based on velocity (linear inertia)
-        self.position += self.velocity * dt
-
-        # Update rotation based on angular velocity (rotational inertia)
-        self.rotation += self.angular_velocity * dt
-
-        # Optional: Keep rotation within 0-360 degrees
-        self.rotation %= 360
+    def apply_torque(self, torque):
+        self.angular_velocity += torque                 # Apply torque to angular velocity for rotation
 
     def collision(self, other, bounce=True):
+        
         if hasattr(other, "is_explosion") and other.is_explosion == True:
             return
 
