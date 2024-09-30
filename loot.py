@@ -3,6 +3,16 @@ import random                                         # Random library to choose
 from asteroid import Asteroid                         # Import the Asteroid class for loot inheritance
 from floating_text import FloatingText                # Import for displaying text messages on the screen
 from constants import *                               # Import all constants used for game configuration
+"""
+LootSpawner and Loot classes for spawning and applying various power-up effects to the player in the game.
+
+The LootSpawner class handles delayed spawning of loot items at specific positions. The Loot class inherits 
+from the Asteroid class and represents different types of collectible power-ups in the game.
+
+Each loot type has a unique effect (e.g., health, speed, score, damage) that affects the player upon collection.
+The collision method checks for player contact, applies the effect, and then removes the loot from the game.
+"""
+
 
 class LootSpawner(pygame.sprite.Sprite):              # Class for spawning loot items after delay
     containers = []                                   # Container groups to add this object into
