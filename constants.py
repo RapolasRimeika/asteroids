@@ -1,3 +1,5 @@
+import pygame
+
 # Screen dimensions
 SCREEN_WIDTH = 2560
 SCREEN_HEIGHT = 1440
@@ -12,6 +14,15 @@ ASTEROID_MAX_RADIUS = ASTEROID_MIN_RADIUS * ASTEROID_KINDS
 PLAYER_RADIUS = 20
 PLAYER_TURN_SPEED = 300
 PLAYER_SPEED = 200
+
+# Key mappings for movement and rotation
+KEY_UP =            [pygame.K_w, pygame.K_UP, pygame.K_KP8]
+KEY_DOWN =          [pygame.K_s, pygame.K_DOWN, pygame.K_KP5]
+KEY_STRAFE_LEFT =   [pygame.K_a, pygame.K_KP4]
+KEY_STRAFE_RIGHT =  [pygame.K_d, pygame.K_KP6]
+KEY_TURN_LEFT =     [pygame.K_q, pygame.K_LEFT, pygame.K_KP7]
+KEY_TURN_RIGHT =    [pygame.K_e, pygame.K_RIGHT, pygame.K_KP9]
+KEY_SHOOT =         pygame.K_SPACE
 
 # Shots
 SHOT_RADIUS = 5

@@ -4,11 +4,15 @@ from constants import *
 from circleshape import CircleShape
 from shot import Shot
 from floating_text import FloatingText
-from circleshape import Shrapnel
 from explosion import Explosion
 from text_lists import player_death_screams
 
 class Player(CircleShape):
+    """
+    The Player class represents the player's spaceship in the game, inheriting from CircleShape.
+    It handles movement, shooting, scoring, and interaction with game elements such as asteroids.
+    The player can move, rotate, shoot projectiles, and is affected by friction and stabilisers.
+    """
     def __init__(self, x, y):
         super().__init__(x, y, PLAYER_RADIUS)                                   # Initialize the player with position and radius
         self.velocity = pygame.Vector2(0, 0)                                    # Linear velocity for movement
@@ -34,7 +38,6 @@ class Player(CircleShape):
         self.stabiliser_velocity_threshold = STABILISER_VELOSITY_THRESHOLD      # Threshold for stabilising velocity
         self.color = PLAYER_COLOR                                               # Set the player's color
 
-    
     def triangle(self):                                                         # Calculate the points of the triangle representing the alien ship
         forward = pygame.Vector2(0, 1).rotate(self.rotation)                    # Forward direction vector based on the alien's current rotation
         right = pygame.Vector2(0, 1).rotate(self.rotation + 90) * self.radius / 1.5  # Right direction vector, scaled by the radius
@@ -48,52 +51,48 @@ class Player(CircleShape):
         pygame.draw.polygon(screen, (200, 180, 190), points)
 
     def update(self, dt):
-        self.forward_direction = pygame.Vector2(0, 1).rotate(self.rotation)   # Set the forward direction based on rotation
-        self.right_direction = self.forward_direction.rotate(90)              # Set the right direction (perpendicular to forward)
-        self.velocity *= self.friction                                        # Apply linear friction to reduce movement over time
-        self.angular_velocity *= self.angular_friction                        # Apply rotational friction to slow down turning
-        self.forward_velocity = self.velocity.dot(self.forward_direction)     # Calculate forward velocity relative to facing direction
-        self.right_velocity = self.velocity.dot(self.right_direction)         # Calculate rightward velocity relative to facing direction
-        self.position += self.velocity * dt                                   # Update position based on velocity and time delta
-        self.rotation += self.angular_velocity * dt                           # Update rotation based on angular velocity
-        self.wrap_around_screen()                                             # Ensure player wraps around screen edges
-        self.timer -= dt                                                      # Decrease the shooting cooldown timer
-        self.time += dt                                                       # Track the total time the player has been in the game
+        self.forward_direction = pygame.Vector2(0, 1).rotate(self.rotation)     # Set the forward direction based on rotation
+        self.right_direction = self.forward_direction.rotate(90)                # Set the right direction (perpendicular to forward)
+        self.velocity *= self.friction                                          # Apply linear friction to reduce movement over time
+        self.angular_velocity *= self.angular_friction                          # Apply rotational friction to slow down turning
+        self.forward_velocity = self.velocity.dot(self.forward_direction)       # Calculate forward velocity relative to facing direction
+        self.right_velocity = self.velocity.dot(self.right_direction)           # Calculate rightward velocity relative to facing direction
+        self.position += self.velocity * dt                                     # Update position based on velocity and time delta
+        self.rotation += self.angular_velocity * dt                             # Update rotation based on angular velocity
+        self.wrap_around_screen()                                               # Ensure player wraps around screen edges
+        self.timer -= dt                                                        # Decrease the shooting cooldown timer
+        self.time += dt                                                         # Track the total time the player has been in the game
+        self.handle_input(dt)                                                   # Handle key inputs and movement
+    
+    def handle_input(self, dt):
+        # This method handles key inputs and movement
         keys = pygame.key.get_pressed()                                       # Get the current key states
-
-        # Simplified directional movement and rotation values
         up              = self.move_speed   * dt
         down            = -self.move_speed  * dt
-        strafe_left     = -self.move_speed  * dt         # Strafe left
-        strafe_right    = self.move_speed   * dt         # Strafe right
-        turn_left       = -self.turn_speed  * dt         # Turn left
-        turn_right      = self.turn_speed   * dt         # Turn right
+        strafe_left     = -self.move_speed  * dt
+        strafe_right    = self.move_speed   * dt
+        turn_left       = -self.turn_speed  * dt
+        turn_right      = self.turn_speed   * dt
 
-        # Key mappings for movement and rotation
-        key_up =            keys[pygame.K_w] or keys[pygame.K_UP]       or keys[pygame.K_KP8]
-        key_down =          keys[pygame.K_s] or keys[pygame.K_DOWN]     or keys[pygame.K_KP5]
-        key_strafe_left =   keys[pygame.K_a]                            or keys[pygame.K_KP4]
-        key_strafe_right =  keys[pygame.K_d]                            or keys[pygame.K_KP6]
-        key_turn_left =     keys[pygame.K_q] or keys[pygame.K_LEFT]     or keys[pygame.K_KP7]
-        key_turn_right =    keys[pygame.K_e] or keys[pygame.K_RIGHT]    or keys[pygame.K_KP9]
+        key_up = any(keys[key] for key in KEY_UP)
+        key_down = any(keys[key] for key in KEY_DOWN)
+        key_strafe_left = any(keys[key] for key in KEY_STRAFE_LEFT)
+        key_strafe_right = any(keys[key] for key in KEY_STRAFE_RIGHT)
+        key_turn_left = any(keys[key] for key in KEY_TURN_LEFT)
+        key_turn_right = any(keys[key] for key in KEY_TURN_RIGHT)
 
-        # Handle movement and rotation based on key inputs
+        # Apply movements based on key input
         if key_turn_left:       self.apply_torque(turn_left)
         if key_turn_right:      self.apply_torque(turn_right)
         if key_down:            self.move(down)
         if key_up:              self.move(up)
-        if key_strafe_left:     self.move_x(strafe_left)            # Move left along the X-axis
-        if key_strafe_right:    self.move_x(strafe_right)           # Move right along the X-axis        
-        
-        if keys[pygame.K_SPACE] and self.timer <= 0:
+        if key_strafe_left:     self.move_x(strafe_left)
+        if key_strafe_right:    self.move_x(strafe_right)
+
+        if keys[KEY_SHOOT] and self.timer <= 0:
             self.shoot()
+        self.apply_stabilisers(dt, key_up, key_down, key_strafe_left, key_strafe_right, key_turn_left, key_turn_right)
 
-        if self.stabilisers: 
-            self.apply_stabilisers(dt, key_up, key_down, key_strafe_left, key_strafe_right, key_turn_left, key_turn_right)
-
-        if self.health <= 0:
-            self.death()
-    
     def apply_stabilisers(self, dt, key_up, key_down, key_strafe_left, key_strafe_right, key_turn_left, key_turn_right):
         """
         Applies stabilisation to stop small movements and rotations if no input is provided.
@@ -131,42 +130,30 @@ class Player(CircleShape):
             self.apply_torque(-self.turn_speed * dt * self.stabiliser_str)        # Reduce rightward rotation
 
     def move(self, force_magnitude):
-        # Move the player in the direction they are facing
-        force = self.forward_direction * force_magnitude
-        self.velocity += force  # Apply the force to velocity
-        # Create visual effect when moving
-        RGB = (255, 0, 0)
-        right = pygame.Vector2(0, 1).rotate(self.rotation + 90) * self.radius / 1.5
-        b = self.position - self.forward_direction * self.radius - right
-        c = self.position - self.forward_direction * self.radius + right
-        FloatingText(b.x, b.y, "^", PLAYER_FIRE_COLOR, 50)
-        FloatingText(c.x, c.y, "^", PLAYER_FIRE_COLOR, 50)
+        force = self.forward_direction * force_magnitude                          # Calculate force in forward direction
+        self.velocity += force                                                    # Apply the force to the player's velocity
+        right = pygame.Vector2(0, 1).rotate(self.rotation + 90) * self.radius / 1.5  # Right offset for visual effect
+        b = self.position - self.forward_direction * self.radius - right          # Left-side effect position
+        c = self.position - self.forward_direction * self.radius + right          # Right-side effect position
+        FloatingText(b.x, b.y, "^", PLAYER_FIRE_COLOR, 50)                        # Show left-side visual effect
+        FloatingText(c.x, c.y, "^", PLAYER_FIRE_COLOR, 50)                        # Show right-side visual effect
 
     def move_x(self, force_magnitude):
-        # Determine the direction relative to player's facing direction
-        force = self.right_direction * force_magnitude
-        self.velocity += force
-        # Check if the force is positive (right) or negative (left)
-        self.right_velocity  # Right velocity relative to facing direction
-        if force_magnitude > 0:
-            force = self.right_direction * force_magnitude  # Move right
-            visual_char = ">"  # Right movement, show left-pointing visual effect
-        else:
-            force = -self.right_direction * abs(force_magnitude)  # Move left
-            visual_char = "<"  # Left movement, show right-pointing visual effect
-        # Create visual effect when moving horizontally (relative to player's direction)
-        right = self.right_direction * self.radius / 1.5
-        b = self.position - self.forward_direction * self.radius - right
-        c = self.position - self.forward_direction * self.radius + right
-        FloatingText(b.x, b.y, visual_char, PLAYER_FIRE_COLOR, 50)
-        FloatingText(c.x, c.y, visual_char, PLAYER_FIRE_COLOR, 50)
+        force = self.right_direction * force_magnitude                            # Calculate force in right direction
+        self.velocity += force                                                    # Apply force to player's velocity
+        self.right_velocity                                                       # Right velocity relative to facing direction
+        if force_magnitude > 0:                                                   # Moving right
+            force = self.right_direction * force_magnitude                        # Adjust movement to the right
+            visual_char = ">"                                                     # Show right movement effect
+        else:                                                                     # Moving left
+            force = -self.right_direction * abs(force_magnitude)                  # Adjust movement to the left
+            visual_char = "<"                                                     # Show left movement effect
+        right = self.right_direction * self.radius / 1.5                          # Right offset for visual effect
+        b = self.position - self.forward_direction * self.radius - right          # Left-side effect position
+        c = self.position - self.forward_direction * self.radius + right          # Right-side effect position
+        FloatingText(b.x, b.y, visual_char, PLAYER_FIRE_COLOR, 50)                # Show left-side visual effect
+        FloatingText(c.x, c.y, visual_char, PLAYER_FIRE_COLOR, 50)                # Show right-side visual effect
 
-    def apply_torque(self, torque):
-        # Change the angular velocity by applying a torque (for rotation)
-        self.angular_velocity += torque
-
-    def apply_force(self, force):
-        self.velocity += force
 
     def wrap_around_screen(self):
         # Wrap the player to the opposite side if they move off-screen
@@ -191,32 +178,27 @@ class Player(CircleShape):
         self.timer = self.shot_cooldown                                         # Reset the shooting timer
 
     def death(self):
-        scream = random.choice(player_death_screams)
-        FloatingText(self.position.x, self.position.y, scream, (250, 200, 100), 2000)
-        player_explosion = Explosion(self.position.x, self.position.y, 400)
-        self.kill()    
+        scream = random.choice(player_death_screams)                               # Choose a random death scream
+        FloatingText(self.position.x, self.position.y, scream, (250, 200, 100), 2000) # Display floating text at player's position
+        player_explosion = Explosion(self.position.x, self.position.y, 400)       # Create an explosion at player's position
+        self.kill()                                                               # Remove the player object from the game
 
     def shrapnel_obj(self, mass):
         """
         Player's custom shrapnel generation, including death logic.
         """
-        if self.destroyed:
-            return
-        self.kill()
-        self.destroyed = True
-        self.death()                                                        # Call player's death method
-        self.create_shrapnel(mass)                                          # Custom player sharpnel mass   
-
+        if self.destroyed:                                                        # Check if the player is already destroyed
+            return                                                                # Exit if destroyed to avoid multiple calls
+        self.kill()                                                               # Remove the player object
+        self.destroyed = True                                                     # Mark the player as destroyed
+        self.death()                                                              # Call the player's death method
+        self.create_shrapnel(mass)                                                # Generate shrapnel using the provided mass
 
     def destroy_asteroid(self, value):
-        self.asteroids_destroyed += value
-
+        self.asteroids_destroyed += value                                         # Increment the number of asteroids destroyed by the given value
     def score_points(self, points):
-        self.score += points # Points update function
-
+        self.score += points                                                      # Increment the player's score by the given points
     def get_score(self):
-        return self.score # Point getter function
-
+        return self.score                                                         # Return the player's current score
     def get_time(self): 
-        return round((self.time), 1) # Get time player has been playing
-
+        return round((self.time), 1)                                              # Return the player's playtime, rounded to one decimal place

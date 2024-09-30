@@ -50,7 +50,6 @@ class State():
         self.cull_offscreen_objects(collidable_group)   # Call the culling function
         self.update_player_stats()                      # Call the player stats update function
 
-
     def player_respawn(self, keys, clearable_group):
         """
         Respawns the player when Enter is pressed, resets the background, and clears relevant game objects.
