@@ -9,16 +9,7 @@ class AlienField(pygame.sprite.Sprite):
     The `AlienField` class is responsible for periodically spawning alien ships at random positions
     along the edges of the screen. Each alien ship targets the player and avoids asteroids. The class
     maintains a reference to the player and the asteroid objects to ensure proper interaction between
-    the aliens and other game elements.
-
-    Attributes:
-        player (Player): A reference to the player object, used to determine the target of alien ships.
-        asteroids (list): A reference to the list of asteroids in the game to avoid during alien movement.
-        spawn_timer (float): A timer that tracks when to spawn the next alien ship, reset after each spawn.
-    
-    Methods:
-        spawn(): Creates a new alien ship at a random position along the screen edges and returns it.
-        update(dt): Updates the spawn timer and spawns a new alien ship when the timer exceeds the set spawn rate."""
+    the aliens and other game elements. """
     
     def __init__(self, player, asteroids):
         pygame.sprite.Sprite.__init__(self)
