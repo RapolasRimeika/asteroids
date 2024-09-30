@@ -43,9 +43,11 @@ start_messages = [
     "Aliens think we suck. Let’s try!",
     "Big rocks. Small brains!",
     "Beware of the Black Hole!",
-    "Miss shots? Let’s go!",
+    "Let's fly and shoot!",
     "Another day, more rocks.",
     "Aliens bet against us. Classic.",
+    "Watch out for the black holes",
+    "Shrapnel will kill you"
 ]
 
 # Player's death exclamations

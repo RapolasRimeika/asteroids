@@ -76,9 +76,8 @@ class State():
 
 
     def draw(self, screen):
-        pygame.draw.rect(screen, (100, 200, 100), (1250, 1250, self.health, 10))  # Draw the green health bar
-        FloatingText(175, 20, (f"Score is {self.score}  Time played {self.play_time} s"), TEXT_COLOR, 10)  # Display score and time
-
+        pygame.draw.rect(screen, (100, 200, 100), (SCREEN_WIDTH // 2, SCREEN_HEIGHT - 50, self.health, 10)) # Draw the green health bar
+        FloatingText(175, 20, (f"Score is {self.score}  Time played {self.play_time} s"), TEXT_COLOR, 15)   # Display score and time
 
     def cull_offscreen_objects(self, collidable_group):
         """
@@ -92,9 +91,7 @@ class State():
 
 
     def player_death(self):
-        """
-        Displays the player's death summary when they die.
-        """
+        """ Displays the player's death summary when they die."""
         death_summary = (
             f"Game Over!\n"
             f"Your Score is {self.player.score}\n"
