@@ -11,9 +11,8 @@ from aliens import AlienShip
 from AlienField import AlienField
 from loot import Loot, LootSpawner
 from explosion import Explosion
-from blk import BLK
 from background_layers import *
-
+from black_hole import BlackHole
 def main():
     """
     The main function initializes the Pygame environment, creates game entities and sprite groups,
@@ -53,7 +52,7 @@ def main():
     AlienShip.containers =(updatable, drawable, collidable_group, alien_ships, clearable_group) 
     Loot.containers = (loot_group, updatable, drawable, collidable_group, clearable_group)
     Explosion.containers = (updatable, drawable, all_text, collidable_group, clearable_group)
-    BLK.containers = (updatable, drawable, collidable_group, clearable_group) 
+    BlackHole.containers = (updatable, drawable, collidable_group, clearable_group) 
 
     # Initialize game state, spawn flields, player, background
     state = State(False)

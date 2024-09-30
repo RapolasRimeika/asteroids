@@ -1,7 +1,7 @@
 import pygame
 import random
 from asteroid import Asteroid
-from blk import BLK  # Import the BLK class
+from black_hole import BlackHole  # Import the BLK class
 from constants import *
 
 class AsteroidField(pygame.sprite.Sprite):
@@ -44,7 +44,7 @@ class AsteroidField(pygame.sprite.Sprite):
 
     def spawn_black_hole(self):
         # Create a new black hole with specified parameters
-        black_hole = BLK()
+        black_hole = BlackHole()
         # Spawn at a random edge
         edge = random.choice(self.edges)
         speed = random.randint(100, 150)

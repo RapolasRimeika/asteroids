@@ -2,7 +2,7 @@ import pygame
 from circleshape import CircleShape
 from constants import *
 
-class BLK(CircleShape):
+class BlackHole(CircleShape):
     """ 
     The BLK class represents a black hole object that pulls other objects 
     within its radius and can destroy them if they get too close. Inherits 
