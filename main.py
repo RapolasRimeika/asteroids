@@ -64,13 +64,14 @@ def main():
             
     state.running = True                                        # Set game state to running
     while state.running:                                        # Game loop runs while state is active
-        for event in pygame.event.get():                        # Process all game events
+        events = pygame.event.get()                             
+        for event in events:                                    # Process all game events
             if event.type == pygame.QUIT:                       # Check if the quit event is triggered
                 return                                          # Exit the game loop if quit is triggered
         screen.blit(state.background, (0, 0))                   # Wipe the screen with the generated background
         state.draw(screen)                                      # Draw the game state on the screen
         dt = clock.tick(60) / 1000                              # Cap the frame rate at 60 FPS and calculate delta time
-        state.update(dt, updatable, drawable, collidable_group, clearable_group) # Update game state, passing groups for updating
+        state.update(dt, updatable, drawable, collidable_group, clearable_group, events) # Update game state, passing groups for updating
         for sprite in updatable:                                # Update all sprites marked as updatable
             sprite.update(dt)                                   # Call the update method for each sprite with delta time
         collidable_list = list(collidable_group)                # Create a list of collidable objects

@@ -61,6 +61,7 @@ GLOBAL_COLLISION_MODIFIER = 0.002                   # Modifier for collision dam
 LOOT_DROP_CHANCE = 0.7                              # Probability of loot dropping from destroyed enemies
 STABILISER_VELOSITY_THRESHOLD = 1                   # Threshold for stabiliser to stop small movements
 MIN_SHRAPNEL_SPEED = PLAYER_SHOT_SPEED / 10         # Minimum speed for shrapnel pieces, based on player shot speed
+HIGH_SCORE_FILE = 'high_scores.json'                # Path / Name for the high score file
 
 # Explosion settings
 EXPLOSION_NEAR_STRENGTH = 200                       # Explosion strength at close range

@@ -1,3 +1,4 @@
 venv/
 __pycache__/
 temp.txt
+high_scores.json
