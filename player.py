@@ -30,9 +30,8 @@ class Player(CircleShape):
         self.move_speed = PLAYER_SPEED                                          # Set the player's movement speed
         self.turn_speed = PLAYER_TURN_SPEED                                     # Set the player's turning speed
         self.forward_direction = pygame.Vector2(0, 1).rotate(self.rotation)     # Forward direction vector based on current rotation
-        self.right_direction = self.forward_direction.rotate(90)                # Right direction vector (perpendicular to forward)
-        self.stabilisers = True                                                 # Enable or disable stabilisers for the player
-        self.stabiliser_str = STABILISER_STR                                               # Set the strength of the stabilisers
+        self.right_direction = self.forward_direction.rotate(90)                # Right direction vector (perpendicular to forward)       
+        self.stabiliser_str = STABILISER_STR                                    # Set the strength of the stabilisers
         self.forward_velocity = self.velocity.dot(self.forward_direction)       # Calculate forward velocity relative to direction
         self.right_velocity = self.velocity.dot(self.right_direction)           # Calculate right velocity relative to direction
         self.stabiliser_velocity_threshold = STABILISER_VELOSITY_THRESHOLD      # Threshold for stabilising velocity

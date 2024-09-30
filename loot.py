@@ -82,12 +82,9 @@ class Loot(Asteroid):
             FloatingText(player.position.x, player.position.y, self.description, self.loot_color, LOOT_MSG_DURATION)
 
         elif self.effect_type == LOOT_EFFECT_STABILISERS:
-            if player.stabilisers == True:
-                player.score_points(LOOT_ALREADY_HAVE_STABILISERS_POINTS)
-                FloatingText(player.position.x, player.position.y, LOOT_ALREADY_HAVE_STABILISERS_MSG, self.loot_color, LOOT_MSG_DURATION)
-            else:
+                player.stabiliser_str *= 1.2  # Increase the stabiliser strength by 20%
                 FloatingText(player.position.x, player.position.y, self.description, self.loot_color, LOOT_MSG_DURATION)
-
+            
     def collision(self, other, bounce=True):
         # Check for collision with another object
         distance = self.position.distance_to(other.position)
