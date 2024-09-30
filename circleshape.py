@@ -1,7 +1,7 @@
 import pygame
 import random
 from floating_text import FloatingText
-from constants import GLOBAL_COLLISION_MODIFIER, ASTEROID_MIN_RADIUS, PLAYER_SHOT_SPEED
+from constants import GLOBAL_COLLISION_MODIFIER, MIN_SHRAPNEL_SPEED
 from text_lists import shrapnel_flames
 
 class CircleShape(pygame.sprite.Sprite):
@@ -22,53 +22,53 @@ class CircleShape(pygame.sprite.Sprite):
         destroyed (bool): A flag to determine if the object is destroyed.
     """
     def __init__(self, x, y, radius, friction=0.995, angular_friction=0.95):
-        if hasattr(self, "containers"):                                       # Initialize sprite and add to groups if containers are set
+        if hasattr(self, "containers"):                                     # Initialize sprite and add to groups if containers are set
             super().__init__(self.containers)
         else:
-            super().__init__()                                                # Initialize sprite without containers
-        self.destroyed = False                                                # Add a flag to track if the object has been destroyed
-        self.position = pygame.Vector2(x, y)                                  # Set position as a 2D vector
-        self.velocity = pygame.Vector2(0, 0)                                  # Linear velocity for movement, starts at (0,0)
-        self.radius = radius                                                  # Set the radius of the object
-        self.angular_velocity = 0                                             # Angular velocity (rotational inertia), initially 0
-        self.rotation = 0                                                     # Current rotation angle, starts at 0
-        self.friction = friction                                              # Linear friction factor to reduce velocity over time
-        self.angular_friction = angular_friction                              # Rotational friction factor to reduce angular velocity
-        self.speed = self.velocity.length()                                   # Speed is the magnitude (length) of the velocity vector
-        self.health = self.radius * 2                                         # Health is twice the radius
-        self.max_health = self.health                                         # Max health is the initial health value
-        self.color = (255, 255, 255)                                          # Default color of the object is white
+            super().__init__()                                              # Initialize sprite without containers
+        self.destroyed = False                                              # Add a flag to track if the object has been destroyed
+        self.position = pygame.Vector2(x, y)                                # Set position as a 2D vector
+        self.velocity = pygame.Vector2(0, 0)                                # Linear velocity for movement, starts at (0,0)
+        self.radius = radius                                                # Set the radius of the object
+        self.angular_velocity = 0                                           # Angular velocity (rotational inertia), initially 0
+        self.rotation = 0                                                   # Current rotation angle, starts at 0
+        self.friction = friction                                            # Linear friction factor to reduce velocity over time
+        self.angular_friction = angular_friction                            # Rotational friction factor to reduce angular velocity
+        self.speed = self.velocity.length()                                 # Speed is the magnitude (length) of the velocity vector
+        self.health = self.radius * 2                                       # Health is twice the radius
+        self.max_health = self.health                                       # Max health is the initial health value
+        self.color = (255, 255, 255)                                        # Default color of the object is white
 
     def update(self, dt):
-        self.velocity *= self.friction                          # Apply linear friction to slow down movement over time
-        self.angular_velocity *= self.angular_friction          # Apply rotational friction to slow down rotation
-        self.position += self.velocity * dt                     # Update position based on velocity (linear inertia)
-        self.rotation += self.angular_velocity * dt             # Update rotation based on angular velocity
-        self.rotation %= 360                                    # Keep rotation within 0-360 degrees (optional)
+        self.velocity *= self.friction                                      # Apply linear friction to slow down movement over time
+        self.angular_velocity *= self.angular_friction                      # Apply rotational friction to slow down rotation
+        self.position += self.velocity * dt                                 # Update position based on velocity (linear inertia)
+        self.rotation += self.angular_velocity * dt                         # Update rotation based on angular velocity
+        self.rotation %= 360                                                # Keep rotation within 0-360 degrees (optional)
 
     def apply_force(self, force):
-        self.velocity += force                                  # Apply force to velocity for linear movement
+        self.velocity += force                                              # Apply force to velocity for linear movement
 
     def apply_torque(self, torque):
-        self.angular_velocity += torque                         # Apply torque to angular velocity for rotation
+        self.angular_velocity += torque                                     # Apply torque to angular velocity for rotation
         
     def collision(self, other, bounce=True):
-        if hasattr(other, "is_explosion") and other.is_explosion == True:     # Ignore collisions with explosion objects
+        if hasattr(other, "is_explosion") and other.is_explosion == True:   # Ignore collisions with explosion objects
             return
-        distance = self.position.distance_to(other.position)                  # Check for collision with another CircleShape
-        if self.radius + other.radius > distance:                             # Check if the objects are overlapping
-            if hasattr(other, "is_shot") and other.is_shot == True:           # Handle collisions with shots
+        distance = self.position.distance_to(other.position)                # Check for collision with another CircleShape
+        if self.radius + other.radius > distance:                           # Check if the objects are overlapping
+            if hasattr(other, "is_shot") and other.is_shot == True:         # Handle collisions with shots
                 other.shot_explode(self)
                 return
-            impact_force = (other.radius * other.velocity.length() +          # Calculate damage based on combined
-                            self.radius * self.velocity.length())             # object radius and velocity
-            self.health -= impact_force * GLOBAL_COLLISION_MODIFIER           # Apply damage to `self`
-            other.health -= impact_force * GLOBAL_COLLISION_MODIFIER          # Apply damage to `other`
-            if self.health <= 0 and not self.destroyed:                       # Handle destruction for `self`
+            impact_force = (other.radius * other.velocity.length() +        # Calculate damage based on combined
+                            self.radius * self.velocity.length())           # object radius and velocity
+            self.health -= impact_force * GLOBAL_COLLISION_MODIFIER         # Apply damage to `self`
+            other.health -= impact_force * GLOBAL_COLLISION_MODIFIER        # Apply damage to `other`
+            if self.health <= 0 and not self.destroyed:                     # Handle destruction for `self`
                 self.shrapnel_obj(self.radius)
-            if other.health <= 0 and not other.destroyed:                     # Handle destruction for `other`
+            if other.health <= 0 and not other.destroyed:                   # Handle destruction for `other`
                 other.shrapnel_obj(other.radius)
-            if bounce:                                                        # Bounce if enabled
+            if bounce:                                                      # Bounce if enabled
                 self.bounce(other)
 
     def bounce(self, other):
@@ -102,8 +102,7 @@ class CircleShape(pygame.sprite.Sprite):
 
     def shrapnel_obj(self, mass):
         """
-        Generalized shrapnel generation method.
-        This can be overridden by subclasses for custom behavior (e.g., death, splitting).
+        Generalized shrapnel generation method. This is overridden by subclasses (Player, Alien, Asteroid)
         """
         if self.destroyed:                                              # Check if the object is already destroyed
             return                                                      # Exit early if already destroyed
@@ -112,38 +111,38 @@ class CircleShape(pygame.sprite.Sprite):
         self.create_shrapnel(mass)       
 
     def create_shrapnel(self, mass):
-        while mass > 3:
+        while mass > 3:                                                                         # Mass is either specific or the radius of the originating object
             random_angle = random.uniform(0, 360)                                               # Generate a random angle for the shrapnel direction
             velocity_a = self.velocity.rotate(random_angle) * random.uniform(0.1, 2)            # Generate random velocity
             new_radius = random.randrange(1, 3, 1)                                              # Create a random radius for the shrapnel piece
             shrapnel_piece = Shrapnel(self.position.x, self.position.y, new_radius, self.color) # Create the shrapnel piece
             if velocity_a.length() == 0:                                                        # Check if velocity is effectively zero
-                velocity_a = pygame.Vector2(1, 0).rotate(random_angle) * PLAYER_SHOT_SPEED      # Set minimum velocity if stationary
+                velocity_a = pygame.Vector2(1, 0).rotate(random_angle) * MIN_SHRAPNEL_SPEED     # Set minimum velocity if stationary
             shrapnel_piece.velocity = velocity_a                                                # Apply velocity to the shrapnel piece
-            if shrapnel_piece.velocity.length() < PLAYER_SHOT_SPEED / 10:                       # Ensure velocity is at least PLAYER_SHOT_SPEED/10
-                shrapnel_piece.velocity.scale_to_length(PLAYER_SHOT_SPEED / 10)
+            if shrapnel_piece.velocity.length() < MIN_SHRAPNEL_SPEED:                           # Ensure velocity is at least PLAYER_SHOT_SPEED/10
+                shrapnel_piece.velocity.scale_to_length(MIN_SHRAPNEL_SPEED)
             mass -= new_radius                                                                  # Decrease the remaining mass
             print(f"New shrapnel from {self}, shrapnel mass {new_radius}, remaining mass is {mass}")
 
-class Shrapnel(CircleShape):                                        # Cannot move out of CircularShapes because it would result in circular import.
-    def __init__(self, x, y, radius, RGB=(155, 155, 155)):          # Default shrapnel color eg( asteroid splitting shrapnel)
+class Shrapnel(CircleShape):                                            # Cannot move out of CircularShapes because it would result in circular import.
+    def __init__(self, x, y, radius, RGB=(155, 155, 155)):              # Default shrapnel color eg( asteroid splitting shrapnel)
         super().__init__(x, y, radius)
-        self.lifetime = random.randrange(100, 700, 100)             # Set random lifetime for the shrapnel in milliseconds
-        self.spawn_time = pygame.time.get_ticks()                   # Get the spawn time in ticks
-        self.rgb = RGB                                              # Set the color of the shrapnel (default or passed in)
-        self.angular_velocity = 0                                   # Disable angular velocity (no rotation)
+        self.lifetime = random.randrange(100, 700, 100)                 # Set random lifetime for the shrapnel in milliseconds
+        self.spawn_time = pygame.time.get_ticks()                       # Get the spawn time in ticks
+        self.rgb = RGB                                                  # Set the color of the shrapnel (default or passed in)
+        self.angular_velocity = 0                                       # Disable angular velocity (no rotation)
 
     def update(self, dt):
-        self.position += self.velocity * dt                         # Update position based on velocity and time delta
-        self.velocity *= self.friction                              # Apply friction to slow down movement
-        current_time = pygame.time.get_ticks()                      # Get current time in ticks
-        if current_time - self.spawn_time > self.lifetime:          # Check if lifetime has expired
-            self.kill()                                             # Remove shrapnel if its lifetime is over
+        self.position += self.velocity * dt                             # Update position based on velocity and time delta
+        self.velocity *= self.friction                                  # Apply friction to slow down movement
+        current_time = pygame.time.get_ticks()                          # Get current time in ticks
+        if current_time - self.spawn_time > self.lifetime:              # Check if lifetime has expired
+            self.kill()                                                 # Remove shrapnel if its lifetime is over
 
-    def draw(self, screen):                                         # Draw the shrapnel on the screen as a white circle as the shrapnel outline
+    def draw(self, screen):                                             # Draw the shrapnel on the screen as a white circle as the shrapnel outline
         pygame.draw.circle(screen, (255, 255, 255), (int(self.position.x), int(self.position.y)), self.radius)
-        flame = random.choice(shrapnel_flames)                      # Choose a random floating flame character
+        flame = random.choice(shrapnel_flames)                          # Choose a random floating flame character
         FloatingText(self.position.x, self.position.y, (f"{flame}"), self.rgb, 40) # Display floating flame text
     
-    def apply_torque(self, torque):                                 # Torque is disabled for shrapnel (no rotation)
+    def apply_torque(self, torque):                                     # Torque is disabled for shrapnel (no rotation)
         pass
