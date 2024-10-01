@@ -25,7 +25,7 @@ Welcome to my Asteroids game project! 🎮 This has been a fun and challenging l
 - Gained proficiency in shell/terminal commands for version control and project management tasks.
 
 ### The real lessons:
-During this project, I gained a deeper understanding of how the complexity of a system grows exponentially as new features are added. Each new feature invariably led to refactoring existing code, and as the project matured, a significant amount of time was devoted to cleaning up code and documenting it. This experience taught me the importance of iterative refactoring, where improving the structure of existing code becomes just as important as adding new features.
+During this project, I gained a deeper understanding of how the complexity of a system grows    exponentially as new features are added. Each new feature invariably led to refactoring existing code, and as the project matured, a significant amount of time was devoted to cleaning up code and documenting it. This experience taught me the importance of iterative refactoring, where improving the structure of existing code becomes just as important as adding new features.
 
 I also experienced firsthand how sunk cost bias can come into play when you’ve invested so much time into a project. There’s always the urge to continue working and polishing, even when the core functionality is done. However, having a project with instant feedback loops—where I could see results quickly—was incredibly motivating and rewarding.
 
