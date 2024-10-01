@@ -65,17 +65,52 @@ Destroy aliens and asteroids by shooting at them.
 Collect loot from defeated enemies to gain power-ups and increase your score. 
 Survive as long as possible!
 
-## Future Plans
-
-- **More Alien Ships:** New enemy types with unique behaviors.
-- **Persistent High Score System:** A way to save and display the high score.
-- **Player Profiles:** Adding a menu to enter player names and track performance.
-
 ## Getting Started
 
-1. Clone the repository:
-    git clone https://github.com/RapolasRimeika/asteroids-game.git
-2. Install the dependencies:
-    pip install -r requirements.txt
-3. Run the game:
-    python3 main.py
+This project requires **Python 3.9.6** or higher.
+
+### 1. Install Python (if not already installed)
+
+For macOS users, you can install Python via Homebrew:
+
+brew install python
+
+For other platforms, refer to the [official Python website](https://www.python.org/downloads/) version.
+
+### 2. Clone the repository and move into the directory
+
+git clone https://github.com/RapolasRimeika/asteroids.git
+cd asteroids
+
+### 3. Install the dependencies
+
+pip install -r requirements.txt
+
+### 3.1 (Optional) Create and activate a virtual environment
+
+It is recommended to use a virtual environment to keep dependencies isolated.
+
+#### Create a virtual environment and activate the virtual environment:
+python3 -m venv venv
+# On Mac
+source venv/bin/activate
+
+# On Windows:
+venv\Scripts\activate
+
+#### Deactivate the virtual environment once finished with the game:
+deactivate
+
+### 4. Configure screen size
+
+To adjust the screen size to fit your monitor or personal preference, edit the `constants.py` file:
+
+# Inside constants.py, modify the SCREEN_WIDTH and SCREEN_HEIGHT
+SCREEN_WIDTH = 1920  # Example
+SCREEN_HEIGHT = 1080  # Example
+
+### 5. Run the game
+
+After configuring the screen size, you can start the game by running the following in the directory:
+
+python3 main.py
