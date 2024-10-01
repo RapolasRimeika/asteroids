@@ -80,6 +80,7 @@ For other platforms, refer to the [official Python website](https://www.python.o
 ### 2. Clone the repository and move into the directory
 
 git clone https://github.com/RapolasRimeika/asteroids.git
+
 cd asteroids
 
 ### 3. Install the dependencies
@@ -92,10 +93,10 @@ It is recommended to use a virtual environment to keep dependencies isolated.
 
 #### Create a virtual environment and activate the virtual environment:
 python3 -m venv venv
-# On Mac
+### On Mac
 source venv/bin/activate
 
-# On Windows:
+### On Windows:
 venv\Scripts\activate
 
 #### Deactivate the virtual environment once finished with the game:
@@ -105,7 +106,7 @@ deactivate
 
 To adjust the screen size to fit your monitor or personal preference, edit the `constants.py` file:
 
-# Inside constants.py, modify the SCREEN_WIDTH and SCREEN_HEIGHT
+### Inside constants.py, modify the SCREEN_WIDTH and SCREEN_HEIGHT
 SCREEN_WIDTH = 1920  # Example
 SCREEN_HEIGHT = 1080  # Example
 
