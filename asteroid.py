@@ -1,6 +1,6 @@
 import pygame                                  # Import the Pygame library for graphics
 import random                                  # Import the random library for generating random values
-from circleshape import CircleShape            # Import the CircleShape base class for asteroid inheritance
+from circle_shape import CircleShape            # Import the CircleShape base class for asteroid inheritance
 from floating_text import FloatingText         # Import for displaying floating text in the game
 from constants import *                        # Import game constants used for configuration
 

@@ -2,13 +2,13 @@ import pygame
 from constants import *
 from player import Player
 from asteroid import Asteroid
-from asteroidfield import AsteroidField
+from asteroid_field import AsteroidField
 from shot import Shot
 from floating_text import FloatingText
 from state import State
-from circleshape import Shrapnel
+from circle_shape import Shrapnel
 from aliens import AlienShip
-from AlienField import AlienField
+from alien_field import AlienField
 from loot import Loot, LootSpawner
 from explosion import Explosion
 from background import *

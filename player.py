@@ -1,7 +1,7 @@
 import pygame
 import random
 from constants import *
-from circleshape import CircleShape
+from circle_shape import CircleShape
 from shot import Shot
 from floating_text import FloatingText
 from explosion import Explosion

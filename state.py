@@ -5,7 +5,7 @@ from constants import *
 from player import Player
 from floating_text import FloatingText
 from text_lists import start_messages
-from asteroidfield import AsteroidField
+from asteroid_field import AsteroidField
 from background import generate_star_and_planet_background
 
 class State():

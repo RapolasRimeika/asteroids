@@ -1,10 +1,10 @@
 import pygame
 import random
 from constants import *
-from circleshape import CircleShape
+from circle_shape import CircleShape
 from shot import Shot
 from floating_text import FloatingText
-from circleshape import Shrapnel
+from circle_shape import Shrapnel
 from text_lists import alien_screams
 from loot import LootSpawner
 from explosion import Explosion

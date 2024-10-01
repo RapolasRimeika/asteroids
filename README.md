@@ -17,51 +17,76 @@ Welcome to my Asteroids game project! 🎮 This has been a fun and challenging l
 ### Game Mechanics:
 - **Player Controls:** 
     Rotate, move, and shoot with smooth physics.
-- **Asteroids:** 
-    Randomly generated textures and splitting mechanics when destroyed. Asteroids also generate shrapnel upon destruction.
-- **Alien Ships:** 
-    Alien ships track the player, avoid asteroids, shoot when in range, and drop loot upon destruction.
-- **Loot System:** 
-    Different power-ups like health regeneration, speed boosts, stabilizers, and more spawn upon defeating enemies.
-- **Inertia and Stabilizers:** 
-    Full physics system with linear and angular inertia, friction, and stabilizers that stop small movements when not pressing movement keys.
-- **Black Holes (BLK Class):** 
-    A black hole that spawns randomly, pulls objects in based on proximity, and removes objects when too close.
-- **Background Generation:** 
-    Multi-layered star and planet backgrounds with randomly generated textures, Gaussian blur applied to the planet layer for depth.
-- **Explosion Physics:** 
-    Objects interact with explosions based on proximity, and forces are applied accordingly.
+
+**Game State Management:**  
+    The game constantly tracks the player's state, including death, and manages transitions between different modes (e.g., playing, game over, name entry). During gameplay, it monitors player score and playtime, updating the game state based on player actions and events, ensuring smooth transitions.
+
+- **Player Highscores:**  
+    After the game finishes, the player is prompted to enter their name, and the scores are saved. The high score system retains up to 10 entries, showing the leaderboard at the end of the game, giving players the chance to compete for the top spots.
+
+- **Alien Ships:**  
+    Alien ships track the player, navigate around asteroids, and strategically shoot when in range. Upon destruction, they drop various loot items, adding dynamic gameplay and resource rewards for the player.
+
+- **Loot System:**  
+    Loot spawns upon defeating Alien ships, offering power-ups like health, speed boosts, stabilizers, and other upgrades. Each loot item modifies the ship's attributes, making gameplay progressively more challenging and rewarding.
+
+- **Global Collision:**  
+    A robust physics engine governs collisions, where objects not only collide but also take damage based on their relative velocity and mass. The impact forces cause them to bounce off each other, leading to realistic interactions between all in-game objects.
+
+- **Shrapnel:**  
+    Upon destruction, objects break apart into multiple shrapnel pieces, the amount of which is determined by their radius. The shrapnel scatters in various directions, colliding with nearby objects and dealing additional damage, enhancing the unpredictability of space combat.
+
+- **Inertia:**  
+    The game employs a full physics system with both linear and angular inertia. Spaceships experience friction and momentum, adding a layer of control and realism to movement. While all objects have inertia, non-controllable objects have angular inertia disabled for smoother performance.
+
+- **Stabilizers:**  
+    Spaceships (both Player and Alien) have angular momentum and built-in stabilizers to counteract small, unintended movements caused by inertia. This system helps control both linear and angular momentum when movement keys aren't pressed. The stabilizers are upgradable through loot, providing better handling.
+
+- **Black Holes (BlackHole Class):**  
+    Black holes spawn randomly in space, pulling in nearby objects based on proximity. As objects get too close, they are pulled in and eventually disappear, introducing an ever-present environmental hazard with gravitational physics.
+
+- **Background Generation:**  
+    A complex, multi-layered background system generates star and planet layers with procedurally generated textures. Gaussian blur is applied to the planet layer, creating a sense of depth and immersion in the game’s expansive space environment.
+
+- **Explosion Physics:**  
+    Explosions affect nearby objects based on proximity, applying realistic force dynamics. The closer an object is to the explosion, the greater the force exerted, causing ripple effects across the environment and impacting gameplay significantly.
 
 ### Code Modularity:
-- The code is split into multiple files for readability, maintainability, and scalability:
-  - `constants.py`        : Stores all global constants like screen dimensions and object sizes.
-  - `circleshape.py`      : A base class for circular game objects with full inertia and friction.
-  - `player.py`           : Manages player controls, movement, shooting, and collision detection.
-  - `asteroid.py`         : Handles asteroid movement, splitting, and texture generation.
-  - `asteroidfield.py`    : Manages asteroid spawning, including black holes.
-  - `aliens.py`           : Manages alien ship behavior and interactions with the player.
-  - `loot.py`             : Implements the loot system with power-ups for the player.
-  - `explosion.py`        : Handles explosion interactions with objects.
-  - `floating_text.py`    : Displays text effects during gameplay.
-  - `background_layers.py`: Generates dynamic star and planet backgrounds.
-  - `main.py`             : The main game loop handling events, updates, and rendering.
 
-### Version Control:
-- Managed the entire project using Git and GitHub, effectively tracking changes and allowing collaboration.
+- The code is split into multiple files for readability, maintainability, and scalability:
+
+  - **`constants.py`**        : Stores global constants like screen dimensions and object sizes.
+  - **`circleshape.py`**      : A base class for circular game objects with full inertia and friction.
+  - **`player.py`**           : Manages player controls, movement, shooting, and collision detection.
+  - **`asteroid.py`**         : Handles asteroid movement, splitting, and texture generation.
+  - **`asteroidfield.py`**    : Manages asteroid spawning and interactions, including black holes.
+  - **`aliens.py`**           : Manages alien ship behavior and interactions with the player.
+  - **`loot.py`**             : Implements the loot system with power-ups for the player.
+  - **`explosion.py`**        : Handles explosion physics and their interactions with objects.
+  - **`floating_text.py`**    : Displays floating text effects during gameplay.
+  - **`background.py`**       : Generates dynamic multi-layered star and planet backgrounds.
+  - **`main.py`**             : The main game loop handling events, updates, and rendering.
+  - **`AlienField.py`**       : Special field or behavior management for alien ships.
+  - **`black_hole.py`**       : Manages the behavior and physics of black holes within the game.
+  - **`high_scores.json`**    : Stores the top player scores after each session.
+  - **`state.py`**            : Manages the game states like playing, game over, and name entry.
+  - **`shot.py`**             : Implements the mechanics for player and alien shots.
+  - **`text_lists.py`**       : Stores pre-defined text messages or lists for gameplay.
+
 
 ## How to Play
 
 **Controls:**
-- Rotate: Left/Right arrow keys or A/D.
-- Move: Up/Down arrow keys or W/S.
+- Rotate: Left/Right arrow keys.
+- Move: Up/Down arrow keys.
 - Shoot: Spacebar.
 - Stabilizers: Automatically engage when not pressing movement keys to stop small movements.
-- Restart: Press Enter after game over.
-- Quit Game: Press Escape.
+- Restart: Press Return after game over. Enter your name, press Return to save score and start a new game.
+- Quit Game: Press Escape at any point to quit the game.
 
 **Objective:**
 Navigate your spaceship, avoid asteroids, black holes and enemy fire.
-Destroy aliens and asteroids by shooting at them. 
+Destroy aliens and asteroids by shooting at them to score points. 
 Collect loot from defeated enemies to gain power-ups and increase your score. 
 Survive as long as possible!
 

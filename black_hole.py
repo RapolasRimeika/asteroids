@@ -1,5 +1,5 @@
 import pygame
-from circleshape import CircleShape
+from circle_shape import CircleShape
 from constants import *
 
 class BlackHole(CircleShape):
