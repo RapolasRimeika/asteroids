@@ -9,10 +9,29 @@ Welcome to my Asteroids game project! 🎮 This has been a fun and challenging l
 
 ## What I Learned
 
+### Python:
+- Practiced writing efficient loops, functions, and working with lists and dictionaries.
+- Developed a project with multiple files and managed dependencies effectively.
+- Generated temporary local files, such as `high_scores.json`, to store data dynamically.
+- Set up and managed a virtual environment for isolating project dependencies.
+
 ### Object-Oriented Programming:
-- Built a hierarchy of classes like `CircleShape`, `Player`, `Asteroid`, `Shot`, `FloatingText`, `Loot`, and `AlienShip`.
-- Applied inheritance, encapsulation, and composition to build reusable, flexible game components.
-- Implemented sprite groups for efficient updates and rendering of game objects.
+- Designed a hierarchy of classes including `CircleShape`, `Player`, `Asteroid`, `Shot`, `FloatingText`, `Loot`, and `AlienShip`.
+- Applied key OOP principles like inheritance, encapsulation, and composition to create reusable and flexible game components.
+- Utilized sprite groups to optimize the updating and rendering of game objects, improving performance.
+
+### Version Control:
+- Managed the project lifecycle using Git and GitHub, efficiently tracking changes and collaborating.
+- Gained proficiency in shell/terminal commands for version control and project management tasks.
+
+### The real lessons:
+During this project, I gained a deeper understanding of how the complexity of a system grows exponentially as new features are added. Each new feature invariably led to refactoring existing code, and as the project matured, a significant amount of time was devoted to cleaning up code and documenting it. This experience taught me the importance of iterative refactoring, where improving the structure of existing code becomes just as important as adding new features.
+
+I also experienced firsthand how sunk cost bias can come into play when you’ve invested so much time into a project. There’s always the urge to continue working and polishing, even when the core functionality is done. However, having a project with instant feedback loops—where I could see results quickly—was incredibly motivating and rewarding.
+
+Seeing someone else play a game I built was a proud moment, and it reinforced the sense of accomplishment that comes from creating something tangible and fun.
+
+Moreover, community feedback played a vital role in the game's evolution. The concept of the black hole emerged from a discussion on the [boot.dev](https://www.boot.dev/) discord forum, thanks to the suggestion from "iqzy21 - road to scorcerers". Similarly, the stabilizers mechanic was added because some players found the inertia difficult to manage. These insights shaped the final design, showing how user feedback can drive meaningful improvements.
 
 ### Game Mechanics:
 - **Player Controls:** 
@@ -56,23 +75,32 @@ Welcome to my Asteroids game project! 🎮 This has been a fun and challenging l
 - The code is split into multiple files for readability, maintainability, and scalability:
 
   - **`constants.py`**        : Stores global constants like screen dimensions and object sizes.
-  - **`circleshape.py`**      : A base class for circular game objects with full inertia and friction.
-  - **`player.py`**           : Manages player controls, movement, shooting, and collision detection.
-  - **`asteroid.py`**         : Handles asteroid movement, splitting, and texture generation.
-  - **`asteroidfield.py`**    : Manages asteroid spawning and interactions, including black holes.
-  - **`aliens.py`**           : Manages alien ship behavior and interactions with the player.
-  - **`loot.py`**             : Implements the loot system with power-ups for the player.
-  - **`explosion.py`**        : Handles explosion physics and their interactions with objects.
-  - **`floating_text.py`**    : Displays floating text effects during gameplay.
-  - **`background.py`**       : Generates dynamic multi-layered star and planet backgrounds.
+  - **`state.py`**            : Manages the game states such as playing, game over, and name entry.
   - **`main.py`**             : The main game loop handling events, updates, and rendering.
-  - **`AlienField.py`**       : Special field or behavior management for alien ships.
-  - **`black_hole.py`**       : Manages the behavior and physics of black holes within the game.
-  - **`high_scores.json`**    : Stores the top player scores after each session.
-  - **`state.py`**            : Manages the game states like playing, game over, and name entry.
-  - **`shot.py`**             : Implements the mechanics for player and alien shots.
-  - **`text_lists.py`**       : Stores pre-defined text messages or lists for gameplay.
+  
+  - **`circle_shape.py`**     : A base class for circular game objects with full inertia and friction.
 
+  - **`player.py`**           : Manages player controls, movement, shooting, and collision detection.
+  - **`aliens.py`**           : Handles alien ship behavior and interactions with the player.
+  - **`alien_field.py`**      : Manages the spawning and behavior of alien ships.
+  
+  - **`asteroid.py`**         : Handles asteroid movement, splitting, and texture generation.
+  - **`asteroid_field.py`**   : Manages asteroid spawning and interactions with the environment.
+  
+  - **`loot.py`**             : Implements the loot system with power-ups for the player.
+  
+  - **`shot.py`**             : Implements the mechanics for player and alien shots.
+
+  - **`explosion.py`**        : Handles explosion physics and their interactions with objects.
+  - **`black_hole.py`**       : Manages the behavior and physics of black holes within the game.
+  
+  - **`background.py`**       : Generates dynamic multi-layered star and planet backgrounds.
+  - **`floating_text.py`**    : Displays floating text effects during gameplay.
+  - **`text_lists.py`**       : Stores pre-defined text messages or lists for use during gameplay.
+  
+  - **`high_scores.json`**    : Stores the top player scores after each session.
+  - **`requirements.txt`**    : Lists the dependencies required to run the game.
+  - **`README.md`**           : Provides an overview and instructions for the game.
 
 ## How to Play
 
@@ -94,7 +122,7 @@ Survive as long as possible!
 
 This project requires **Python 3.9.6** or higher.
 
-### 1. Install Python (if not already installed)
+**1. Install Python (if not already installed)**
 
 For macOS users, you can install Python via Homebrew:
 
@@ -102,40 +130,40 @@ brew install python
 
 For other platforms, refer to the [official Python website](https://www.python.org/downloads/) version.
 
-### 2. Clone the repository and move into the directory
+**2. Clone the repository and move into the directory**
 
 git clone https://github.com/RapolasRimeika/asteroids.git
 
 cd asteroids
 
-### 3. Install the dependencies
+**3. Install the dependencies**
 
 pip install -r requirements.txt
 
-### 3.1 (Optional) Create and activate a virtual environment
+**3.1 (Optional) Create and activate a virtual environment**
 
 It is recommended to use a virtual environment to keep dependencies isolated.
 
-#### Create a virtual environment and activate the virtual environment:
+**Create a virtual environment and activate the virtual environment:**
 python3 -m venv venv
-### On Mac
+**On Mac**
 source venv/bin/activate
 
-### On Windows:
+**On Windows:**
 venv\Scripts\activate
 
-#### Deactivate the virtual environment once finished with the game:
+**Deactivate the virtual environment once finished with the game:**
 deactivate
 
-### 4. Configure screen size
+**4. Configure screen size**
 
 To adjust the screen size to fit your monitor or personal preference, edit the `constants.py` file:
 
-### Inside constants.py, modify the SCREEN_WIDTH and SCREEN_HEIGHT
+**Inside constants.py, modify the SCREEN_WIDTH and SCREEN_HEIGHT**
 SCREEN_WIDTH = 1920  # Example
 SCREEN_HEIGHT = 1080  # Example
 
-### 5. Run the game
+**5. Run the game**
 
 After configuring the screen size, you can start the game by running the following in the directory:
 
